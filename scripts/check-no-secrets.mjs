@@ -7,7 +7,7 @@ const SECRET_PATTERNS = [
   /sk-[A-Za-z0-9_-]{20,}/,
   /gh[pousr]_[A-Za-z0-9_]{20,}/,
   /xox[baprs]-[A-Za-z0-9-]{20,}/,
-  /(?i:api[_-]?key|token|password|secret)\s*[:=]\s*["']?[^"',\s}]+/,
+  /(api[_-]?key|token|password|secret)\s*[:=]\s*["']?[^"',\s}]+/i,
   /-----BEGIN (RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----/,
 ];
 
