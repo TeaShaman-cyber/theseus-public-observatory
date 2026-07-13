@@ -1,0 +1,12 @@
+{
+  "name": "theseus-public-observatory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "collect": "node scripts/collect-public-status.mjs",
+    "validate": "node scripts/validate-public-data.mjs",
+    "secret-scan": "node scripts/check-no-secrets.mjs",
+    "test": "npm run validate && npm run secret-scan"
+  }
+}

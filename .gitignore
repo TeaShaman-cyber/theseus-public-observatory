@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+node_modules/
+tmp/
+*.log
+*.key
+*.pem
+*.pfx
+.DS_Store
