@@ -60,6 +60,28 @@ Daily reports must not say:
 
 Those questions belong to private analysis or a later pre-registered study.
 
+## Research Guardrails
+
+This repository exists because temporal coincidences are easy to notice and
+easy to over-interpret. The public collector should therefore make these checks
+cheap before any claim is made:
+
+- Was the event definition written down before looking at the overlap?
+- Was the comparison window fixed before inspection?
+- Were lagged windows handled symmetrically?
+- Were null days and missing data included?
+- Was source reachability separated from source status?
+- Was local network/proxy failure separated from public service failure?
+- Would a shuffled or permuted timeline produce similar coincidences?
+
+If the answer is unknown, the correct report language is "needs analysis", not
+"confirmed".
+
+Future biological or ecological signals such as SIF should enter as separate
+public-data streams with their own source documentation and caveats. They must
+not be mixed into infrastructure interpretation until the baseline timeline is
+stable.
+
 ## Later Checks
 
 Once the public timeline is stable, useful checks may include:
