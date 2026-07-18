@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-07-18T12:07:29.238Z",
+  "collected_at": "2026-07-18T13:52:47.991Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,10 +7,10 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 220,
+      "latency_ms": 442,
       "summary": {
-        "indicator": "minor",
-        "description": "Partial System Degradation",
+        "indicator": "none",
+        "description": "All Systems Operational",
         "page_name": "OpenAI"
       }
     },
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 225,
+      "latency_ms": 116,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 855,
+      "latency_ms": 1379,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -45,7 +45,7 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 202,
+      "latency_ms": 144,
       "summary": {
         "rows": 60,
         "header": null
@@ -57,11 +57,11 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-scales.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 197,
+      "latency_ms": 142,
       "summary": {
         "observed": {
           "DateStamp": "2026-07-17",
-          "TimeStamp": "12:05:00",
+          "TimeStamp": "13:51:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-07-18",
-          "TimeStamp": "12:05:00",
+          "TimeStamp": "13:51:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,7 +99,7 @@
         },
         "forecast": {
           "DateStamp": "2026-07-18",
-          "TimeStamp": "12:05:00",
+          "TimeStamp": "13:51:00",
           "R": {
             "Scale": null,
             "Text": null,
