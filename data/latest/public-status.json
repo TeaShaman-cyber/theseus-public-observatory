@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-07-18T19:35:02.703Z",
+  "collected_at": "2026-07-18T21:08:06.292Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,7 +7,7 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 219,
+      "latency_ms": 501,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 99,
+      "latency_ms": 118,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 834,
+      "latency_ms": 1601,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -47,7 +47,7 @@
       "http_status": 200,
       "latency_ms": 231,
       "summary": {
-        "rows": 62,
+        "rows": 63,
         "header": null
       }
     },
@@ -61,7 +61,7 @@
       "summary": {
         "observed": {
           "DateStamp": "2026-07-17",
-          "TimeStamp": "19:34:00",
+          "TimeStamp": "21:05:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-07-18",
-          "TimeStamp": "19:34:00",
+          "TimeStamp": "21:05:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,7 +99,7 @@
         },
         "forecast": {
           "DateStamp": "2026-07-18",
-          "TimeStamp": "19:34:00",
+          "TimeStamp": "21:05:00",
           "R": {
             "Scale": null,
             "Text": null,
