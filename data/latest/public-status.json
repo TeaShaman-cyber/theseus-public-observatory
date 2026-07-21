@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-07-21T18:42:24.874Z",
+  "collected_at": "2026-07-21T20:37:44.492Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,7 +7,7 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 220,
+      "latency_ms": 343,
       "summary": {
         "indicator": "major",
         "description": "Partial System Outage",
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 110,
+      "latency_ms": 137,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 1038,
+      "latency_ms": 1364,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -45,7 +45,7 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 267,
+      "latency_ms": 195,
       "summary": {
         "rows": 62,
         "header": null
@@ -57,11 +57,11 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-scales.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 264,
+      "latency_ms": 194,
       "summary": {
         "observed": {
           "DateStamp": "2026-07-20",
-          "TimeStamp": "18:40:00",
+          "TimeStamp": "20:36:00",
           "R": {
             "Scale": "1",
             "Text": "minor",
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-07-21",
-          "TimeStamp": "18:40:00",
+          "TimeStamp": "20:36:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,12 +99,12 @@
         },
         "forecast": {
           "DateStamp": "2026-07-21",
-          "TimeStamp": "18:40:00",
+          "TimeStamp": "20:36:00",
           "R": {
             "Scale": null,
             "Text": null,
             "MinorProb": "55",
-            "MajorProb": "5"
+            "MajorProb": "10"
           },
           "S": {
             "Scale": null,
