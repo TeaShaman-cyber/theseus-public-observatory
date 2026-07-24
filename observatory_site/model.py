@@ -16,6 +16,7 @@ ALLOWED_EPISTEMIC = {
 }
 ALLOWED_STAGES = {"PILOT", "RUNNING", "COMPLETE", "ARCHIVED"}
 
+
 @dataclass(frozen=True)
 class SourceObservation:
     source_id: str
@@ -28,6 +29,7 @@ class SourceObservation:
     summary: Mapping[str, object] = field(default_factory=dict)
     error: str | None = None
 
+
 @dataclass(frozen=True)
 class ObservationSnapshot:
     collected_at: datetime
@@ -35,11 +37,13 @@ class ObservationSnapshot:
     age_seconds: float
     sources: Sequence[SourceObservation]
 
+
 @dataclass(frozen=True)
 class ReportSummary:
     slug: str
     title: str
     path: str
+
 
 @dataclass(frozen=True)
 class ExperimentSummary:
@@ -62,5 +66,7 @@ class ExperimentSummary:
             raise ValueError(f"unsupported lifecycle stage: {self.stage}")
         if self.epistemic_status not in ALLOWED_EPISTEMIC:
             raise ValueError(f"unsupported epistemic status: {self.epistemic_status}")
-        if self.epistemic_status.startswith("VERIFIED_") and not (self.source_hashes or self.artifact_hashes):
+        if self.epistemic_status.startswith("VERIFIED_") and not (
+            self.source_hashes or self.artifact_hashes
+        ):
             raise ValueError("verified experiment requires durable hashes")
