@@ -1,0 +1,15 @@
+{
+  "slug":"gw150914",
+  "title":"GW150914 root pilot",
+  "question":"Do bounded TID candidate features distinguish an event window from fixed controls?",
+  "stage":"PILOT",
+  "epistemic_status":"MEASUREMENT_ONLY",
+  "result_summary":"Descriptive first pass with four controls.",
+  "does_not_establish":"Does not establish a calibrated scientific claim.",
+  "source_urls":["https://gwosc.org/"],
+  "source_hashes":{"H1":"abc","L1":"def"},
+  "artifact_hashes":{"summary":"ghi"},
+  "workflow_url":"https://github.com/example/actions/1",
+  "code_url":"https://github.com/example/tree/feature",
+  "next_gate":"Larger null distribution."
+}
