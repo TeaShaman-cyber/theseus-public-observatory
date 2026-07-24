@@ -67,3 +67,10 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("refs/heads/main", text)
         self.assertIn("actions/upload-pages-artifact", text)
         self.assertIn("actions/deploy-pages", text)
+        configure_block = text.split("- name: Configure GitHub Pages", 1)[1].split(
+            "- name: Upload GitHub Pages artifact", 1
+        )[0]
+        self.assertIn(
+            "if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'",
+            configure_block,
+        )
