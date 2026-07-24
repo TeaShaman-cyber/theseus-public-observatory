@@ -31,7 +31,7 @@ The Method/About page should make the division of roles explicit without oversta
 - Semyon Poklad: project initiator, research direction, problem selection, experimental decisions, source context, and final human judgement.
 - Jester / ChatGPT: co-design, software implementation, data analysis, verification workflows, research reconstruction, documentation, and adversarial/self-review support.
 
-Additional tools, models, agents, and reviewers used in individual experiments should be credited in experiment provenance where relevant rather than presented as human co-authors.
+Additional tools, models, agents, and reviewers used in individual experiments should be credited in experiment provenance where relevant rather than presented as human co-authors. When a specific model/runtime materially affects an experiment, that runtime/model identity should be recorded in the experiment provenance instead of assuming the permanent label `Jester` uniquely identifies one technical implementation.
 
 ## Authority and invariants
 
@@ -78,7 +78,7 @@ Opening identity:
 The home page contains:
 
 1. **Current state**
-   - latest public collector timestamp;
+   - latest public collector timestamp plus explicit freshness/staleness relative to a declared budget;
    - collector/source health summary;
    - latest experiment status;
    - explicit epistemic boundary: no causal claim unless a study separately establishes one.
@@ -121,8 +121,8 @@ Each experiment card contains:
 
 - question;
 - dataset/source;
-- stage/status;
-- epistemic badge;
+- lifecycle stage (for example `PILOT`);
+- epistemic status badge (for example `MEASUREMENT_ONLY`);
 - control/null design;
 - latest result in one or two sentences;
 - source code link;
@@ -178,10 +178,14 @@ Initial vocabulary:
 - `OBSERVATION` — collected public datum or timeline item;
 - `MEASUREMENT_ONLY` — computation completed, inference not yet calibrated;
 - `HYPOTHESIS` — claim proposed for testing;
-- `PILOT` — bounded experimental implementation;
+Lifecycle stage and epistemic status are separate dimensions. `PILOT` is a lifecycle stage, not an epistemic verdict. A card may therefore show `stage: PILOT` together with `epistemic: MEASUREMENT_ONLY`.
+
+Epistemic vocabulary:
+
 - `VERIFIED_ARTIFACT` — artifact/hash/readback verified;
 - `VERIFIED_EXECUTION` — workflow/runtime postcondition verified;
 - `DEGRADED` — collection/build/route was incomplete or impaired;
+- `STALE` — the last known observation is older than the declared freshness budget;
 - `UNKNOWN` — evidence is insufficient.
 
 Scientific claims should not receive a generic `VERIFIED` badge without a qualifying noun.
@@ -264,6 +268,7 @@ Keep adapters explicit and small:
 3. `ExperimentAdapter`
    - reads only explicitly published compact experiment manifests/results;
    - initially supports the TID GW150914 result schema;
+   - requires durable public evidence for any experiment shown as published: a versioned repository artifact or immutable/release-style artifact with hash; an expiring GitHub Actions artifact may be linked as supplementary execution evidence but must not be the sole scientific evidence surface;
    - missing optional fields degrade gracefully.
 
 Adapters return typed presentation models. Templates never crawl arbitrary repository files.
@@ -287,7 +292,7 @@ Follow the `nakama-test` two-job pattern:
 
 - only from default branch;
 - use official Pages actions;
-- minimal `pages: write` and `id-token: write` permissions;
+- minimal GitHub Pages deployment permissions (`pages` write plus OIDC identity-token write);
 - deployment failure means presentation `DEGRADED`, not observation invalidation.
 
 The generator must be base-path aware for `/theseus-public-observatory/` and a potential future custom domain.
@@ -299,7 +304,8 @@ Build fails on:
 - malformed required current-state JSON;
 - duplicate output URLs;
 - experiment card claiming an unsupported epistemic status;
-- a `VERIFIED_*` experiment lacking its declared evidence link;
+- lifecycle stage being presented as an epistemic verdict;
+- a `VERIFIED_*` experiment lacking its declared durable evidence link;
 - generated broken internal links;
 - generator modifying canonical repository sources.
 
@@ -316,6 +322,7 @@ A data collector failure is displayed as collector degradation and must not auto
 Minimum automated coverage:
 
 - current observation parsing;
+- freshness-budget and `STALE` rendering;
 - collector-failure/source-status separation;
 - report chronological ordering;
 - epistemic badge validation;
@@ -332,6 +339,7 @@ After deployment, verification requires:
 
 - GitHub Pages deployment success;
 - public home responds successfully;
+- displayed observation freshness agrees with the canonical timestamp and configured freshness budget;
 - home contains a known current observation timestamp or source;
 - GW150914 experiment page renders `MEASUREMENT_ONLY` and its evidence/run link;
 - Method page contains the observation-versus-causation boundary;
