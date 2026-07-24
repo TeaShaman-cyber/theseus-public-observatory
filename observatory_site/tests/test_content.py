@@ -30,3 +30,14 @@ class ContentTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class RealRepositoryDescriptorTests(unittest.TestCase):
+    def test_real_gw150914_descriptor_is_durable_and_measurement_only(self):
+        repo = Path(__file__).resolve().parents[2]
+        exps = {e.slug: e for e in load_experiments(repo)}
+        exp = exps["gw150914"]
+        self.assertEqual(exp.epistemic_status, "MEASUREMENT_ONLY")
+        self.assertEqual(exp.stage, "PILOT")
+        self.assertEqual(len(exp.source_hashes), 2)
+        self.assertGreaterEqual(len(exp.artifact_hashes), 3)
+        self.assertIn("four", exp.result_summary.lower())

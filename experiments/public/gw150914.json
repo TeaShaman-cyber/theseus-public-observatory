@@ -1,0 +1,25 @@
+{
+  "slug": "gw150914",
+  "title": "TID root physics — GW150914",
+  "question": "Do bounded TID candidate features distinguish the GW150914 event window from fixed off-event controls under one reproducible measurement contract?",
+  "stage": "PILOT",
+  "epistemic_status": "MEASUREMENT_ONLY",
+  "result_summary": "A descriptive first pass with four pre-registered off-event controls is null-ish: event-window multifractal width is somewhat above control medians, while PSD slope, sample entropy, and raw detector coherence do not strongly separate the event.",
+  "does_not_establish": "This does not establish calibrated statistical significance, a universal TID threshold, or new gravitational-wave physics.",
+  "source_urls": [
+    "https://gwosc.org/eventapi/json/O1_O2-Preliminary/GW150914/v2/H-H1_LOSC_16_V2-1126259446-32.hdf5",
+    "https://gwosc.org/eventapi/json/O1_O2-Preliminary/GW150914/v2/L-L1_LOSC_16_V2-1126259446-32.hdf5"
+  ],
+  "source_hashes": {
+    "H1": "6672b938e6c2a87480b87fcd55b3799176719d99b171f1a3162f562b60793feb",
+    "L1": "6a45c1dd9050b43159df84c3630d884a617766efc5568043b5257fc6b10ff7c4"
+  },
+  "artifact_hashes": {
+    "features.json": "6ff2679fb0be8a71a9a961a00533cc79f6e38a18bf68793a3559effcaaa24a9a",
+    "manifest.json": "6d9982b2be14d1895be87b5ca7e722a4988738c169c859dd53ba6d458525af3f",
+    "summary.json": "cb5db1d00b45edbe343e176cbdecc0ff9bdb2bffcea4f2c53703ad5c82127d43"
+  },
+  "workflow_url": "https://github.com/TeaShaman-cyber/theseus-public-observatory/actions/runs/30123923344",
+  "code_url": "https://github.com/TeaShaman-cyber/theseus-public-observatory/tree/feat/tid-root-ligo-pilot",
+  "next_gate": "Expand to a larger off-event null distribution with symmetric whitening and detector time alignment before calibrated inference."
+}
