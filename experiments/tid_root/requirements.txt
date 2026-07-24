@@ -1,0 +1,6 @@
+numpy==2.4.6
+scipy==1.18.0
+h5py==3.16.0
+MFDFA==0.4.3
+antropy==0.2.2
+PyWavelets==1.8.0

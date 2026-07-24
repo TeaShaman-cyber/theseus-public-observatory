@@ -8,3 +8,5 @@ tmp/
 *.pem
 *.pfx
 .DS_Store
+__pycache__/
+*.py[cod]
