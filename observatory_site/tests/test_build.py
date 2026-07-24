@@ -28,3 +28,14 @@ class BuildTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class WorkflowTests(unittest.TestCase):
+    def test_pages_workflow_has_build_deploy_split_and_main_only_deploy(self):
+        repo = Path(__file__).resolve().parents[2]
+        text = (repo/'.github'/'workflows'/'pages.yml').read_text(encoding='utf-8')
+        self.assertIn('build:', text)
+        self.assertIn('deploy:', text)
+        self.assertIn('needs: build', text)
+        self.assertIn("refs/heads/main", text)
+        self.assertIn('actions/upload-pages-artifact', text)
+        self.assertIn('actions/deploy-pages', text)
