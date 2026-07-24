@@ -1,0 +1,71 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            observatory_site/requirements.txt
+            observatory_site/requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r observatory_site/requirements.txt -r observatory_site/requirements-dev.txt
+
+      - name: Test repository and site
+        run: |
+          npm test
+          python -m unittest discover -s observatory_site/tests -v
+          python -m ruff check observatory_site scripts
+          python -m ruff format --check observatory_site scripts
+
+      - name: Rebuild disposable research index
+        run: python scripts/build-observatory-index.py --repo-root . --output data/index/observatory.duckdb
+
+      - name: Build static site
+        run: python -m observatory_site.build --repo-root . --output public --base-path /theseus-public-observatory/
+
+      - name: Verify canonical sources unchanged
+        run: git diff --exit-code -- data reports docs/methodology.md experiments/public
+
+      - name: Configure GitHub Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      "id-token": write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

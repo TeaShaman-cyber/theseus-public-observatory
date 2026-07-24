@@ -1,0 +1,7 @@
+{
+  "collected_at": "2026-07-24T10:00:00Z",
+  "sources": [
+    {"id":"provider_a","label":"Provider A","url":"https://example.test/status","ok":true,"http_status":200,"latency_ms":100,"summary":{"indicator":"none","description":"Operational"}},
+    {"id":"provider_b","label":"Provider B","url":"https://example.test/b","ok":false,"http_status":200,"latency_ms":200,"error":"invalid-json"}
+  ]
+}
