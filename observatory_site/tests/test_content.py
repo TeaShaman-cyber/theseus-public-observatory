@@ -1,6 +1,6 @@
+import unittest
 from datetime import datetime, timezone
 from pathlib import Path
-import unittest
 
 from observatory_site.content import (
     load_experiments,

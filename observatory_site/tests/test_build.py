@@ -1,8 +1,8 @@
+import shutil
+import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import shutil
-import unittest
 
 from observatory_site.build import build_site
 

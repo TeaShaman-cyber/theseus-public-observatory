@@ -1,9 +1,10 @@
-from pathlib import Path
-from tempfile import TemporaryDirectory
 import json
 import subprocess
 import sys
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 import duckdb
 
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "build-observatory-index.py"

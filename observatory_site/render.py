@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
+from datetime import timezone
 from html import escape
-from typing import Iterable
 
 from .model import ExperimentSummary, ObservationSnapshot, ReportSummary
 
@@ -30,7 +31,7 @@ def _page(title: str, body: str, base_path: str) -> str:
 
 
 def _iso_z(dt) -> str:
-    text = dt.astimezone().isoformat()
+    text = dt.astimezone(timezone.utc).isoformat()
     if text.endswith("+00:00"):
         text = text[:-6] + "Z"
     if "." in text and text.endswith("Z"):

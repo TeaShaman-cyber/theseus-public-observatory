@@ -1,13 +1,13 @@
+import unittest
 from datetime import datetime, timezone
 from pathlib import Path
-import unittest
 
 from observatory_site.content import (
     load_experiments,
     load_latest_snapshot,
     load_reports,
 )
-from observatory_site.render import render_home, render_experiment
+from observatory_site.render import render_experiment, render_home
 
 FIX = Path(__file__).parent / "fixtures"
 
