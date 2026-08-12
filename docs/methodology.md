@@ -82,6 +82,11 @@ public-data streams with their own source documentation and caveats. They must
 not be mixed into infrastructure interpretation until the baseline timeline is
 stable.
 
+Research leads are kept in the versioned
+[research index](research/README.md), not in a separate Wiki. A lead may record
+a source claim, a proposed mechanism, or an open question; it is not an
+observation and does not become a causal conclusion merely by being listed.
+
 ## Later Checks
 
 Once the public timeline is stable, useful checks may include:

@@ -164,3 +164,11 @@ No secrets are required. If any future source needs authentication, it does not
 belong in this public collector until a separate review approves the design.
 
 See [SECURITY.md](SECURITY.md) and [docs/methodology.md](docs/methodology.md).
+
+## Research index
+
+The observatory's research notes are kept as versioned Markdown rather than a
+separate GitHub Wiki. Start with [the research index](docs/research/README.md),
+then follow the [space-weather/AI lead ledger](docs/research/space-weather-llm-leads.md).
+The ledger records research leads and source claims without turning them into
+observations or causal conclusions.
