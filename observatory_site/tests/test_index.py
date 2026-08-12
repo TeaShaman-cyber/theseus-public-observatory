@@ -141,21 +141,35 @@ class IndexTests(unittest.TestCase):
             )
             db = root / "data" / "index" / "observatory.duckdb"
             subprocess.run(
-                [sys.executable, str(SCRIPT), "--repo-root", str(root), "--output", str(db)],
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--repo-root",
+                    str(root),
+                    "--output",
+                    str(db),
+                ],
                 check=True,
             )
             con = duckdb.connect(str(db), read_only=True)
-            self.assertEqual(con.execute("select count(*) from astronomy").fetchone()[0], 2)
+            self.assertEqual(
+                con.execute("select count(*) from astronomy").fetchone()[0], 2
+            )
             moon = con.execute(
                 "select current_phase, illumination_percent, moon_rise, moon_set, sun_rise, sun_set from astronomy where source_id='usno_sun_moon'"
             ).fetchone()
-            self.assertEqual(moon, ("New Moon", 0.0, "04:14", "20:17", "05:08", "20:17"))
+            self.assertEqual(
+                moon, ("New Moon", 0.0, "04:14", "20:17", "05:08", "20:17")
+            )
             eclipse = con.execute(
                 "select solar_eclipse_event, local_visibility from astronomy where source_id='usno_solar_eclipses'"
             ).fetchone()
             self.assertEqual(
                 eclipse,
-                ("Total Solar Eclipse of 12 August 2026", "not-provided-by-usno-year-endpoint"),
+                (
+                    "Total Solar Eclipse of 12 August 2026",
+                    "not-provided-by-usno-year-endpoint",
+                ),
             )
             con.close()
 
