@@ -16,5 +16,18 @@ Each JSONL row is one collection run with:
 - `sources[]`
 - compact source summaries
 - fetch status and latency
+- public astronomy context for the configured observer location
+
+Astronomy source rows currently include:
+
+- `usno_sun_moon`: current lunar phase, illumination, nearest primary phase,
+  Moon rise/transit/set, and Sun twilight/rise/transit/set;
+- `usno_moon_phases`: primary phase events around the collection date;
+- `usno_solar_eclipses`: annual solar-eclipse event list and an `event_today`
+  match when applicable.
+
+The current observer is Kaliningrad (`54.7104, 20.4522`, UTC+2). Astronomy
+values include `observer_local_date`, are stored as public context, and remain
+separate from NOAA `space_weather` rows.
 
 Only public data belongs here.

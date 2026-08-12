@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { buildAstronomySources, summarizeAstronomy } from "./astronomy.mjs";
 
 const SOURCES = [
   {
@@ -88,6 +89,60 @@ async function fetchJson(source, timeoutMs = 30000) {
   }
 }
 
+async function fetchAstronomy(date) {
+  const day = buildAstronomySources(date)[0].observer_local_date;
+  return Promise.all(
+    buildAstronomySources(date).map(async (source) => {
+      const started = Date.now();
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      try {
+        const response = await fetch(source.url, {
+          signal: controller.signal,
+          headers: { "user-agent": "theseus-public-observatory/0.1" },
+        });
+        const text = await response.text();
+        let json = null;
+        try {
+          json = JSON.parse(text);
+        } catch {
+          return {
+            id: source.id,
+            label: source.label,
+            url: source.url,
+            ok: false,
+            http_status: response.status,
+            latency_ms: Date.now() - started,
+            error: "invalid-json",
+          };
+        }
+        return {
+          id: source.id,
+          label: source.label,
+          url: source.url,
+          ok: response.ok,
+          http_status: response.status,
+          latency_ms: Date.now() - started,
+          summary: summarizeAstronomy(source, json, day),
+          observer_local_date: source.observer_local_date,
+        };
+      } catch (error) {
+        return {
+          id: source.id,
+          label: source.label,
+          url: source.url,
+          ok: false,
+          http_status: null,
+          latency_ms: Date.now() - started,
+          error: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
+        };
+      } finally {
+        clearTimeout(timeout);
+      }
+    }),
+  );
+}
+
 function summarize(source, json) {
   if (source.kind.startsWith("statuspage")) {
     return {
@@ -135,6 +190,30 @@ function renderReport(snapshot) {
     if (source.error) lines.push(`  - error: ${source.error}`);
   }
 
+  const sunMoon = snapshot.sources.find((source) => source.id === "usno_sun_moon");
+  const solarEclipse = snapshot.sources.find((source) => source.id === "usno_solar_eclipses");
+  if (sunMoon || solarEclipse) {
+    lines.push("", "## Astronomy Context", "");
+    if (sunMoon?.observer_local_date) {
+      lines.push(`- Observer local date: ${sunMoon.observer_local_date} (Kaliningrad, UTC+2)`);
+    }
+    if (sunMoon?.summary?.moon) {
+      const moon = sunMoon.summary.moon;
+      lines.push(`- Moon: ${moon.current_phase || "unknown"}, ${moon.illumination_percent ?? "unknown"}% illuminated`);
+      if (moon.closest_primary_phase) {
+        const phase = moon.closest_primary_phase;
+        lines.push(`  - closest primary phase: ${phase.phase || "unknown"}, ${phase.year}-${String(phase.month).padStart(2, "0")}-${String(phase.day).padStart(2, "0")} ${phase.time || ""} local time`);
+      }
+    }
+    if (solarEclipse?.summary?.event_today) {
+      lines.push(`- Solar eclipse event on this date (global list): ${solarEclipse.summary.event_today.event}`);
+      lines.push(`  - local visibility: ${solarEclipse.summary.local_visibility || "not recorded"}`);
+    } else {
+      lines.push("- Solar eclipse event on this date (global list): none");
+    }
+    lines.push("- Astronomy values are contextual observations; this report does not claim effects on AI or infrastructure.");
+  }
+
   lines.push(
     "",
     "## Interpretation Boundary",
@@ -160,7 +239,10 @@ async function main() {
   const now = new Date();
   const snapshot = {
     collected_at: now.toISOString(),
-    sources: await Promise.all(SOURCES.map((source) => fetchJson(source))),
+    sources: [
+      ...(await Promise.all(SOURCES.map((source) => fetchJson(source)))),
+      ...(await fetchAstronomy(now)),
+    ],
   };
 
   const day = today(now);

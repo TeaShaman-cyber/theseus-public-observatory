@@ -67,6 +67,9 @@ Collected sources:
 - Hugging Face public status
 - NOAA SWPC planetary K index
 - NOAA SWPC scales
+- USNO Sun and Moon data for the configured observer location
+- USNO primary Moon phases
+- USNO annual solar-eclipse event list
 
 This project does not collect private user data, local machine telemetry,
 account usage limits, API keys, chat logs, AutoMem data, or private Theseus lab
@@ -119,6 +122,13 @@ analysis and local signals stay outside this public repository.
 
 ## Public Works And Data Sources To Start From
 
+The astronomy observer is currently Kaliningrad, Russia (`54.7104 N`,
+`20.4522 E`, UTC+2). The collector records the current lunar phase, illuminated
+fraction, nearest primary phase, Moon/Sun rise-transit-set events, and whether
+the annual USNO solar-eclipse list contains an event on the collection date.
+These are context layers, not causal explanations for provider incidents or
+model behavior.
+
 These links define the first layer of the project and make the README easier to
 index for people working on similar questions:
 
@@ -126,6 +136,14 @@ index for people working on similar questions:
   <https://www.spaceweather.gov/products/planetary-k-index>
 - NOAA SWPC public JSON products:
   <https://services.swpc.noaa.gov/products/>
+- USNO Astronomical Applications API:
+  <https://aa.usno.navy.mil/data/api>
+- USNO complete Sun and Moon data for one day:
+  <https://aa.usno.navy.mil/api/rstt/oneday>
+- USNO primary Moon phases:
+  <https://aa.usno.navy.mil/api/moon/phases/date>
+- USNO annual solar-eclipse list:
+  <https://aa.usno.navy.mil/api/eclipses/solar/year>
 - NOAA/NESDIS overview of space-weather disruption risks:
   <https://www.nesdis.noaa.gov/news/safeguarding-satellites-how-noaa-monitors-space-weather-prevent-disruptions>
 - NOAA report on social and economic impacts of space weather:

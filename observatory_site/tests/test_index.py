@@ -94,6 +94,71 @@ class IndexTests(unittest.TestCase):
             self.assertEqual(bad, (False, "UNKNOWN"))
             con.close()
 
+    def test_indexes_lunar_astronomy_separately_from_space_weather(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            day = root / "data" / "2026-08-12"
+            day.mkdir(parents=True)
+            row = {
+                "collected_at": "2026-08-12T17:37:00Z",
+                "sources": [
+                    {
+                        "id": "usno_sun_moon",
+                        "label": "USNO Sun and Moon Data",
+                        "url": "https://aa.usno.navy.mil/api/rstt/oneday",
+                        "ok": True,
+                        "http_status": 200,
+                        "latency_ms": 80,
+                        "summary": {
+                            "moon": {
+                                "current_phase": "New Moon",
+                                "illumination_percent": 0,
+                                "events": {"rise": "04:14", "set": "20:17"},
+                            },
+                            "sun": {"events": {"rise": "05:08", "set": "20:17"}},
+                        },
+                    },
+                    {
+                        "id": "usno_solar_eclipses",
+                        "label": "USNO Solar Eclipses",
+                        "url": "https://aa.usno.navy.mil/api/eclipses/solar/year",
+                        "ok": True,
+                        "http_status": 200,
+                        "latency_ms": 80,
+                        "summary": {
+                            "year": 2026,
+                            "events": [],
+                            "event_today": {
+                                "event": "Total Solar Eclipse of 12 August 2026"
+                            },
+                            "local_visibility": "not-provided-by-usno-year-endpoint",
+                        },
+                    },
+                ],
+            }
+            (day / "public-status.jsonl").write_text(
+                json.dumps(row) + "\n", encoding="utf-8"
+            )
+            db = root / "data" / "index" / "observatory.duckdb"
+            subprocess.run(
+                [sys.executable, str(SCRIPT), "--repo-root", str(root), "--output", str(db)],
+                check=True,
+            )
+            con = duckdb.connect(str(db), read_only=True)
+            self.assertEqual(con.execute("select count(*) from astronomy").fetchone()[0], 2)
+            moon = con.execute(
+                "select current_phase, illumination_percent, moon_rise, moon_set, sun_rise, sun_set from astronomy where source_id='usno_sun_moon'"
+            ).fetchone()
+            self.assertEqual(moon, ("New Moon", 0.0, "04:14", "20:17", "05:08", "20:17"))
+            eclipse = con.execute(
+                "select solar_eclipse_event, local_visibility from astronomy where source_id='usno_solar_eclipses'"
+            ).fetchone()
+            self.assertEqual(
+                eclipse,
+                ("Total Solar Eclipse of 12 August 2026", "not-provided-by-usno-year-endpoint"),
+            )
+            con.close()
+
 
 if __name__ == "__main__":
     unittest.main()

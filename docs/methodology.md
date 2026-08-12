@@ -42,6 +42,15 @@ interpretation.
 | Hugging Face status | `https://status.huggingface.co/api/v2/summary.json` | Public AI platform status |
 | NOAA planetary K index | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | Space-weather context |
 | NOAA scales | `https://services.swpc.noaa.gov/products/noaa-scales.json` | Space-weather context |
+| USNO Sun and Moon one-day data | `https://aa.usno.navy.mil/api/rstt/oneday` | Local Sun/Moon rise, transit, set, phase, and illumination |
+| USNO Moon phases | `https://aa.usno.navy.mil/api/moon/phases/date` | Primary lunar phase events |
+| USNO solar eclipses | `https://aa.usno.navy.mil/api/eclipses/solar/year` | Annual solar-eclipse event context |
+
+The current observer configuration is Kaliningrad, Russia (`54.7104 N`,
+`20.4522 E`, UTC+2). Astronomy requests use the observer's local calendar date
+and retain it as `observer_local_date`; the snapshot timestamp remains UTC.
+Astronomy data is a separate context layer. The collector does not infer lunar
+or solar effects from a provider status change.
 
 ## Interpretation Boundary
 
@@ -72,6 +81,8 @@ cheap before any claim is made:
 - Were null days and missing data included?
 - Was source reachability separated from source status?
 - Was local network/proxy failure separated from public service failure?
+- Were lunar phase, eclipse visibility, and local Sun/Moon horizon conditions
+  recorded as context rather than treated as explanations?
 - Would a shuffled or permuted timeline produce similar coincidences?
 
 If the answer is unknown, the correct report language is "needs analysis", not
