@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-08-15T17:38:30.492Z",
+  "collected_at": "2026-08-15T18:49:46.746Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,7 +7,7 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 425,
+      "latency_ms": 293,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 93,
+      "latency_ms": 60,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 1352,
+      "latency_ms": 1287,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -47,7 +47,7 @@
       "http_status": 200,
       "latency_ms": 122,
       "summary": {
-        "rows": 61,
+        "rows": 62,
         "header": null
       }
     },
@@ -61,7 +61,7 @@
       "summary": {
         "observed": {
           "DateStamp": "2026-08-14",
-          "TimeStamp": "17:37:00",
+          "TimeStamp": "18:48:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-08-15",
-          "TimeStamp": "17:37:00",
+          "TimeStamp": "18:48:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,7 +99,7 @@
         },
         "forecast": {
           "DateStamp": "2026-08-15",
-          "TimeStamp": "17:37:00",
+          "TimeStamp": "18:48:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -124,7 +124,7 @@
       "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-08-15&coords=54.7104%2C20.4522&tz=2",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 1076,
+      "latency_ms": 1018,
       "summary": {
         "observer": {
           "id": "kaliningrad",
@@ -168,7 +168,7 @@
       "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-08-15&nump=4",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 1065,
+      "latency_ms": 981,
       "summary": {
         "year": 2026,
         "phases": [
@@ -210,7 +210,7 @@
       "url": "https://aa.usno.navy.mil/api/eclipses/solar/year?year=2026",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 1119,
+      "latency_ms": 1081,
       "summary": {
         "year": 2026,
         "events": [
