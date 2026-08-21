@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-08-21T14:55:46.730Z",
+  "collected_at": "2026-08-21T15:50:10.432Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,7 +7,7 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 317,
+      "latency_ms": 516,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 133,
+      "latency_ms": 214,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 1550,
+      "latency_ms": 1061,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -45,9 +45,9 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 253,
+      "latency_ms": 244,
       "summary": {
-        "rows": 60,
+        "rows": 61,
         "header": null
       }
     },
@@ -57,11 +57,11 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-scales.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 249,
+      "latency_ms": 243,
       "summary": {
         "observed": {
           "DateStamp": "2026-08-20",
-          "TimeStamp": "14:53:00",
+          "TimeStamp": "15:49:00",
           "R": {
             "Scale": "1",
             "Text": "minor",
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-08-21",
-          "TimeStamp": "14:53:00",
+          "TimeStamp": "15:49:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,7 +99,7 @@
         },
         "forecast": {
           "DateStamp": "2026-08-21",
-          "TimeStamp": "14:53:00",
+          "TimeStamp": "15:49:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -124,7 +124,7 @@
       "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-08-21&coords=54.7104%2C20.4522&tz=2",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 4897,
+      "latency_ms": 4512,
       "summary": {
         "observer": {
           "id": "kaliningrad",
@@ -168,7 +168,7 @@
       "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-08-21&nump=4",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 4918,
+      "latency_ms": 752,
       "summary": {
         "year": 2026,
         "phases": [
@@ -210,7 +210,7 @@
       "url": "https://aa.usno.navy.mil/api/eclipses/solar/year?year=2026",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 4914,
+      "latency_ms": 802,
       "summary": {
         "year": 2026,
         "events": [
