@@ -6,6 +6,8 @@ on:
     paths:
       - ".github/workflows/verify-wolfram.yml"
       - "verification/claim-graph.json"
+      - "verification/compilence-audit-claim-graph.json"
+      - "verification/audits/**"
       - "verification/claims/**"
       - "verification/wolfram/**"
 
@@ -42,6 +44,18 @@ jobs:
 
       - name: Validate claim graph against generated receipts
         run: node verification/wolfram/verify-graph.mjs verification/claim-graph.json verification/receipts/claim-graph.json
+
+      - name: Verify Compilence authority tier-lock claim through Wolfram MCP
+        run: node verification/wolfram/verify.mjs verification/claims/compilence-tier-lock.json verification/receipts/compilence-tier-lock.json
+
+      - name: Verify Compilence frozen-VAR stationarity claim through Wolfram MCP
+        run: node verification/wolfram/verify.mjs verification/claims/compilence-stationarity-freeze.json verification/receipts/compilence-stationarity-freeze.json
+
+      - name: Verify Compilence rank-deficit refusal claim through Wolfram MCP
+        run: node verification/wolfram/verify.mjs verification/claims/compilence-rank-deficit.json verification/receipts/compilence-rank-deficit.json
+
+      - name: Validate Compilence public-math audit graph
+        run: node verification/wolfram/verify-graph.mjs verification/compilence-audit-claim-graph.json verification/receipts/compilence-audit-claim-graph.json
 
       - name: Upload verification receipts
         if: always()

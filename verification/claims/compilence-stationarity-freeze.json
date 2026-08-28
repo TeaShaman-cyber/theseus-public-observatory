@@ -1,0 +1,21 @@
+{
+  "schema_version": "theseus.verification.claim.v1",
+  "slug": "compilence-stationarity-freeze",
+  "title": "Compilence frozen-VAR stationarity sufficiency check",
+  "stage": "EXTERNAL_AUDIT",
+  "epistemic_status": "COUNTEREXAMPLE_CHECK_ONLY",
+  "claim_id": "compilence-stationarity-freeze-001",
+  "asserted_expression": "Freezing the semantic graph / VAR coefficients at a snapshot is sufficient by itself to make the VAR process stationary.",
+  "asserted_exact_value": "constant VAR coefficient implies time-invariant second moment",
+  "asserted_decimal_value": null,
+  "wolfram_code": "vars=Table[FullSimplify[Sum[4^k,{k,0,t-1}]],{t,1,3}]; stationary=SameQ@@vars; ExportString[<|\"exact\"->ToString[InputForm[vars]],\"decimal\"->Null,\"equals_asserted\"->stationary|>,\"RawJSON\"]",
+  "expected_verification_status": "VERIFIED_FALSE",
+  "expected_exact_result": "{1, 5, 21}",
+  "does_not_establish": "This is a scalar VAR(1)/AR(1) counterexample with fixed coefficient a=2, x0=0, and iid unit-variance innovations. It shows that frozen coefficients alone do not imply covariance stationarity. It does not assess whether Compilence additionally enforces a spectral-radius stability condition in non-public material.",
+  "source_urls": [
+    "https://www.compilence.com/research",
+    "https://doi.org/10.5281/zenodo.19367887"
+  ],
+  "source_basis": "Public research page states that the governance pipeline produces a frozen semantic graph at each snapshot in which the VAR(p) process is stationary by construction.",
+  "source_checked_at": "2026-08-28"
+}

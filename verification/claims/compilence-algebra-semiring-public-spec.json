@@ -1,0 +1,21 @@
+{
+  "schema_version": "theseus.verification.claim.v1",
+  "slug": "compilence-algebra-semiring-public-spec",
+  "title": "Compilence Algebra of Meaning public semiring specification sufficiency",
+  "stage": "EXTERNAL_AUDIT",
+  "epistemic_status": "SOURCE_SPECIFICATION_AUDIT",
+  "claim_id": "compilence-algebra-semiring-public-spec-001",
+  "asserted_expression": "The public Compilence material is sufficient to independently verify the claimed semiring structure for the Algebra of Meaning.",
+  "asserted_exact_value": null,
+  "asserted_decimal_value": null,
+  "wolfram_code": "",
+  "expected_verification_status": "UNDER_SPECIFIED",
+  "expected_exact_result": null,
+  "does_not_establish": "This status says only that the currently public material inspected does not expose enough axioms and operator definitions for an independent semiring proof. It does not show that the private monograph, E.L.I.A. specification, or ARC implementation lacks a valid algebraic structure.",
+  "source_urls": [
+    "https://www.compilence.com/overview",
+    "https://www.compilence.com/research"
+  ],
+  "source_basis": "Public overview states that normative and factual content forms a non-commutative semiring, while also saying the full derivations live in the Semantic Science Series.",
+  "source_checked_at": "2026-08-28"
+}

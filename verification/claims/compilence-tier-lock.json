@@ -1,0 +1,22 @@
+{
+  "schema_version": "theseus.verification.claim.v1",
+  "slug": "compilence-tier-lock",
+  "title": "Compilence multiplicative tier-lock check",
+  "stage": "EXTERNAL_AUDIT",
+  "epistemic_status": "PUBLIC_CLAIM_CONSISTENCY_CHECK_ONLY",
+  "claim_id": "compilence-tier-lock-001",
+  "asserted_expression": "With positive T1 and T2 tier weights and similarities in (0,1], score = embedding_similarity * tier_weight can guarantee that every T1 candidate strictly outranks every T2 candidate.",
+  "asserted_exact_value": "Exists positive finite tier weights that guarantee strict T1>T2 ranking for all positive similarities",
+  "asserted_decimal_value": null,
+  "wolfram_code": "res=Reduce[w1>w2>0&&ForAll[{s1,s2},0<s1<=1&&0<s2<=1\\[Implies]s1*w1>s2*w2],{w1,w2},Reals]; ExportString[<|\"exact\"->ToString[InputForm[res]],\"decimal\"->Null,\"equals_asserted\"->(res=!=False)|>,\"RawJSON\"]",
+  "expected_verification_status": "VERIFIED_FALSE",
+  "expected_exact_result": "False",
+  "does_not_establish": "This checks only whether the public multiplicative score formula alone can enforce the separately stated strict tier-lock invariant over unrestricted positive similarities. It does not rule out additional lexicographic gating, similarity floors, candidate filtering, or zero-weight lower tiers that are not specified in the public formula.",
+  "source_urls": [
+    "https://www.compilence.com/overview",
+    "https://www.compilence.com/research",
+    "https://doi.org/10.5281/zenodo.19261510"
+  ],
+  "source_basis": "Public overview states that T1 authority is non-overridable and always outranks T2 guidance, while retrieval ranking is score = embedding_similarity * tier_weight.",
+  "source_checked_at": "2026-08-28"
+}

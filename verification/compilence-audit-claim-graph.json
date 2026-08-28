@@ -1,0 +1,56 @@
+{
+  "schema_version": "theseus.verification.claim_graph.v1",
+  "graph_id": "compilence-public-math-audit-001",
+  "title": "Compilence public mathematical claims audit",
+  "nodes": [
+    {
+      "claim_id": "compilence-tier-lock-001",
+      "claim_path": "verification/claims/compilence-tier-lock.json",
+      "verifier": "WolframLanguageEvaluator",
+      "expected_status": "VERIFIED_FALSE",
+      "receipt_path": "verification/receipts/compilence-tier-lock.json"
+    },
+    {
+      "claim_id": "compilence-stationarity-freeze-001",
+      "claim_path": "verification/claims/compilence-stationarity-freeze.json",
+      "verifier": "WolframLanguageEvaluator",
+      "expected_status": "VERIFIED_FALSE",
+      "receipt_path": "verification/receipts/compilence-stationarity-freeze.json"
+    },
+    {
+      "claim_id": "compilence-rank-deficit-001",
+      "claim_path": "verification/claims/compilence-rank-deficit.json",
+      "verifier": "WolframLanguageEvaluator",
+      "expected_status": "VERIFIED_FALSE",
+      "receipt_path": "verification/receipts/compilence-rank-deficit.json"
+    },
+    {
+      "claim_id": "compilence-algebra-semiring-public-spec-001",
+      "claim_path": "verification/claims/compilence-algebra-semiring-public-spec.json",
+      "verifier": "SourceScopeAudit",
+      "expected_status": "UNDER_SPECIFIED",
+      "receipt_path": "verification/audits/receipts/compilence-algebra-semiring-public-spec.json"
+    }
+  ],
+  "edges": [
+    {
+      "from": "compilence-algebra-semiring-public-spec-001",
+      "to": "compilence-tier-lock-001",
+      "relation": "related_to",
+      "scope_note": "Both belong to the public deterministic-semantic architecture; the semiring sufficiency status does not imply the ranking result."
+    },
+    {
+      "from": "compilence-algebra-semiring-public-spec-001",
+      "to": "compilence-stationarity-freeze-001",
+      "relation": "related_to",
+      "scope_note": "Both concern formal guarantees stated for the public architecture; neither claim logically implies the other."
+    },
+    {
+      "from": "compilence-algebra-semiring-public-spec-001",
+      "to": "compilence-rank-deficit-001",
+      "relation": "related_to",
+      "scope_note": "Structural refusal is presented as part of the same formal semantic system, but this edge records context only, not implication."
+    }
+  ],
+  "does_not_establish": "This graph audits a narrow set of public mathematical formulations. VERIFIED_FALSE means the tested public wording is false under the stated minimal assumptions, not that the Compilence project as a whole is invalid. UNDER_SPECIFIED means the inspected public sources are insufficient for independent proof. Non-public specifications may add assumptions that change individual results."
+}
