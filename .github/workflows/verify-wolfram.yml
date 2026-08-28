@@ -1,0 +1,46 @@
+name: Verify Wolfram MCP claim
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/verify-wolfram.yml"
+      - "experiments/public/tid-navier-stokes-threshold.json"
+      - "verification/wolfram/**"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run existing observatory checks
+        run: npm test
+
+      - name: Install pinned MCP client
+        run: npm ci --prefix verification/wolfram
+
+      - name: Test verifier normalizer
+        run: node --test verification/wolfram/verify.test.mjs
+
+      - name: Verify historical TID threshold arithmetic through Wolfram MCP
+        run: node verification/wolfram/verify.mjs experiments/public/tid-navier-stokes-threshold.json verification/receipts/tid-navier-stokes-threshold.json
+
+      - name: Upload verification receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolfram-verification-receipt
+          path: verification/receipts/tid-navier-stokes-threshold.json
+          if-no-files-found: warn
+          retention-days: 30

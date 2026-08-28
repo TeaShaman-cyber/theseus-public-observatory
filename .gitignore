@@ -12,3 +12,5 @@ __pycache__/
 *.py[cod]
 data/index/*.duckdb
 public/
+
+verification/receipts/
