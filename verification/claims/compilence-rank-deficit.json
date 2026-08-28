@@ -1,0 +1,22 @@
+{
+  "schema_version": "theseus.verification.claim.v1",
+  "slug": "compilence-rank-deficit",
+  "title": "Compilence structural-refusal rank-deficit check",
+  "stage": "EXTERNAL_AUDIT",
+  "epistemic_status": "LINEAR_ALGEBRA_COUNTEREXAMPLE_ONLY",
+  "claim_id": "compilence-rank-deficit-001",
+  "asserted_expression": "Rank deficiency of the constraint matrix A by itself implies that Ax=b is inconsistent and therefore structurally must refuse.",
+  "asserted_exact_value": "rank-deficient A always implies no solution",
+  "asserted_decimal_value": null,
+  "wolfram_code": "m={{1,1},{2,2}};b={1,2};rM=MatrixRank[m];rAug=MatrixRank[ArrayFlatten[{{m,Transpose[{b}]}}]];witnessOK=TrueQ[m.{1,0}==b]; ExportString[<|\"exact\"->ToString[InputForm[{rM,rAug,witnessOK}]],\"decimal\"->Null,\"equals_asserted\"->(!witnessOK)|>,\"RawJSON\"]",
+  "expected_verification_status": "VERIFIED_FALSE",
+  "expected_exact_result": "{1, 1, True}",
+  "does_not_establish": "This checks only the public wording that rank deficit itself is a refusal condition. Rank deficiency can mean non-unique but consistent solutions. A correct inconsistency test can instead compare rank(A) with rank([A|b]) or use an explicitly declared uniqueness requirement.",
+  "source_urls": [
+    "https://www.compilence.com/overview",
+    "https://www.compilence.com/research",
+    "https://doi.org/10.5281/zenodo.19319709"
+  ],
+  "source_basis": "Public overview/research text presents structural refusal as rank deficit when semantic chains break and describes the constraint matrix as unsatisfied in that case.",
+  "source_checked_at": "2026-08-28"
+}
