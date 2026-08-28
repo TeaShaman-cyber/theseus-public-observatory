@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/verify-wolfram.yml"
-      - "experiments/public/tid-navier-stokes-threshold.json"
+      - "verification/claims/tid-navier-stokes-threshold.json"
       - "verification/wolfram/**"
 
 permissions:
@@ -34,7 +34,7 @@ jobs:
         run: node --test verification/wolfram/verify.test.mjs
 
       - name: Verify historical TID threshold arithmetic through Wolfram MCP
-        run: node verification/wolfram/verify.mjs experiments/public/tid-navier-stokes-threshold.json verification/receipts/tid-navier-stokes-threshold.json
+        run: node verification/wolfram/verify.mjs verification/claims/tid-navier-stokes-threshold.json verification/receipts/tid-navier-stokes-threshold.json
 
       - name: Upload verification receipt
         if: always()

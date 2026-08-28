@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { classifyEquality, parseMcporterWolframJson } from './verifier-lib.mjs';
 
 const verifierDir = path.dirname(fileURLToPath(import.meta.url));
-const claimPath = path.resolve(process.argv[2] ?? 'experiments/public/tid-navier-stokes-threshold.json');
+const claimPath = path.resolve(process.argv[2] ?? 'verification/claims/tid-navier-stokes-threshold.json');
 const receiptPath = path.resolve(process.argv[3] ?? 'verification/receipts/tid-navier-stokes-threshold.json');
 const claim = JSON.parse(readFileSync(claimPath, 'utf8'));
 
