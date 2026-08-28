@@ -1,0 +1,15 @@
+{
+  "schema_version": "theseus.verification.claim.v1",
+  "slug": "tid-ode-blowup-time",
+  "title": "Historical TID ODE blow-up-time certificate",
+  "stage": "VERIFICATION_PILOT",
+  "epistemic_status": "ODE_CERTIFICATE_ONLY",
+  "claim_id": "tid-ode-blowup-time-001",
+  "asserted_expression": "For y' = a y^2 - b y with a>0, b>0 and y(t0)=y0>b/a, the candidate solution has a future denominator singularity at T*=t0+Log[a y0/(a y0-b)]/b.",
+  "asserted_exact_value": "t0 + Log[(a*y0)/(a*y0-b)]/b",
+  "asserted_decimal_value": null,
+  "wolfram_code": "sol=(b Exp[b t0] y0)/(b Exp[b t]-a Exp[b t] y0+a Exp[b t0] y0); tstar=t0+Log[a y0/(a y0-b)]/b; asm=a>0&&b>0&&y0>b/a; odeOK=FullSimplify[D[sol,t]==a sol^2-b sol,Assumptions->asm]; icOK=FullSimplify[(sol/.t->t0)==y0,Assumptions->asm]; denOK=FullSimplify[(Denominator[Together[sol]]/.t->tstar)==0,Assumptions->asm]; futureOK=FullSimplify[tstar>t0,Assumptions->asm]; ExportString[<|\"exact\"->ToString[InputForm[tstar]],\"decimal\"->N[tstar/.{a->2,b->1,y0->1,t0->0},12],\"equals_asserted\"->TrueQ[odeOK&&icOK&&denOK&&futureOK]|>,\"RawJSON\"]",
+  "expected_verification_status": "VERIFIED_TRUE",
+  "expected_exact_result": "t0 + Log[(a*y0)/(-b + a*y0)]/b",
+  "does_not_establish": "This verifies only the displayed scalar ODE solution certificate and its future denominator singularity under the stated assumptions. It does not establish that the TID variable Delta-f obeys this ODE, does not connect the ODE to Navier-Stokes norms, and does not prove finite-time blow-up for Navier-Stokes."
+}
