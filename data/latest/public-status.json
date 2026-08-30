@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-08-30T21:11:20.154Z",
+  "collected_at": "2026-08-30T23:33:45.090Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,7 +7,7 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 270,
+      "latency_ms": 384,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 129,
+      "latency_ms": 223,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 900,
+      "latency_ms": 1478,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -45,7 +45,7 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 252,
+      "latency_ms": 320,
       "summary": {
         "rows": 63,
         "header": null
@@ -57,11 +57,11 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-scales.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 251,
+      "latency_ms": 319,
       "summary": {
         "observed": {
           "DateStamp": "2026-08-29",
-          "TimeStamp": "21:09:00",
+          "TimeStamp": "23:31:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-08-30",
-          "TimeStamp": "21:09:00",
+          "TimeStamp": "23:31:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,7 +99,7 @@
         },
         "forecast": {
           "DateStamp": "2026-08-30",
-          "TimeStamp": "21:09:00",
+          "TimeStamp": "23:31:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -121,10 +121,10 @@
     {
       "id": "usno_sun_moon",
       "label": "USNO Sun and Moon Data",
-      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-08-30&coords=54.7104%2C20.4522&tz=2",
+      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-08-31&coords=54.7104%2C20.4522&tz=2",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 716,
+      "latency_ms": 999,
       "summary": {
         "observer": {
           "id": "kaliningrad",
@@ -135,7 +135,7 @@
         },
         "moon": {
           "current_phase": "Waning Gibbous",
-          "illumination_percent": 95,
+          "illumination_percent": 89,
           "closest_primary_phase": {
             "day": 28,
             "month": 8,
@@ -144,31 +144,31 @@
             "year": 2026
           },
           "events": {
-            "upper_transit": "01:56",
-            "set": "08:26",
-            "rise": "19:53"
+            "upper_transit": "02:41",
+            "set": "09:51",
+            "rise": "20:02"
           }
         },
         "sun": {
           "events": {
-            "begin_civil_twilight": "05:03",
-            "rise": "05:41",
+            "begin_civil_twilight": "05:05",
+            "rise": "05:43",
             "upper_transit": "12:39",
-            "set": "19:35",
-            "end_civil_twilight": "20:13"
+            "set": "19:33",
+            "end_civil_twilight": "20:11"
           }
         },
         "timezone_offset_hours": 2
       },
-      "observer_local_date": "2026-08-30"
+      "observer_local_date": "2026-08-31"
     },
     {
       "id": "usno_moon_phases",
       "label": "USNO Moon Phases",
-      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-08-30&nump=4",
+      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-08-31&nump=4",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 685,
+      "latency_ms": 987,
       "summary": {
         "year": 2026,
         "phases": [
@@ -202,7 +202,7 @@
           }
         ]
       },
-      "observer_local_date": "2026-08-30"
+      "observer_local_date": "2026-08-31"
     },
     {
       "id": "usno_solar_eclipses",
@@ -210,7 +210,7 @@
       "url": "https://aa.usno.navy.mil/api/eclipses/solar/year?year=2026",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 699,
+      "latency_ms": 1078,
       "summary": {
         "year": 2026,
         "events": [
@@ -230,7 +230,7 @@
         "event_today": null,
         "local_visibility": "not-provided-by-usno-year-endpoint"
       },
-      "observer_local_date": "2026-08-30"
+      "observer_local_date": "2026-08-31"
     }
   ]
 }
