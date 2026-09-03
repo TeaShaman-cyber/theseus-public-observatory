@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-09-03T19:53:33.246Z",
+  "collected_at": "2026-09-03T22:37:47.797Z",
   "sources": [
     {
       "id": "openai_status",
@@ -7,7 +7,7 @@
       "url": "https://status.openai.com/api/v2/status.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 356,
+      "latency_ms": 492,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -20,7 +20,7 @@
       "url": "https://www.githubstatus.com/api/v2/summary.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 203,
+      "latency_ms": 136,
       "summary": {
         "indicator": "none",
         "description": "All Systems Operational",
@@ -35,7 +35,7 @@
       "url": "https://status.huggingface.co/api/v2/summary.json",
       "ok": false,
       "http_status": 200,
-      "latency_ms": 1370,
+      "latency_ms": 1387,
       "error": "invalid-json",
       "excerpt": "<!DOCTYPE html>\n<html class='h-full light' lang='en' prefix='og: https://ogp.me/ns#'>\n<head>\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\n<meta charset='utf-8'>\n<meta content='w"
     },
@@ -45,9 +45,9 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 314,
+      "latency_ms": 225,
       "summary": {
-        "rows": 62,
+        "rows": 63,
         "header": null
       }
     },
@@ -57,14 +57,14 @@
       "url": "https://services.swpc.noaa.gov/products/noaa-scales.json",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 316,
+      "latency_ms": 224,
       "summary": {
         "observed": {
           "DateStamp": "2026-09-02",
-          "TimeStamp": "19:52:00",
+          "TimeStamp": "22:35:00",
           "R": {
-            "Scale": "1",
-            "Text": "minor",
+            "Scale": "0",
+            "Text": "none",
             "MinorProb": null,
             "MajorProb": null
           },
@@ -80,7 +80,7 @@
         },
         "current": {
           "DateStamp": "2026-09-03",
-          "TimeStamp": "19:52:00",
+          "TimeStamp": "22:35:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -99,7 +99,7 @@
         },
         "forecast": {
           "DateStamp": "2026-09-03",
-          "TimeStamp": "19:52:00",
+          "TimeStamp": "22:35:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -121,116 +121,29 @@
     {
       "id": "usno_sun_moon",
       "label": "USNO Sun and Moon Data",
-      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-09-03&coords=54.7104%2C20.4522&tz=2",
-      "ok": true,
-      "http_status": 200,
-      "latency_ms": 1815,
-      "summary": {
-        "observer": {
-          "id": "kaliningrad",
-          "label": "Kaliningrad, Russia",
-          "latitude": 54.7104,
-          "longitude": 20.4522,
-          "timezoneOffsetHours": 2
-        },
-        "moon": {
-          "current_phase": "Waning Gibbous",
-          "illumination_percent": 60,
-          "closest_primary_phase": {
-            "day": 4,
-            "month": 9,
-            "phase": "Last Quarter",
-            "time": "09:51",
-            "year": 2026
-          },
-          "events": {
-            "upper_transit": "05:14",
-            "set": "14:22",
-            "rise": "20:57"
-          }
-        },
-        "sun": {
-          "events": {
-            "begin_civil_twilight": "05:11",
-            "rise": "05:49",
-            "upper_transit": "12:38",
-            "set": "19:25",
-            "end_civil_twilight": "20:03"
-          }
-        },
-        "timezone_offset_hours": 2
-      },
-      "observer_local_date": "2026-09-03"
+      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-09-04&coords=54.7104%2C20.4522&tz=2",
+      "ok": false,
+      "http_status": null,
+      "latency_ms": 10491,
+      "error": "fetch failed"
     },
     {
       "id": "usno_moon_phases",
       "label": "USNO Moon Phases",
-      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-09-03&nump=4",
-      "ok": true,
-      "http_status": 200,
-      "latency_ms": 1112,
-      "summary": {
-        "year": 2026,
-        "phases": [
-          {
-            "day": 4,
-            "month": 9,
-            "phase": "Last Quarter",
-            "time": "07:51",
-            "year": 2026
-          },
-          {
-            "day": 11,
-            "month": 9,
-            "phase": "New Moon",
-            "time": "03:27",
-            "year": 2026
-          },
-          {
-            "day": 18,
-            "month": 9,
-            "phase": "First Quarter",
-            "time": "20:44",
-            "year": 2026
-          },
-          {
-            "day": 26,
-            "month": 9,
-            "phase": "Full Moon",
-            "time": "16:49",
-            "year": 2026
-          }
-        ]
-      },
-      "observer_local_date": "2026-09-03"
+      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-09-04&nump=4",
+      "ok": false,
+      "http_status": null,
+      "latency_ms": 10489,
+      "error": "fetch failed"
     },
     {
       "id": "usno_solar_eclipses",
       "label": "USNO Solar Eclipses",
       "url": "https://aa.usno.navy.mil/api/eclipses/solar/year?year=2026",
-      "ok": true,
-      "http_status": 200,
-      "latency_ms": 1857,
-      "summary": {
-        "year": 2026,
-        "events": [
-          {
-            "day": 17,
-            "event": "Annular Solar Eclipse of 17 February 2026",
-            "month": 2,
-            "year": 2026
-          },
-          {
-            "day": 12,
-            "event": "Total Solar Eclipse of 12 August 2026",
-            "month": 8,
-            "year": 2026
-          }
-        ],
-        "event_today": null,
-        "local_visibility": "not-provided-by-usno-year-endpoint"
-      },
-      "observer_local_date": "2026-09-03"
+      "ok": false,
+      "http_status": null,
+      "latency_ms": 10488,
+      "error": "fetch failed"
     }
   ]
 }
