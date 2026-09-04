@@ -1,0 +1,30 @@
+{
+  "schema_version": "theseus.verification.claim_graph.v1",
+  "graph_id": "tid-ns-historical-verification-001",
+  "title": "Historical TID Navier-Stokes verification slice",
+  "nodes": [
+    {
+      "claim_id": "tid-ns-critical-threshold-arithmetic-001",
+      "claim_path": "verification/claims/tid-navier-stokes-threshold.json",
+      "verifier": "WolframLanguageEvaluator",
+      "expected_status": "VERIFIED_FALSE",
+      "receipt_path": "verification/receipts/tid-navier-stokes-threshold.json"
+    },
+    {
+      "claim_id": "tid-ode-blowup-time-001",
+      "claim_path": "verification/claims/tid-ode-blowup-time.json",
+      "verifier": "WolframLanguageEvaluator",
+      "expected_status": "VERIFIED_TRUE",
+      "receipt_path": "verification/receipts/tid-ode-blowup-time.json"
+    }
+  ],
+  "edges": [
+    {
+      "from": "tid-ns-critical-threshold-arithmetic-001",
+      "to": "tid-ode-blowup-time-001",
+      "relation": "related_to",
+      "scope_note": "Both claims are extracted from the same historical TID Navier-Stokes argument; neither claim logically implies the other."
+    }
+  ],
+  "does_not_establish": "This graph records verification dependencies and relations only. A verified node does not promote adjacent heuristic bridges to theorem status."
+}
