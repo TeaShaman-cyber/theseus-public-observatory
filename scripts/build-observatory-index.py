@@ -22,11 +22,24 @@ def _iter_snapshots(repo_root: Path):
             yield path, line_no, json.loads(line)
 
 
-def _source_status(item: dict) -> str:
-    if not item.get("ok", False):
+def _source_status(item: dict, usable: bool) -> str:
+    if not usable:
         return "UNKNOWN"
     summary = item.get("summary") or {}
     return str(summary.get("indicator") or summary.get("description") or "OBSERVED")
+
+
+def _health_fields(snapshot: dict, item: dict):
+    is_v1 = snapshot.get("schema_version") == 1 and item.get("schema_version") == 1
+    if is_v1:
+        transport_status = (item.get("transport") or {}).get("status")
+        parser_status = (item.get("parser") or {}).get("status")
+        semantic_status = (item.get("semantic") or {}).get("status")
+        usable = semantic_status == "available"
+        return 1, None, transport_status, parser_status, semantic_status, usable
+
+    collector_ok = bool(item.get("ok", False))
+    return 0, collector_ok, None, None, None, collector_ok
 
 
 def _scale(summary: dict, key: str):
@@ -53,7 +66,12 @@ def build_index(repo_root: Path, output: Path) -> None:
               collected_at timestamptz,
               source_id varchar,
               label varchar,
+              schema_version integer,
               collector_ok boolean,
+              transport_status varchar,
+              parser_status varchar,
+              semantic_status varchar,
+              usable boolean,
               source_status varchar,
               http_status integer,
               latency_ms double,
@@ -65,7 +83,12 @@ def build_index(repo_root: Path, output: Path) -> None:
             create table provider_status(
               collected_at timestamptz,
               source_id varchar,
+              schema_version integer,
               collector_ok boolean,
+              transport_status varchar,
+              parser_status varchar,
+              semantic_status varchar,
+              usable boolean,
               source_status varchar,
               http_status integer,
               latency_ms double,
@@ -77,7 +100,12 @@ def build_index(repo_root: Path, output: Path) -> None:
             create table space_weather(
               collected_at timestamptz,
               source_id varchar,
+              schema_version integer,
               collector_ok boolean,
+              transport_status varchar,
+              parser_status varchar,
+              semantic_status varchar,
+              usable boolean,
               r_scale integer,
               s_scale integer,
               g_scale integer,
@@ -90,7 +118,12 @@ def build_index(repo_root: Path, output: Path) -> None:
             create table astronomy(
               collected_at timestamptz,
               source_id varchar,
+              schema_version integer,
               collector_ok boolean,
+              transport_status varchar,
+              parser_status varchar,
+              semantic_status varchar,
+              usable boolean,
               current_phase varchar,
               illumination_percent double,
               moon_rise varchar,
@@ -113,13 +146,28 @@ def build_index(repo_root: Path, output: Path) -> None:
             ts = snap["collected_at"]
             for item in snap.get("sources", []):
                 sid = item["id"]
-                collector_ok = bool(item.get("ok", False))
-                status = _source_status(item)
+                (
+                    schema_version,
+                    collector_ok,
+                    transport_status,
+                    parser_status,
+                    semantic_status,
+                    usable,
+                ) = _health_fields(snap, item)
+                status = _source_status(item, usable)
+                health = (
+                    schema_version,
+                    collector_ok,
+                    transport_status,
+                    parser_status,
+                    semantic_status,
+                    usable,
+                )
                 base = (
                     ts,
                     sid,
                     item.get("label", sid),
-                    collector_ok,
+                    *health,
                     status,
                     item.get("http_status"),
                     item.get("latency_ms"),
@@ -132,7 +180,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                         (
                             ts,
                             sid,
-                            collector_ok,
+                            *health,
                             status,
                             item.get("http_status"),
                             item.get("latency_ms"),
@@ -146,7 +194,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                         (
                             ts,
                             sid,
-                            collector_ok,
+                            *health,
                             _scale(summary, "R"),
                             _scale(summary, "S"),
                             _scale(summary, "G"),
@@ -164,7 +212,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                         (
                             ts,
                             sid,
-                            collector_ok,
+                            *health,
                             (summary.get("moon") or {}).get("current_phase"),
                             (summary.get("moon") or {}).get("illumination_percent"),
                             _event(summary, "moon", "rise"),
@@ -179,38 +227,41 @@ def build_index(repo_root: Path, output: Path) -> None:
                     )
         if obs_rows:
             con.executemany(
-                "insert into observations values (?,?,?,?,?,?,?,?,?)", obs_rows
+                "insert into observations values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                obs_rows,
             )
         if provider_rows:
             con.executemany(
-                "insert into provider_status values (?,?,?,?,?,?,?,?)", provider_rows
+                "insert into provider_status values (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                provider_rows,
             )
         if weather_rows:
             con.executemany(
-                "insert into space_weather values (?,?,?,?,?,?,?,?,?)", weather_rows
+                "insert into space_weather values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                weather_rows,
             )
         if astronomy_rows:
             con.executemany(
-                "insert into astronomy values (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "insert into astronomy values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 astronomy_rows,
             )
 
         con.execute(
-            "create view v_source_health as select collected_at, source_id, collector_ok, source_status, latency_ms, provenance_path from observations"
+            "create view v_source_health as select collected_at, source_id, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, source_status, latency_ms, provenance_path from observations"
         )
         con.execute(
-            "create view v_provider_events as select * from provider_status where collector_ok = false or source_status not in ('none','OBSERVED','All Systems Operational')"
+            "create view v_provider_events as select * from provider_status where usable = false or source_status not in ('none','OBSERVED','All Systems Operational')"
         )
         con.execute(
-            "create view v_space_weather as select * from space_weather where collector_ok = true"
+            "create view v_space_weather as select * from space_weather where usable = true"
         )
         con.execute("""
           create view v_probe_timeline as
-          select collected_at, source_id, 'provider' as probe_family, collector_ok, source_status, provenance_path from provider_status
+          select collected_at, source_id, 'provider' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, source_status, provenance_path from provider_status
           union all
-          select collected_at, source_id, 'space_weather' as probe_family, collector_ok, 'OBSERVED' as source_status, provenance_path from space_weather
+          select collected_at, source_id, 'space_weather' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, 'OBSERVED' as source_status, provenance_path from space_weather
           union all
-          select collected_at, source_id, 'astronomy' as probe_family, collector_ok, coalesce(current_phase, solar_eclipse_event, 'OBSERVED') as source_status, provenance_path from astronomy
+          select collected_at, source_id, 'astronomy' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, coalesce(current_phase, solar_eclipse_event, 'OBSERVED') as source_status, provenance_path from astronomy
         """)
         con.execute("checkpoint")
     finally:

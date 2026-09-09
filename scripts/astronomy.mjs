@@ -154,7 +154,7 @@ export function summarizeAstronomy(source, payload, localDate) {
   return { type: Array.isArray(payload) ? "array" : typeof payload };
 }
 
-function hasUsnoSchema(source, payload) {
+function hasUsnoSchema(source, payload, localDate) {
   if (source.kind === "usno-sun-moon") {
     const data = payload?.properties?.data;
     return Boolean(
@@ -176,7 +176,12 @@ function hasUsnoSchema(source, payload) {
   }
 
   if (source.kind === "usno-solar-eclipses") {
+    const requestedDate = source.observer_local_date ?? localDate ?? "";
+    const requestedYear = Number.parseInt(String(requestedDate).slice(0, 4), 10);
+    const payloadYear = Number.parseInt(String(payload?.year ?? ""), 10);
     return (
+      Number.isInteger(payloadYear) &&
+      (!Number.isInteger(requestedYear) || payloadYear === requestedYear) &&
       Array.isArray(payload?.eclipses_in_year) &&
       payload.eclipses_in_year.every(hasEclipseRecord)
     );
@@ -186,7 +191,7 @@ function hasUsnoSchema(source, payload) {
 }
 
 export function interpretAstronomy(source, payload, localDate) {
-  if (!hasUsnoSchema(source, payload)) {
+  if (!hasUsnoSchema(source, payload, localDate)) {
     return { ok: false, error: "schema-mismatch", summary: null };
   }
   return {

@@ -185,3 +185,22 @@ test("interpretAstronomy rejects malformed records inside USNO phase and eclipse
     { ok: false, error: "schema-mismatch", summary: null },
   );
 });
+
+
+test("interpretAstronomy requires the requested year for empty USNO eclipse payloads", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[2];
+  for (const payload of [
+    { eclipses_in_year: [] },
+    { year: 2025, eclipses_in_year: [] },
+  ]) {
+    assert.deepEqual(interpretAstronomy(source, payload, "2026-08-12"), {
+      ok: false,
+      error: "schema-mismatch",
+      summary: null,
+    });
+  }
+  assert.equal(
+    interpretAstronomy(source, { year: 2026, eclipses_in_year: [] }, "2026-08-12").ok,
+    true,
+  );
+});

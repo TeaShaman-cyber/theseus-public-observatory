@@ -34,6 +34,11 @@ class RenderTests(unittest.TestCase):
         self.assertIn("Semyon Poklad", html)
         self.assertIn("Jester", html)
         self.assertIn("2026-07-24T10:00:00Z", html)
+        self.assertIn(
+            "legacy v0 sources were usable under the legacy collection contract", html
+        )
+        self.assertIn("semantic availability was not measured", html)
+        self.assertNotIn("sources have semantic data available", html)
 
     def test_experiment_shows_epistemic_boundary(self):
         html = render_experiment(self.exp, base_path="/theseus-public-observatory/")
@@ -47,6 +52,17 @@ if __name__ == "__main__":
 
 
 class V1RenderTests(unittest.TestCase):
+    def test_home_counts_only_v1_semantic_availability(self):
+        repo = Path(__file__).parent / "fixtures_v1"
+        snap = load_latest_snapshot(
+            repo,
+            now=datetime(2026, 9, 9, 7, 30, tzinfo=timezone.utc),
+            freshness_budget_seconds=3600,
+        )
+        html = render_home(snap, [], [], base_path="/theseus-public-observatory/")
+        self.assertIn("1/2 v1 sources have semantic data available", html)
+        self.assertNotIn("legacy collection contract", html)
+
     def test_observations_show_distinct_v1_health_dimensions(self):
         from observatory_site.render import render_observations
 
