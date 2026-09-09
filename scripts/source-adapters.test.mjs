@@ -52,3 +52,41 @@ test("NOAA Kp adapter rejects legacy array-row payloads", () => {
   assert.equal(result.ok, false);
   assert.equal(result.error, "schema-mismatch");
 });
+
+function noaaScaleEntry(scale = "0") {
+  return {
+    DateStamp: "2026-09-09",
+    TimeStamp: "14:50:00",
+    R: { Scale: scale, Text: scale === null ? null : "none" },
+    S: { Scale: scale, Text: scale === null ? null : "none" },
+    G: { Scale: scale, Text: scale === null ? null : "none" },
+  };
+}
+
+test("NOAA scales adapter accepts structured R/S/G measurements", () => {
+  const result = summarizeSource(
+    { id: "noaa_scales", adapter: "noaa-scales-v1" },
+    { "-1": noaaScaleEntry("0"), "0": noaaScaleEntry("1"), "1": noaaScaleEntry(null) },
+  );
+  assert.equal(result.ok, true);
+  assert.equal(result.error, null);
+  assert.equal(result.summary.current.G.Scale, "1");
+});
+
+test("NOAA scales adapter rejects an empty selected measurement", () => {
+  const result = summarizeSource(
+    { id: "noaa_scales", adapter: "noaa-scales-v1" },
+    { "0": {} },
+  );
+  assert.equal(result.ok, false);
+  assert.equal(result.error, "schema-mismatch");
+});
+
+test("NOAA scales adapter rejects R/S/G shells without scale fields", () => {
+  const result = summarizeSource(
+    { id: "noaa_scales", adapter: "noaa-scales-v1" },
+    { "0": { DateStamp: "2026-09-09", TimeStamp: "14:50:00", R: {}, S: {}, G: {} } },
+  );
+  assert.equal(result.ok, false);
+  assert.equal(result.error, "schema-mismatch");
+});

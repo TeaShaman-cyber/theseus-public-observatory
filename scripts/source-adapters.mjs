@@ -68,12 +68,30 @@ function noaaKp(json) {
   };
 }
 
+function isNoaaScaleEntry(entry) {
+  if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+  if (typeof entry.DateStamp !== "string" || typeof entry.TimeStamp !== "string") return false;
+  return ["R", "S", "G"].every((kind) => {
+    const scale = entry[kind];
+    return (
+      scale &&
+      typeof scale === "object" &&
+      !Array.isArray(scale) &&
+      Object.hasOwn(scale, "Scale") &&
+      (typeof scale.Scale === "string" || scale.Scale === null)
+    );
+  });
+}
+
 function noaaScales(json) {
   if (!json || typeof json !== "object" || Array.isArray(json)) return schemaMismatch();
   const observed = json["-1"] ?? json.observed ?? null;
   const current = json["0"] ?? json.current ?? null;
   const forecast = json["1"] ?? json.forecast ?? null;
-  if (observed === null && current === null && forecast === null) return schemaMismatch();
+  const selected = [observed, current, forecast].filter((entry) => entry !== null);
+  if (selected.length === 0 || selected.some((entry) => !isNoaaScaleEntry(entry))) {
+    return schemaMismatch();
+  }
   return { ok: true, error: null, summary: { observed, current, forecast } };
 }
 
