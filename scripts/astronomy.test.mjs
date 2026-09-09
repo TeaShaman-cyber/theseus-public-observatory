@@ -204,3 +204,14 @@ test("interpretAstronomy requires the requested year for empty USNO eclipse payl
     true,
   );
 });
+
+
+test("interpretAstronomy rejects malformed annual eclipse year values", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[2];
+  for (const year of ["2026junk", "2026.5", 2026.5]) {
+    assert.deepEqual(
+      interpretAstronomy(source, { year, eclipses_in_year: [] }, "2026-08-12"),
+      { ok: false, error: "schema-mismatch", summary: null },
+    );
+  }
+});

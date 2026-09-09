@@ -68,7 +68,12 @@ function noaaKp(json) {
   };
 }
 
-function isNoaaScaleEntry(entry) {
+function isNoaaScaleValue(value, allowNull) {
+  if (value === null) return allowNull;
+  return typeof value === "string" && /^[0-5]$/.test(value);
+}
+
+function isNoaaScaleEntry(entry, allowNull = false) {
   if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
   if (typeof entry.DateStamp !== "string" || typeof entry.TimeStamp !== "string") return false;
   return ["R", "S", "G"].every((kind) => {
@@ -78,7 +83,7 @@ function isNoaaScaleEntry(entry) {
       typeof scale === "object" &&
       !Array.isArray(scale) &&
       Object.hasOwn(scale, "Scale") &&
-      (typeof scale.Scale === "string" || scale.Scale === null)
+      isNoaaScaleValue(scale.Scale, allowNull)
     );
   });
 }
@@ -88,10 +93,10 @@ function noaaScales(json) {
   const observed = json["-1"] ?? json.observed ?? null;
   const current = json["0"] ?? json.current ?? null;
   const forecast = json["1"] ?? json.forecast ?? null;
-  const selected = [observed, current, forecast].filter((entry) => entry !== null);
-  if (selected.length === 0 || selected.some((entry) => !isNoaaScaleEntry(entry))) {
-    return schemaMismatch();
-  }
+  if (observed === null && current === null && forecast === null) return schemaMismatch();
+  if (observed !== null && !isNoaaScaleEntry(observed)) return schemaMismatch();
+  if (current !== null && !isNoaaScaleEntry(current)) return schemaMismatch();
+  if (forecast !== null && !isNoaaScaleEntry(forecast, true)) return schemaMismatch();
   return { ok: true, error: null, summary: { observed, current, forecast } };
 }
 

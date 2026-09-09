@@ -154,6 +154,12 @@ export function summarizeAstronomy(source, payload, localDate) {
   return { type: Array.isArray(payload) ? "array" : typeof payload };
 }
 
+function exactYear(value) {
+  if (Number.isInteger(value) && value >= 1000 && value <= 9999) return value;
+  if (typeof value === "string" && /^\d{4}$/.test(value)) return Number(value);
+  return null;
+}
+
 function hasUsnoSchema(source, payload, localDate) {
   if (source.kind === "usno-sun-moon") {
     const data = payload?.properties?.data;
@@ -177,11 +183,11 @@ function hasUsnoSchema(source, payload, localDate) {
 
   if (source.kind === "usno-solar-eclipses") {
     const requestedDate = source.observer_local_date ?? localDate ?? "";
-    const requestedYear = Number.parseInt(String(requestedDate).slice(0, 4), 10);
-    const payloadYear = Number.parseInt(String(payload?.year ?? ""), 10);
+    const requestedYear = exactYear(String(requestedDate).slice(0, 4));
+    const payloadYear = exactYear(payload?.year);
     return (
-      Number.isInteger(payloadYear) &&
-      (!Number.isInteger(requestedYear) || payloadYear === requestedYear) &&
+      payloadYear !== null &&
+      (requestedYear === null || payloadYear === requestedYear) &&
       Array.isArray(payload?.eclipses_in_year) &&
       payload.eclipses_in_year.every(hasEclipseRecord)
     );

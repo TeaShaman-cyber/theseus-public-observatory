@@ -73,6 +73,43 @@ test("NOAA scales adapter accepts structured R/S/G measurements", () => {
   assert.equal(result.summary.current.G.Scale, "1");
 });
 
+test("NOAA scales adapter rejects null measured scale values", () => {
+  for (const slot of ["-1", "0"]) {
+    const payload = {
+      "-1": noaaScaleEntry("0"),
+      "0": noaaScaleEntry("1"),
+      "1": noaaScaleEntry(null),
+    };
+    payload[slot].R.Scale = null;
+    const result = summarizeSource(
+      { id: "noaa_scales", adapter: "noaa-scales-v1" },
+      payload,
+    );
+    assert.equal(result.ok, false);
+    assert.equal(result.error, "schema-mismatch");
+  }
+});
+
+test("NOAA scales adapter rejects non-scale measured strings", () => {
+  const result = summarizeSource(
+    { id: "noaa_scales", adapter: "noaa-scales-v1" },
+    { "0": noaaScaleEntry("banana") },
+  );
+  assert.equal(result.ok, false);
+  assert.equal(result.error, "schema-mismatch");
+});
+
+test("NOAA scales adapter rejects measured values outside the NOAA 0-5 scale", () => {
+  for (const scale of ["6", "-1", "01"]) {
+    const result = summarizeSource(
+      { id: "noaa_scales", adapter: "noaa-scales-v1" },
+      { "0": noaaScaleEntry(scale) },
+    );
+    assert.equal(result.ok, false, scale);
+    assert.equal(result.error, "schema-mismatch", scale);
+  }
+});
+
 test("NOAA scales adapter rejects an empty selected measurement", () => {
   const result = summarizeSource(
     { id: "noaa_scales", adapter: "noaa-scales-v1" },
