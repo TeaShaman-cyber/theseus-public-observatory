@@ -117,3 +117,38 @@ export function summarizeAstronomy(source, payload, localDate) {
   if (source.kind === "usno-solar-eclipses") return summarizeUsnoSolarEclipses(payload, localDate);
   return { type: Array.isArray(payload) ? "array" : typeof payload };
 }
+
+function hasUsnoSchema(source, payload) {
+  if (source.kind === "usno-sun-moon") {
+    const data = payload?.properties?.data;
+    return Boolean(
+      data &&
+        typeof data === "object" &&
+        typeof data.curphase === "string" &&
+        data.fracillum != null &&
+        Array.isArray(data.moondata) &&
+        Array.isArray(data.sundata),
+    );
+  }
+
+  if (source.kind === "usno-moon-phases") {
+    return Array.isArray(payload?.phasedata) && payload.phasedata.length > 0;
+  }
+
+  if (source.kind === "usno-solar-eclipses") {
+    return Array.isArray(payload?.eclipses_in_year);
+  }
+
+  return false;
+}
+
+export function interpretAstronomy(source, payload, localDate) {
+  if (!hasUsnoSchema(source, payload)) {
+    return { ok: false, error: "schema-mismatch", summary: null };
+  }
+  return {
+    ok: true,
+    error: null,
+    summary: summarizeAstronomy(source, payload, localDate),
+  };
+}

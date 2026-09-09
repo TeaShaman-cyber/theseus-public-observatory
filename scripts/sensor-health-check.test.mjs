@@ -47,3 +47,21 @@ test("legacy v0 snapshot is not retroactively judged by the v1 health contract",
   });
   assert.deepEqual(failures, []);
 });
+
+
+test("parser error accompanying an HTTP transport failure is not a sensor contract failure", () => {
+  const failures = findSensorContractFailures({
+    schema_version: 1,
+    sources: [source("offline-html", "http-error", "invalid-json", "unavailable")],
+  });
+  assert.deepEqual(failures, []);
+});
+
+
+test("schema mismatch accompanying an HTTP transport failure is not a sensor contract failure", () => {
+  const failures = findSensorContractFailures({
+    schema_version: 1,
+    sources: [source("offline-json", "http-error", "schema-mismatch", "unavailable")],
+  });
+  assert.deepEqual(failures, []);
+});

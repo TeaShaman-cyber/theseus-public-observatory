@@ -9,7 +9,7 @@ export function findSensorContractFailures(snapshot) {
     const transport = source?.transport?.status;
     const parser = source?.parser?.status;
     const semantic = source?.semantic?.status;
-    if (parser === "invalid-json" || parser === "schema-mismatch") {
+    if (transport === "ok" && (parser === "invalid-json" || parser === "schema-mismatch")) {
       failures.push({ id: source.id, layer: "parser", status: parser });
       continue;
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { buildAstronomySources, summarizeAstronomy } from "./astronomy.mjs";
+import { buildAstronomySources, interpretAstronomy } from "./astronomy.mjs";
 import { summarizeSource } from "./source-adapters.mjs";
 import { createSnapshot, createSourceReceipt } from "./observation-receipt.mjs";
 
@@ -124,6 +124,7 @@ async function fetchAstronomy(date) {
           });
           return { ...receipt, observer_local_date: source.observer_local_date };
         }
+        const interpreted = interpretAstronomy(source, json, day);
         const receipt = createSourceReceipt({
           source,
           httpStatus: response.status,
@@ -131,12 +132,8 @@ async function fetchAstronomy(date) {
           contentType,
           payloadText: text,
           transportStatus,
-          parserStatus: "ok",
-          adapterResult: {
-            ok: true,
-            error: null,
-            summary: summarizeAstronomy(source, json, day),
-          },
+          parserStatus: interpreted.ok ? "ok" : "schema-mismatch",
+          adapterResult: interpreted,
         });
         return { ...receipt, observer_local_date: source.observer_local_date };
       } catch (error) {

@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   ASTRONOMY_OBSERVER,
   buildAstronomySources,
+  interpretAstronomy,
   summarizeUsnoMoonPhases,
   summarizeUsnoSolarEclipses,
   summarizeUsnoSunMoon,
@@ -112,4 +113,50 @@ test("summarizeUsnoMoonPhases and summarizeUsnoSolarEclipses retain event proven
     event_today: { day: 12, event: "Total Solar Eclipse of 12 August 2026", month: 8, year: 2026 },
     local_visibility: "not-provided-by-usno-year-endpoint",
   });
+});
+
+
+test("interpretAstronomy rejects valid JSON that does not match the USNO source schema", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[0];
+  assert.deepEqual(interpretAstronomy(source, { error: "bad request" }, "2026-08-12"), {
+    ok: false,
+    error: "schema-mismatch",
+    summary: null,
+  });
+});
+
+test("interpretAstronomy accepts a valid USNO sun/moon payload", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[0];
+  const interpreted = interpretAstronomy(source, usnoSunMoonFixture, "2026-08-12");
+  assert.equal(interpreted.ok, true);
+  assert.equal(interpreted.error, null);
+  assert.equal(interpreted.summary.moon.current_phase, "New Moon");
+});
+
+
+test("interpretAstronomy rejects schema-mismatched JSON for every USNO endpoint family", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  for (const source of sources) {
+    assert.deepEqual(interpretAstronomy(source, { error: "bad request" }, "2026-08-12"), {
+      ok: false,
+      error: "schema-mismatch",
+      summary: null,
+    });
+  }
+});
+
+
+test("interpretAstronomy accepts representative payloads for all USNO endpoint families", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  const payloads = [
+    usnoSunMoonFixture,
+    { year: 2026, phasedata: [{ phase: "New Moon", year: 2026, month: 8, day: 12, time: "17:37" }] },
+    { year: 2026, eclipses_in_year: [] },
+  ];
+  for (let i = 0; i < sources.length; i += 1) {
+    const interpreted = interpretAstronomy(sources[i], payloads[i], "2026-08-12");
+    assert.equal(interpreted.ok, true, sources[i].id);
+    assert.equal(interpreted.error, null, sources[i].id);
+    assert.ok(interpreted.summary, sources[i].id);
+  }
 });
