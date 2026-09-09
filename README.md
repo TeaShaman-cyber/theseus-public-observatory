@@ -110,7 +110,7 @@ python -m ruff format --check observatory_site scripts
 Rebuild disposable research index:
 
 ```bash
-python scripts/build-observatory-index.py  --repo-root .   --output /tmp/observatory.duckdb`
+python scripts/build-observatory-index.py  --repo-root .   --output /tmp/observatory.duckdb
 ```
 
 Build Pages locally:

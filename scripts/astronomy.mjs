@@ -28,9 +28,45 @@ function mapPhenomena(items = []) {
 }
 
 function illuminationPercent(value) {
-  if (typeof value === "number") return value;
-  const parsed = Number.parseFloat(String(value ?? "").replace("%", ""));
-  return Number.isFinite(parsed) ? parsed : null;
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value >= 0 && value <= 100 ? value : null;
+  }
+  if (typeof value !== "string") return null;
+  const normalized = value.trim();
+  if (!/^\d+(?:\.\d+)?%?$/.test(normalized)) return null;
+  const parsed = Number(normalized.replace("%", ""));
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= 100 ? parsed : null;
+}
+
+function isDatePart(value) {
+  if (typeof value === "number") return Number.isInteger(value);
+  return typeof value === "string" && /^\d+$/.test(value.trim());
+}
+
+function hasPhaseRecord(record) {
+  return Boolean(
+    record &&
+      typeof record === "object" &&
+      typeof record.phase === "string" &&
+      record.phase.trim() &&
+      isDatePart(record.year) &&
+      isDatePart(record.month) &&
+      isDatePart(record.day) &&
+      typeof record.time === "string" &&
+      record.time.trim(),
+  );
+}
+
+function hasEclipseRecord(record) {
+  return Boolean(
+    record &&
+      typeof record === "object" &&
+      typeof record.event === "string" &&
+      record.event.trim() &&
+      isDatePart(record.year) &&
+      isDatePart(record.month) &&
+      isDatePart(record.day),
+  );
 }
 
 export function buildAstronomySources(date = new Date()) {
@@ -125,18 +161,25 @@ function hasUsnoSchema(source, payload) {
       data &&
         typeof data === "object" &&
         typeof data.curphase === "string" &&
-        data.fracillum != null &&
+        illuminationPercent(data.fracillum) !== null &&
         Array.isArray(data.moondata) &&
         Array.isArray(data.sundata),
     );
   }
 
   if (source.kind === "usno-moon-phases") {
-    return Array.isArray(payload?.phasedata) && payload.phasedata.length > 0;
+    return (
+      Array.isArray(payload?.phasedata) &&
+      payload.phasedata.length > 0 &&
+      payload.phasedata.every(hasPhaseRecord)
+    );
   }
 
   if (source.kind === "usno-solar-eclipses") {
-    return Array.isArray(payload?.eclipses_in_year);
+    return (
+      Array.isArray(payload?.eclipses_in_year) &&
+      payload.eclipses_in_year.every(hasEclipseRecord)
+    );
   }
 
   return false;

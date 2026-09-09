@@ -160,3 +160,28 @@ test("interpretAstronomy accepts representative payloads for all USNO endpoint f
     assert.ok(interpreted.summary, sources[i].id);
   }
 });
+
+test("interpretAstronomy rejects a USNO sun/moon payload with nonnumeric illumination", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[0];
+  for (const fracillum of [{}, "", "not-a-percent"]) {
+    const payload = structuredClone(usnoSunMoonFixture);
+    payload.properties.data.fracillum = fracillum;
+    assert.deepEqual(interpretAstronomy(source, payload, "2026-08-12"), {
+      ok: false,
+      error: "schema-mismatch",
+      summary: null,
+    });
+  }
+});
+
+test("interpretAstronomy rejects malformed records inside USNO phase and eclipse arrays", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  assert.deepEqual(
+    interpretAstronomy(sources[1], { year: 2026, phasedata: [{}] }, "2026-08-12"),
+    { ok: false, error: "schema-mismatch", summary: null },
+  );
+  assert.deepEqual(
+    interpretAstronomy(sources[2], { year: 2026, eclipses_in_year: [{}] }, "2026-08-12"),
+    { ok: false, error: "schema-mismatch", summary: null },
+  );
+});
