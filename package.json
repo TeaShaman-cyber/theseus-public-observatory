@@ -8,6 +8,7 @@
     "validate": "node scripts/validate-public-data.mjs",
     "secret-scan": "node scripts/check-no-secrets.mjs",
     "test": "node --test scripts/*.test.mjs && npm run validate && npm run projection-check && npm run secret-scan",
-    "projection-check": "node scripts/projection-consistency.mjs ."
+    "projection-check": "node scripts/projection-consistency.mjs .",
+    "sensor-health-check": "node scripts/sensor-health-check.mjs data/latest/public-status.json"
   }
 }
