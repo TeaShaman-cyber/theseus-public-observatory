@@ -1,0 +1,21 @@
+{
+  "data": {
+    "id": "124692",
+    "type": "status_page",
+    "attributes": {
+      "company_name": "Hugging Face",
+      "aggregate_state": "operational",
+      "updated_at": "2026-09-09T07:17:31.624Z"
+    }
+  },
+  "included": [
+    {"id":"1","type":"status_page_resource","attributes":{"public_name":"Hub","status":"operational"}},
+    {"id":"2","type":"status_page_resource","attributes":{"public_name":"Inference","status":"operational"}},
+    {"id":"3","type":"status_page_resource","attributes":{"public_name":"Spaces","status":"operational"}},
+    {"id":"4","type":"status_page_resource","attributes":{"public_name":"CDN","status":"operational"}},
+    {"id":"5","type":"status_page_resource","attributes":{"public_name":"Jobs","status":"operational"}},
+    {"id":"6","type":"status_page_resource","attributes":{"public_name":"API","status":"operational"}},
+    {"id":"7","type":"status_page_resource","attributes":{"public_name":"Endpoints","status":"operational"}},
+    {"id":"8","type":"status_page_resource","attributes":{"public_name":"Storage","status":"operational"}}
+  ]
+}

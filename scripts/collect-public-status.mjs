@@ -2,37 +2,38 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { buildAstronomySources, summarizeAstronomy } from "./astronomy.mjs";
+import { summarizeSource } from "./source-adapters.mjs";
 
 const SOURCES = [
   {
     id: "openai_status",
     label: "OpenAI Status",
     url: "https://status.openai.com/api/v2/status.json",
-    kind: "statuspage-status",
+    adapter: "statuspage-status-v1",
   },
   {
     id: "github_status",
     label: "GitHub Status",
     url: "https://www.githubstatus.com/api/v2/summary.json",
-    kind: "statuspage-summary",
+    adapter: "statuspage-summary-v1",
   },
   {
     id: "huggingface_status",
     label: "Hugging Face Status",
-    url: "https://status.huggingface.co/api/v2/summary.json",
-    kind: "statuspage-summary",
+    url: "https://status.huggingface.co/index.json",
+    adapter: "huggingface-status-v1",
   },
   {
     id: "noaa_planetary_k_index",
     label: "NOAA Planetary K Index",
     url: "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
-    kind: "noaa-table",
+    adapter: "noaa-kp-v1",
   },
   {
     id: "noaa_scales",
     label: "NOAA Scales",
     url: "https://services.swpc.noaa.gov/products/noaa-scales.json",
-    kind: "noaa-json",
+    adapter: "noaa-scales-v1",
   },
 ];
 
@@ -65,14 +66,16 @@ async function fetchJson(source, timeoutMs = 30000) {
         excerpt: text.slice(0, 200),
       };
     }
+    const interpreted = summarizeSource(source, json);
     return {
       id: source.id,
       label: source.label,
       url: source.url,
-      ok: response.ok,
+      ok: response.ok && interpreted.ok,
       http_status: response.status,
       latency_ms: Date.now() - started,
-      summary: summarize(source, json),
+      summary: interpreted.summary,
+      ...(interpreted.error ? { error: interpreted.error } : {}),
     };
   } catch (error) {
     return {
@@ -141,34 +144,6 @@ async function fetchAstronomy(date) {
       }
     }),
   );
-}
-
-function summarize(source, json) {
-  if (source.kind.startsWith("statuspage")) {
-    return {
-      indicator: json?.status?.indicator ?? null,
-      description: json?.status?.description ?? null,
-      page_name: json?.page?.name ?? null,
-      components: Array.isArray(json?.components) ? json.components.length : undefined,
-      incidents: Array.isArray(json?.incidents) ? json.incidents.length : undefined,
-    };
-  }
-
-  if (source.id === "noaa_planetary_k_index" && Array.isArray(json)) {
-    const header = Array.isArray(json[0]) ? json[0] : null;
-    const latest = [...json].reverse().find((row) => Array.isArray(row) && row.length > 1);
-    return { rows: json.length, header, latest };
-  }
-
-  if (source.id === "noaa_scales") {
-    return {
-      observed: json?.["-1"] ?? json?.observed ?? null,
-      current: json?.["0"] ?? json?.current ?? null,
-      forecast: json?.["1"] ?? json?.forecast ?? null,
-    };
-  }
-
-  return { type: Array.isArray(json) ? "array" : typeof json };
 }
 
 function renderReport(snapshot) {

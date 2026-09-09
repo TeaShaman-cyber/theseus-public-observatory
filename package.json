@@ -7,6 +7,6 @@
     "collect": "node scripts/collect-public-status.mjs",
     "validate": "node scripts/validate-public-data.mjs",
     "secret-scan": "node scripts/check-no-secrets.mjs",
-    "test": "npm run validate && npm run secret-scan"
+    "test": "node --test scripts/*.test.mjs && npm run validate && npm run secret-scan"
   }
 }
