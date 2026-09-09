@@ -46,6 +46,7 @@ export function buildAstronomySources(date = new Date()) {
       label: "USNO Sun and Moon Data",
       url: `${USNO_BASE}/rstt/oneday?date=${day}&coords=${encodedCoords}&tz=${tz}`,
       kind: "usno-sun-moon",
+      adapter: "usno-sun-moon-v1",
       observer_local_date: day,
     },
     {
@@ -53,6 +54,7 @@ export function buildAstronomySources(date = new Date()) {
       label: "USNO Moon Phases",
       url: `${USNO_BASE}/moon/phases/date?date=${day}&nump=4`,
       kind: "usno-moon-phases",
+      adapter: "usno-moon-phases-v1",
       observer_local_date: day,
     },
     {
@@ -60,6 +62,7 @@ export function buildAstronomySources(date = new Date()) {
       label: "USNO Solar Eclipses",
       url: `${USNO_BASE}/eclipses/solar/year?year=${year}`,
       kind: "usno-solar-eclipses",
+      adapter: "usno-solar-eclipses-v1",
       observer_local_date: day,
     },
   ];
