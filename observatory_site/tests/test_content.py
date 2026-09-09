@@ -60,3 +60,22 @@ class RealRepositoryDescriptorTests(unittest.TestCase):
         self.assertEqual(len(exp.source_hashes), 2)
         self.assertGreaterEqual(len(exp.artifact_hashes), 3)
         self.assertIn("four", exp.result_summary.lower())
+
+
+class V1ContentTests(unittest.TestCase):
+    def test_v1_snapshot_exposes_transport_parser_and_semantic_health(self):
+        repo = Path(__file__).parent / "fixtures_v1"
+        snap = load_latest_snapshot(
+            repo,
+            now=datetime(2026, 9, 9, 7, 30, tzinfo=timezone.utc),
+            freshness_budget_seconds=3600,
+        )
+        healthy, drifted = snap.sources
+        self.assertTrue(healthy.collector_ok)
+        self.assertEqual(healthy.transport_status, "ok")
+        self.assertEqual(healthy.parser_status, "ok")
+        self.assertEqual(healthy.semantic_status, "available")
+        self.assertFalse(drifted.collector_ok)
+        self.assertEqual(drifted.transport_status, "ok")
+        self.assertEqual(drifted.parser_status, "schema-mismatch")
+        self.assertEqual(drifted.semantic_status, "unavailable")

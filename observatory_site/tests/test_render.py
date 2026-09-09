@@ -44,3 +44,20 @@ class RenderTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class V1RenderTests(unittest.TestCase):
+    def test_observations_show_distinct_v1_health_dimensions(self):
+        from observatory_site.render import render_observations
+
+        repo = Path(__file__).parent / "fixtures_v1"
+        snap = load_latest_snapshot(
+            repo,
+            now=datetime(2026, 9, 9, 7, 30, tzinfo=timezone.utc),
+            freshness_budget_seconds=3600,
+        )
+        html = render_observations(snap, base_path="/theseus-public-observatory/")
+        self.assertIn("transport ok", html)
+        self.assertIn("parser schema-mismatch", html)
+        self.assertIn("semantic unavailable", html)
+        self.assertNotIn("2/2 collectors returned usable data", html)

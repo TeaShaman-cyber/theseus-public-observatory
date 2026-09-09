@@ -26,8 +26,31 @@ def load_latest_snapshot(
     freshness = "STALE" if age > freshness_budget_seconds else "OBSERVATION"
     sources = []
     for item in data.get("sources", []):
-        collector_ok = bool(item.get("ok", False))
+        is_v1 = data.get("schema_version") == 1 and item.get("schema_version") == 1
         summary = item.get("summary") or {}
+        if is_v1:
+            transport_status = str(
+                (item.get("transport") or {}).get("status") or "unknown"
+            )
+            parser_status = str((item.get("parser") or {}).get("status") or "unknown")
+            semantic_status = str(
+                (item.get("semantic") or {}).get("status") or "unknown"
+            )
+            collector_ok = semantic_status == "available"
+        else:
+            http_status = item.get("http_status")
+            transport_status = (
+                "ok"
+                if isinstance(http_status, int) and 200 <= http_status < 300
+                else "legacy-unknown"
+            )
+            parser_status = (
+                "invalid-json"
+                if item.get("error") == "invalid-json"
+                else "legacy-unknown"
+            )
+            collector_ok = bool(item.get("ok", False))
+            semantic_status = "legacy-usable" if collector_ok else "legacy-unavailable"
         if collector_ok:
             source_status = str(
                 summary.get("indicator") or summary.get("description") or "OBSERVED"
@@ -43,6 +66,10 @@ def load_latest_snapshot(
                 source_status=source_status,
                 http_status=item.get("http_status"),
                 latency_ms=item.get("latency_ms"),
+                transport_status=transport_status,
+                parser_status=parser_status,
+                semantic_status=semantic_status,
+                legacy=not is_v1,
                 summary=summary,
                 error=item.get("error"),
             )
