@@ -215,3 +215,32 @@ test("interpretAstronomy rejects malformed annual eclipse year values", () => {
     );
   }
 });
+
+test("interpretAstronomy rejects impossible USNO event calendar dates", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  const badPhases = [
+    { phase: "New Moon", year: 2026, month: 99, day: 12, time: "17:37" },
+    { phase: "New Moon", year: 2026, month: 2, day: 30, time: "17:37" },
+  ];
+  for (const record of badPhases) {
+    assert.deepEqual(
+      interpretAstronomy(sources[1], { year: 2026, phasedata: [record] }, "2026-08-12"),
+      { ok: false, error: "schema-mismatch", summary: null },
+    );
+  }
+
+  const badEclipses = [
+    { event: "Impossible", year: 2026, month: 8, day: 0 },
+    { event: "Impossible", year: 2026, month: 2, day: 30 },
+  ];
+  for (const record of badEclipses) {
+    assert.deepEqual(
+      interpretAstronomy(
+        sources[2],
+        { year: 2026, eclipses_in_year: [record] },
+        "2026-08-12",
+      ),
+      { ok: false, error: "schema-mismatch", summary: null },
+    );
+  }
+});

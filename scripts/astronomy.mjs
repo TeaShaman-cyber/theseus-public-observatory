@@ -38,9 +38,25 @@ function illuminationPercent(value) {
   return Number.isFinite(parsed) && parsed >= 0 && parsed <= 100 ? parsed : null;
 }
 
-function isDatePart(value) {
-  if (typeof value === "number") return Number.isInteger(value);
-  return typeof value === "string" && /^\d+$/.test(value.trim());
+function datePartNumber(value) {
+  if (typeof value === "number" && Number.isInteger(value)) return value;
+  if (typeof value === "string" && /^\d+$/.test(value.trim())) return Number(value.trim());
+  return null;
+}
+
+function isCalendarDate(yearValue, monthValue, dayValue) {
+  const year = datePartNumber(yearValue);
+  const month = datePartNumber(monthValue);
+  const day = datePartNumber(dayValue);
+  if (year === null || year < 1000 || year > 9999) return false;
+  if (month === null || month < 1 || month > 12) return false;
+  if (day === null || day < 1 || day > 31) return false;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
 }
 
 function hasPhaseRecord(record) {
@@ -49,9 +65,7 @@ function hasPhaseRecord(record) {
       typeof record === "object" &&
       typeof record.phase === "string" &&
       record.phase.trim() &&
-      isDatePart(record.year) &&
-      isDatePart(record.month) &&
-      isDatePart(record.day) &&
+      isCalendarDate(record.year, record.month, record.day) &&
       typeof record.time === "string" &&
       record.time.trim(),
   );
@@ -63,9 +77,7 @@ function hasEclipseRecord(record) {
       typeof record === "object" &&
       typeof record.event === "string" &&
       record.event.trim() &&
-      isDatePart(record.year) &&
-      isDatePart(record.month) &&
-      isDatePart(record.day),
+      isCalendarDate(record.year, record.month, record.day),
   );
 }
 
