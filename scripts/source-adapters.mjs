@@ -26,7 +26,7 @@ function statuspage(json) {
 
 function huggingFace(json) {
   const indicator = json?.data?.attributes?.aggregate_state;
-  if (typeof indicator !== "string") return schemaMismatch();
+  if (typeof indicator !== "string" || indicator.trim().length === 0) return schemaMismatch();
   const included = Array.isArray(json?.included) ? json.included : [];
   const resources = included.filter((item) => item?.type === "status_page_resource");
   const reports = included.filter((item) => item?.type === "status_report");
@@ -52,6 +52,8 @@ function noaaKp(json) {
       !Array.isArray(row) &&
       typeof row === "object" &&
       typeof row.time_tag === "string" &&
+      row.time_tag.trim().length > 0 &&
+      Number.isFinite(Date.parse(row.time_tag)) &&
       typeof row.Kp === "number" &&
       Number.isFinite(row.Kp) &&
       row.Kp >= 0 &&

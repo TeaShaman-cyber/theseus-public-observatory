@@ -66,6 +66,29 @@ test("NOAA Kp adapter rejects values outside the physical 0-9 scale", () => {
   }
 });
 
+
+test("Hugging Face adapter rejects blank aggregate states", () => {
+  for (const indicator of ["", "   "]) {
+    const result = summarizeSource(
+      { id: "huggingface_status", adapter: "huggingface-status-v1" },
+      { data: { attributes: { aggregate_state: indicator } }, included: [] },
+    );
+    assert.equal(result.ok, false, JSON.stringify(indicator));
+    assert.equal(result.error, "schema-mismatch", JSON.stringify(indicator));
+  }
+});
+
+test("NOAA Kp adapter rejects blank or unparseable timestamps", () => {
+  for (const time_tag of ["", "   ", "not-a-timestamp"]) {
+    const result = summarizeSource(
+      { id: "noaa_planetary_k_index", adapter: "noaa-kp-v1" },
+      [{ time_tag, Kp: 4.67 }],
+    );
+    assert.equal(result.ok, false, JSON.stringify(time_tag));
+    assert.equal(result.error, "schema-mismatch", JSON.stringify(time_tag));
+  }
+});
+
 test("NOAA Kp adapter rejects legacy array-row payloads", () => {
   const result = summarizeSource(
     { id: "noaa_planetary_k_index", adapter: "noaa-kp-v1" },
