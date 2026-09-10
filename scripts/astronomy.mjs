@@ -59,6 +59,10 @@ function isCalendarDate(yearValue, monthValue, dayValue) {
   );
 }
 
+function isClockTime(value) {
+  return typeof value === "string" && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value.trim());
+}
+
 function hasPhaseRecord(record) {
   return Boolean(
     record &&
@@ -66,8 +70,7 @@ function hasPhaseRecord(record) {
       typeof record.phase === "string" &&
       record.phase.trim() &&
       isCalendarDate(record.year, record.month, record.day) &&
-      typeof record.time === "string" &&
-      record.time.trim(),
+      isClockTime(record.time),
   );
 }
 

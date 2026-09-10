@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { buildAstronomySources, interpretAstronomy } from "./astronomy.mjs";
 import { summarizeSource } from "./source-adapters.mjs";
 import { createSnapshot, createSourceReceipt } from "./observation-receipt.mjs";
@@ -154,7 +155,7 @@ async function fetchAstronomy(date) {
   );
 }
 
-function renderReport(snapshot) {
+export function renderReport(snapshot) {
   const lines = [
     `# Public Observatory Report ${today(new Date(snapshot.collected_at))}`,
     "",
@@ -191,8 +192,10 @@ function renderReport(snapshot) {
     if (solarEclipse?.summary?.event_today) {
       lines.push(`- Solar eclipse event on this date (global list): ${solarEclipse.summary.event_today.event}`);
       lines.push(`  - local visibility: ${solarEclipse.summary.local_visibility || "not recorded"}`);
-    } else {
+    } else if (solarEclipse?.semantic?.status === "available") {
       lines.push("- Solar eclipse event on this date (global list): none");
+    } else {
+      lines.push("- Solar eclipse event on this date (global list): unknown (source unavailable)");
     }
     lines.push("- Astronomy values are contextual observations; this report does not claim effects on AI or infrastructure.");
   }
@@ -243,4 +246,6 @@ async function main() {
   console.log(JSON.stringify({ jsonlPath, latestPath, reportPath, sources: snapshot.sources.length, failed: failed.length }, null, 2));
 }
 
-await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
+}

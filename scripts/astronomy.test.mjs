@@ -244,3 +244,15 @@ test("interpretAstronomy rejects impossible USNO event calendar dates", () => {
     );
   }
 });
+
+test("interpretAstronomy rejects invalid USNO moon-phase clock times", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[1];
+  for (const time of ["banana", "25:99", "24:00", "12:60"]) {
+    const result = interpretAstronomy(
+      source,
+      { year: 2026, phasedata: [{ phase: "New Moon", year: 2026, month: 8, day: 12, time }] },
+      "2026-08-12",
+    );
+    assert.deepEqual(result, { ok: false, error: "schema-mismatch", summary: null }, time);
+  }
+});
