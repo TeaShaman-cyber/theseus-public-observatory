@@ -5,7 +5,10 @@ function schemaMismatch() {
 function statuspage(json) {
   const indicator = json?.status?.indicator;
   const description = json?.status?.description;
-  if (typeof indicator !== "string" && typeof description !== "string") {
+  const hasIndicator = typeof indicator === "string" && indicator.trim().length > 0;
+  const hasDescription =
+    typeof description === "string" && description.trim().length > 0;
+  if (!hasIndicator && !hasDescription) {
     return schemaMismatch();
   }
   return {
@@ -49,7 +52,10 @@ function noaaKp(json) {
       !Array.isArray(row) &&
       typeof row === "object" &&
       typeof row.time_tag === "string" &&
-      typeof row.Kp === "number",
+      typeof row.Kp === "number" &&
+      Number.isFinite(row.Kp) &&
+      row.Kp >= 0 &&
+      row.Kp <= 9,
   );
   if (rows.length === 0) return schemaMismatch();
   const latest = rows.at(-1);

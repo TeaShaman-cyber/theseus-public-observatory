@@ -44,6 +44,28 @@ test("NOAA Kp adapter preserves the latest measured Kp value", async () => {
   assert.equal(result.summary.latest.station_count, 8);
 });
 
+test("Statuspage adapters reject empty source-status fields", () => {
+  for (const adapter of ["statuspage-status-v1", "statuspage-summary-v1"]) {
+    const result = summarizeSource(
+      { id: "statuspage", adapter },
+      { status: { indicator: "   ", description: "" } },
+    );
+    assert.equal(result.ok, false, adapter);
+    assert.equal(result.error, "schema-mismatch", adapter);
+  }
+});
+
+test("NOAA Kp adapter rejects values outside the physical 0-9 scale", () => {
+  for (const Kp of [-1, 9.01, 999]) {
+    const result = summarizeSource(
+      { id: "noaa_planetary_k_index", adapter: "noaa-kp-v1" },
+      [{ time_tag: "2026-09-10T04:30:00", Kp }],
+    );
+    assert.equal(result.ok, false, String(Kp));
+    assert.equal(result.error, "schema-mismatch", String(Kp));
+  }
+});
+
 test("NOAA Kp adapter rejects legacy array-row payloads", () => {
   const result = summarizeSource(
     { id: "noaa_planetary_k_index", adapter: "noaa-kp-v1" },
