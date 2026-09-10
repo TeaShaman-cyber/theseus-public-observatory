@@ -74,3 +74,23 @@ class WorkflowTests(unittest.TestCase):
             "if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'",
             configure_block,
         )
+
+
+class CollectionWorkflowTests(unittest.TestCase):
+    def test_collection_persists_receipt_before_sensor_contract_gate(self):
+        repo = Path(__file__).resolve().parents[2]
+        text = (repo / ".github" / "workflows" / "collect.yml").read_text(
+            encoding="utf-8"
+        )
+        commit_at = text.index("- name: Commit public snapshots")
+        health_at = text.index("- name: Check sensor contracts")
+        self.assertLess(commit_at, health_at)
+        self.assertIn("npm run sensor-health-check", text[health_at:])
+
+    def test_pages_pins_node_22_for_repository_contract(self):
+        repo = Path(__file__).resolve().parents[2]
+        text = (repo / ".github" / "workflows" / "pages.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("actions/setup-node@v4", text)
+        self.assertIn('node-version: "22"', text)

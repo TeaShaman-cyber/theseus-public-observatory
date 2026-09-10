@@ -52,9 +52,31 @@ def render_home(
     *,
     base_path: str,
 ) -> str:
-    src_ok = sum(1 for s in snapshot.sources if s.collector_ok)
+    v1_sources = [s for s in snapshot.sources if not s.legacy]
+    legacy_sources = [s for s in snapshot.sources if s.legacy]
+    health_parts = []
+    if v1_sources:
+        semantic_ok = sum(1 for s in v1_sources if s.semantic_status == "available")
+        health_parts.append(
+            f"{semantic_ok}/{len(v1_sources)} v1 sources have semantic data available"
+        )
+    if legacy_sources:
+        legacy_ok = sum(1 for s in legacy_sources if s.collector_ok)
+        health_parts.append(
+            f"{legacy_ok}/{len(legacy_sources)} legacy v0 sources were usable under the legacy collection contract"
+        )
+        health_parts.append(
+            "semantic availability was not measured for legacy v0 sources"
+        )
+    health_summary = (
+        "; ".join(health_parts) if health_parts else "no source observations"
+    )
     source_cards = "".join(
-        f'<article class="card"><h3>{escape(s.label)}</h3><p>{_badge("collector OK" if s.collector_ok else "collector DEGRADED")} {_badge(s.source_status)}</p><p>{escape(s.url)}</p></article>'
+        (
+            f'<article class="card"><h3>{escape(s.label)}</h3><p>{_badge("legacy v0")} {_badge("usable" if s.collector_ok else "degraded")} {_badge(s.source_status)}</p><p>{escape(s.url)}</p></article>'
+            if s.legacy
+            else f'<article class="card"><h3>{escape(s.label)}</h3><p>{_badge("transport " + s.transport_status)} {_badge("parser " + s.parser_status)} {_badge("semantic " + s.semantic_status)} {_badge(s.source_status)}</p><p>{escape(s.url)}</p></article>'
+        )
         for s in snapshot.sources
     )
     exp_cards = "".join(
@@ -64,22 +86,27 @@ def render_home(
     report_links = "".join(
         f"<li><code>{escape(r.slug)}</code> {escape(r.title)}</li>" for r in reports[:5]
     )
-    body = f"""<section class="hero"><p class="eyebrow">OBSERVE → PRESERVE → TEST</p><h1>Theseus Public Observatory</h1><p>Public systems and physical data, observed before they are interpreted.</p></section><section><h2>Current state</h2><p>{_badge(snapshot.freshness)} collected {escape(_iso_z(snapshot.collected_at))}; {src_ok}/{len(snapshot.sources)} collectors returned usable data.</p></section><section><h2>Observation streams</h2><div class="grid">{source_cards}</div></section><section><h2>Experiments</h2><div class="grid">{exp_cards}</div></section><section><h2>Latest laboratory notes</h2><ul>{report_links}</ul></section><section><h2>Collaboration</h2><p>{escape(CREDIT)}</p></section>"""
+    body = f"""<section class="hero"><p class="eyebrow">OBSERVE → PRESERVE → TEST</p><h1>Theseus Public Observatory</h1><p>Public systems and physical data, observed before they are interpreted.</p></section><section><h2>Current state</h2><p>{_badge(snapshot.freshness)} collected {escape(_iso_z(snapshot.collected_at))}; {escape(health_summary)}.</p></section><section><h2>Observation streams</h2><div class="grid">{source_cards}</div></section><section><h2>Experiments</h2><div class="grid">{exp_cards}</div></section><section><h2>Latest laboratory notes</h2><ul>{report_links}</ul></section><section><h2>Collaboration</h2><p>{escape(CREDIT)}</p></section>"""
     return _page("Theseus Public Observatory", body, base_path)
 
 
 def render_observations(snapshot: ObservationSnapshot, *, base_path: str) -> str:
     cards = []
     for s in snapshot.sources:
-        status = (
-            "collector OK"
-            if s.collector_ok
-            else f"collector DEGRADED: {s.error or 'unknown error'}"
-        )
+        if s.legacy:
+            health = f"{_badge('legacy v0')} {_badge('usable' if s.collector_ok else 'degraded')}"
+        else:
+            health = " ".join(
+                [
+                    _badge("transport " + s.transport_status),
+                    _badge("parser " + s.parser_status),
+                    _badge("semantic " + s.semantic_status),
+                ]
+            )
         cards.append(
-            f'<article class="card"><h2>{escape(s.label)}</h2><p>{_badge(status)} {_badge(s.source_status)}</p><p><a href="{escape(s.url)}">canonical public source</a></p><p>HTTP {escape(str(s.http_status))}; {escape(str(s.latency_ms))} ms</p></article>'
+            f'<article class="card"><h2>{escape(s.label)}</h2><p>{health} {_badge(s.source_status)}</p><p><a href="{escape(s.url)}">canonical public source</a></p><p>HTTP {escape(str(s.http_status))}; {escape(str(s.latency_ms))} ms</p></article>'
         )
-    body = f'<h1>Observations</h1><p>{_badge(snapshot.freshness)} snapshot {escape(_iso_z(snapshot.collected_at))}</p><p>Collector health is not the same thing as source status.</p><div class="grid">{"".join(cards)}</div>'
+    body = f'<h1>Observations</h1><p>{_badge(snapshot.freshness)} snapshot {escape(_iso_z(snapshot.collected_at))}</p><p>Transport, parser/schema health, semantic availability, and source-reported status are separate observations.</p><div class="grid">{"".join(cards)}</div>'
     return _page("Observations", body, base_path)
 
 

@@ -38,3 +38,6 @@ jobs:
             git commit -m "Collect public observatory data"
             git push
           fi
+
+      - name: Check sensor contracts
+        run: npm run sensor-health-check

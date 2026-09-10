@@ -26,6 +26,10 @@ class SourceObservation:
     source_status: str
     http_status: int | None
     latency_ms: float | None
+    transport_status: str = "legacy-unknown"
+    parser_status: str = "legacy-unknown"
+    semantic_status: str = "legacy-unknown"
+    legacy: bool = True
     summary: Mapping[str, object] = field(default_factory=dict)
     error: str | None = None
 

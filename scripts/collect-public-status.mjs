@@ -1,38 +1,41 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { buildAstronomySources, summarizeAstronomy } from "./astronomy.mjs";
+import { pathToFileURL } from "node:url";
+import { buildAstronomySources, interpretAstronomy } from "./astronomy.mjs";
+import { summarizeSource } from "./source-adapters.mjs";
+import { createSnapshot, createSourceReceipt } from "./observation-receipt.mjs";
 
 const SOURCES = [
   {
     id: "openai_status",
     label: "OpenAI Status",
     url: "https://status.openai.com/api/v2/status.json",
-    kind: "statuspage-status",
+    adapter: "statuspage-status-v1",
   },
   {
     id: "github_status",
     label: "GitHub Status",
     url: "https://www.githubstatus.com/api/v2/summary.json",
-    kind: "statuspage-summary",
+    adapter: "statuspage-summary-v1",
   },
   {
     id: "huggingface_status",
     label: "Hugging Face Status",
-    url: "https://status.huggingface.co/api/v2/summary.json",
-    kind: "statuspage-summary",
+    url: "https://status.huggingface.co/index.json",
+    adapter: "huggingface-status-v1",
   },
   {
     id: "noaa_planetary_k_index",
     label: "NOAA Planetary K Index",
     url: "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
-    kind: "noaa-table",
+    adapter: "noaa-kp-v1",
   },
   {
     id: "noaa_scales",
     label: "NOAA Scales",
     url: "https://services.swpc.noaa.gov/products/noaa-scales.json",
-    kind: "noaa-json",
+    adapter: "noaa-scales-v1",
   },
 ];
 
@@ -50,40 +53,43 @@ async function fetchJson(source, timeoutMs = 30000) {
       headers: { "user-agent": "theseus-public-observatory/0.1" },
     });
     const text = await response.text();
+    const contentType = response.headers.get("content-type");
+    const transportStatus = response.ok ? "ok" : "http-error";
     let json = null;
     try {
       json = JSON.parse(text);
     } catch {
-      return {
-        id: source.id,
-        label: source.label,
-        url: source.url,
-        ok: false,
-        http_status: response.status,
-        latency_ms: Date.now() - started,
-        error: "invalid-json",
-        excerpt: text.slice(0, 200),
-      };
+      return createSourceReceipt({
+        source,
+        httpStatus: response.status,
+        latencyMs: Date.now() - started,
+        contentType,
+        payloadText: text,
+        transportStatus,
+        parserStatus: "invalid-json",
+      });
     }
-    return {
-      id: source.id,
-      label: source.label,
-      url: source.url,
-      ok: response.ok,
-      http_status: response.status,
-      latency_ms: Date.now() - started,
-      summary: summarize(source, json),
-    };
+    const interpreted = summarizeSource(source, json);
+    return createSourceReceipt({
+      source,
+      httpStatus: response.status,
+      latencyMs: Date.now() - started,
+      contentType,
+      payloadText: text,
+      transportStatus,
+      parserStatus: interpreted.ok ? "ok" : "schema-mismatch",
+      adapterResult: interpreted,
+    });
   } catch (error) {
-    return {
-      id: source.id,
-      label: source.label,
-      url: source.url,
-      ok: false,
-      http_status: null,
-      latency_ms: Date.now() - started,
-      error: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
-    };
+    const transportStatus = error?.name === "AbortError" ? "timeout" : "fetch-error";
+    return createSourceReceipt({
+      source,
+      httpStatus: null,
+      latencyMs: Date.now() - started,
+      transportStatus,
+      parserStatus: "not-attempted",
+      transportError: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
+    });
   } finally {
     clearTimeout(timeout);
   }
@@ -102,40 +108,46 @@ async function fetchAstronomy(date) {
           headers: { "user-agent": "theseus-public-observatory/0.1" },
         });
         const text = await response.text();
+        const contentType = response.headers.get("content-type");
+        const transportStatus = response.ok ? "ok" : "http-error";
         let json = null;
         try {
           json = JSON.parse(text);
         } catch {
-          return {
-            id: source.id,
-            label: source.label,
-            url: source.url,
-            ok: false,
-            http_status: response.status,
-            latency_ms: Date.now() - started,
-            error: "invalid-json",
-          };
+          const receipt = createSourceReceipt({
+            source,
+            httpStatus: response.status,
+            latencyMs: Date.now() - started,
+            contentType,
+            payloadText: text,
+            transportStatus,
+            parserStatus: "invalid-json",
+          });
+          return { ...receipt, observer_local_date: source.observer_local_date };
         }
-        return {
-          id: source.id,
-          label: source.label,
-          url: source.url,
-          ok: response.ok,
-          http_status: response.status,
-          latency_ms: Date.now() - started,
-          summary: summarizeAstronomy(source, json, day),
-          observer_local_date: source.observer_local_date,
-        };
+        const interpreted = interpretAstronomy(source, json, day);
+        const receipt = createSourceReceipt({
+          source,
+          httpStatus: response.status,
+          latencyMs: Date.now() - started,
+          contentType,
+          payloadText: text,
+          transportStatus,
+          parserStatus: interpreted.ok ? "ok" : "schema-mismatch",
+          adapterResult: interpreted,
+        });
+        return { ...receipt, observer_local_date: source.observer_local_date };
       } catch (error) {
-        return {
-          id: source.id,
-          label: source.label,
-          url: source.url,
-          ok: false,
-          http_status: null,
-          latency_ms: Date.now() - started,
-          error: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
-        };
+        const transportStatus = error?.name === "AbortError" ? "timeout" : "fetch-error";
+        const receipt = createSourceReceipt({
+          source,
+          httpStatus: null,
+          latencyMs: Date.now() - started,
+          transportStatus,
+          parserStatus: "not-attempted",
+          transportError: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
+        });
+        return { ...receipt, observer_local_date: source.observer_local_date };
       } finally {
         clearTimeout(timeout);
       }
@@ -143,35 +155,7 @@ async function fetchAstronomy(date) {
   );
 }
 
-function summarize(source, json) {
-  if (source.kind.startsWith("statuspage")) {
-    return {
-      indicator: json?.status?.indicator ?? null,
-      description: json?.status?.description ?? null,
-      page_name: json?.page?.name ?? null,
-      components: Array.isArray(json?.components) ? json.components.length : undefined,
-      incidents: Array.isArray(json?.incidents) ? json.incidents.length : undefined,
-    };
-  }
-
-  if (source.id === "noaa_planetary_k_index" && Array.isArray(json)) {
-    const header = Array.isArray(json[0]) ? json[0] : null;
-    const latest = [...json].reverse().find((row) => Array.isArray(row) && row.length > 1);
-    return { rows: json.length, header, latest };
-  }
-
-  if (source.id === "noaa_scales") {
-    return {
-      observed: json?.["-1"] ?? json?.observed ?? null,
-      current: json?.["0"] ?? json?.current ?? null,
-      forecast: json?.["1"] ?? json?.forecast ?? null,
-    };
-  }
-
-  return { type: Array.isArray(json) ? "array" : typeof json };
-}
-
-function renderReport(snapshot) {
+export function renderReport(snapshot) {
   const lines = [
     `# Public Observatory Report ${today(new Date(snapshot.collected_at))}`,
     "",
@@ -208,8 +192,10 @@ function renderReport(snapshot) {
     if (solarEclipse?.summary?.event_today) {
       lines.push(`- Solar eclipse event on this date (global list): ${solarEclipse.summary.event_today.event}`);
       lines.push(`  - local visibility: ${solarEclipse.summary.local_visibility || "not recorded"}`);
-    } else {
+    } else if (solarEclipse?.semantic?.status === "available") {
       lines.push("- Solar eclipse event on this date (global list): none");
+    } else {
+      lines.push("- Solar eclipse event on this date (global list): unknown (source unavailable)");
     }
     lines.push("- Astronomy values are contextual observations; this report does not claim effects on AI or infrastructure.");
   }
@@ -237,13 +223,13 @@ async function appendJsonl(path, value) {
 
 async function main() {
   const now = new Date();
-  const snapshot = {
-    collected_at: now.toISOString(),
+  const snapshot = createSnapshot({
+    collectedAt: now.toISOString(),
     sources: [
       ...(await Promise.all(SOURCES.map((source) => fetchJson(source)))),
       ...(await fetchAstronomy(now)),
     ],
-  };
+  });
 
   const day = today(now);
   const jsonlPath = join("data", day, "public-status.jsonl");
@@ -260,4 +246,6 @@ async function main() {
   console.log(JSON.stringify({ jsonlPath, latestPath, reportPath, sources: snapshot.sources.length, failed: failed.length }, null, 2));
 }
 
-await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
+}

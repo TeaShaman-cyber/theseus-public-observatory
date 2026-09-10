@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   ASTRONOMY_OBSERVER,
   buildAstronomySources,
+  interpretAstronomy,
   summarizeUsnoMoonPhases,
   summarizeUsnoSolarEclipses,
   summarizeUsnoSunMoon,
@@ -111,5 +112,163 @@ test("summarizeUsnoMoonPhases and summarizeUsnoSolarEclipses retain event proven
     events: [{ day: 12, event: "Total Solar Eclipse of 12 August 2026", month: 8, year: 2026 }],
     event_today: { day: 12, event: "Total Solar Eclipse of 12 August 2026", month: 8, year: 2026 },
     local_visibility: "not-provided-by-usno-year-endpoint",
+  });
+});
+
+
+test("interpretAstronomy rejects valid JSON that does not match the USNO source schema", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[0];
+  assert.deepEqual(interpretAstronomy(source, { error: "bad request" }, "2026-08-12"), {
+    ok: false,
+    error: "schema-mismatch",
+    summary: null,
+  });
+});
+
+test("interpretAstronomy accepts a valid USNO sun/moon payload", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[0];
+  const interpreted = interpretAstronomy(source, usnoSunMoonFixture, "2026-08-12");
+  assert.equal(interpreted.ok, true);
+  assert.equal(interpreted.error, null);
+  assert.equal(interpreted.summary.moon.current_phase, "New Moon");
+});
+
+
+test("interpretAstronomy rejects schema-mismatched JSON for every USNO endpoint family", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  for (const source of sources) {
+    assert.deepEqual(interpretAstronomy(source, { error: "bad request" }, "2026-08-12"), {
+      ok: false,
+      error: "schema-mismatch",
+      summary: null,
+    });
+  }
+});
+
+
+test("interpretAstronomy accepts representative payloads for all USNO endpoint families", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  const payloads = [
+    usnoSunMoonFixture,
+    { year: 2026, phasedata: [{ phase: "New Moon", year: 2026, month: 8, day: 12, time: "17:37" }] },
+    { year: 2026, eclipses_in_year: [] },
+  ];
+  for (let i = 0; i < sources.length; i += 1) {
+    const interpreted = interpretAstronomy(sources[i], payloads[i], "2026-08-12");
+    assert.equal(interpreted.ok, true, sources[i].id);
+    assert.equal(interpreted.error, null, sources[i].id);
+    assert.ok(interpreted.summary, sources[i].id);
+  }
+});
+
+test("interpretAstronomy rejects a USNO sun/moon payload with nonnumeric illumination", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[0];
+  for (const fracillum of [{}, "", "not-a-percent"]) {
+    const payload = structuredClone(usnoSunMoonFixture);
+    payload.properties.data.fracillum = fracillum;
+    assert.deepEqual(interpretAstronomy(source, payload, "2026-08-12"), {
+      ok: false,
+      error: "schema-mismatch",
+      summary: null,
+    });
+  }
+});
+
+test("interpretAstronomy rejects malformed records inside USNO phase and eclipse arrays", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  assert.deepEqual(
+    interpretAstronomy(sources[1], { year: 2026, phasedata: [{}] }, "2026-08-12"),
+    { ok: false, error: "schema-mismatch", summary: null },
+  );
+  assert.deepEqual(
+    interpretAstronomy(sources[2], { year: 2026, eclipses_in_year: [{}] }, "2026-08-12"),
+    { ok: false, error: "schema-mismatch", summary: null },
+  );
+});
+
+
+test("interpretAstronomy requires the requested year for empty USNO eclipse payloads", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[2];
+  for (const payload of [
+    { eclipses_in_year: [] },
+    { year: 2025, eclipses_in_year: [] },
+  ]) {
+    assert.deepEqual(interpretAstronomy(source, payload, "2026-08-12"), {
+      ok: false,
+      error: "schema-mismatch",
+      summary: null,
+    });
+  }
+  assert.equal(
+    interpretAstronomy(source, { year: 2026, eclipses_in_year: [] }, "2026-08-12").ok,
+    true,
+  );
+});
+
+
+test("interpretAstronomy rejects malformed annual eclipse year values", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[2];
+  for (const year of ["2026junk", "2026.5", 2026.5]) {
+    assert.deepEqual(
+      interpretAstronomy(source, { year, eclipses_in_year: [] }, "2026-08-12"),
+      { ok: false, error: "schema-mismatch", summary: null },
+    );
+  }
+});
+
+test("interpretAstronomy rejects impossible USNO event calendar dates", () => {
+  const sources = buildAstronomySources(new Date("2026-08-12T10:00:00Z"));
+  const badPhases = [
+    { phase: "New Moon", year: 2026, month: 99, day: 12, time: "17:37" },
+    { phase: "New Moon", year: 2026, month: 2, day: 30, time: "17:37" },
+  ];
+  for (const record of badPhases) {
+    assert.deepEqual(
+      interpretAstronomy(sources[1], { year: 2026, phasedata: [record] }, "2026-08-12"),
+      { ok: false, error: "schema-mismatch", summary: null },
+    );
+  }
+
+  const badEclipses = [
+    { event: "Impossible", year: 2026, month: 8, day: 0 },
+    { event: "Impossible", year: 2026, month: 2, day: 30 },
+  ];
+  for (const record of badEclipses) {
+    assert.deepEqual(
+      interpretAstronomy(
+        sources[2],
+        { year: 2026, eclipses_in_year: [record] },
+        "2026-08-12",
+      ),
+      { ok: false, error: "schema-mismatch", summary: null },
+    );
+  }
+});
+
+test("interpretAstronomy rejects invalid USNO moon-phase clock times", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[1];
+  for (const time of ["banana", "25:99", "24:00", "12:60"]) {
+    const result = interpretAstronomy(
+      source,
+      { year: 2026, phasedata: [{ phase: "New Moon", year: 2026, month: 8, day: 12, time }] },
+      "2026-08-12",
+    );
+    assert.deepEqual(result, { ok: false, error: "schema-mismatch", summary: null }, time);
+  }
+});
+
+
+test("interpretAstronomy rejects eclipse records from a different response year", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[2];
+  const payload = {
+    year: 2026,
+    eclipses_in_year: [
+      { event: "Wrong year", year: 2025, month: 8, day: 12 },
+    ],
+  };
+  assert.deepEqual(interpretAstronomy(source, payload, "2026-08-12"), {
+    ok: false,
+    error: "schema-mismatch",
+    summary: null,
   });
 });
