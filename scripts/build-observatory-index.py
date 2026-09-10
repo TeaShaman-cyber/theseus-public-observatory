@@ -250,7 +250,7 @@ def build_index(repo_root: Path, output: Path) -> None:
             "create view v_source_health as select collected_at, source_id, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, source_status, latency_ms, provenance_path from observations"
         )
         con.execute(
-            "create view v_provider_events as select * from provider_status where usable = false or source_status not in ('none','OBSERVED','All Systems Operational')"
+            "create view v_provider_events as select * from provider_status where usable = false or source_status not in ('none','OBSERVED','All Systems Operational','operational')"
         )
         con.execute(
             "create view v_space_weather as select * from space_weather where usable = true"

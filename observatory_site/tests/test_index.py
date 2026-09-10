@@ -253,6 +253,60 @@ class IndexTests(unittest.TestCase):
             )
             con.close()
 
+    def test_healthy_huggingface_operational_status_is_not_a_provider_event(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            day = root / "data" / "2026-09-10"
+            day.mkdir(parents=True)
+            row = {
+                "schema_version": 1,
+                "collected_at": "2026-09-10T04:30:00Z",
+                "sources": [
+                    {
+                        "schema_version": 1,
+                        "id": "huggingface_status",
+                        "label": "Hugging Face",
+                        "url": "https://status.huggingface.co/",
+                        "ok": True,
+                        "http_status": 200,
+                        "latency_ms": 90,
+                        "transport": {"status": "ok"},
+                        "parser": {"status": "ok"},
+                        "semantic": {"status": "available"},
+                        "summary": {
+                            "indicator": "operational",
+                            "description": "Operational",
+                        },
+                    }
+                ],
+            }
+            (day / "public-status.jsonl").write_text(
+                json.dumps(row) + "\n", encoding="utf-8"
+            )
+            db = root / "data" / "index" / "observatory.duckdb"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--repo-root",
+                    str(root),
+                    "--output",
+                    str(db),
+                ],
+                check=True,
+            )
+            con = duckdb.connect(str(db), read_only=True)
+            self.assertEqual(
+                con.execute(
+                    "select source_status, usable from provider_status"
+                ).fetchone(),
+                ("operational", True),
+            )
+            self.assertEqual(
+                con.execute("select count(*) from v_provider_events").fetchone()[0], 0
+            )
+            con.close()
+
 
 if __name__ == "__main__":
     unittest.main()
