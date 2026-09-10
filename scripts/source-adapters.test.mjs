@@ -181,3 +181,22 @@ test("NOAA scales adapter rejects forecast-only payloads without a measured scal
   assert.equal(result.ok, false);
   assert.equal(result.error, "schema-mismatch");
 });
+
+
+test("NOAA scales adapter rejects invalid observation timestamps", () => {
+  const badEntries = [
+    { ...noaaScaleEntry("1"), DateStamp: "" },
+    { ...noaaScaleEntry("1"), DateStamp: "banana" },
+    { ...noaaScaleEntry("1"), DateStamp: "2026-02-30" },
+    { ...noaaScaleEntry("1"), TimeStamp: "" },
+    { ...noaaScaleEntry("1"), TimeStamp: "25:99:00" },
+  ];
+  for (const entry of badEntries) {
+    const result = summarizeSource(
+      { id: "noaa_scales", adapter: "noaa-scales-v1" },
+      { "0": entry },
+    );
+    assert.equal(result.ok, false, JSON.stringify(entry));
+    assert.equal(result.error, "schema-mismatch", JSON.stringify(entry));
+  }
+});

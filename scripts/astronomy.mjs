@@ -204,7 +204,9 @@ function hasUsnoSchema(source, payload, localDate) {
       payloadYear !== null &&
       (requestedYear === null || payloadYear === requestedYear) &&
       Array.isArray(payload?.eclipses_in_year) &&
-      payload.eclipses_in_year.every(hasEclipseRecord)
+      payload.eclipses_in_year.every(
+        (record) => hasEclipseRecord(record) && exactYear(record.year) === payloadYear,
+      )
     );
   }
 

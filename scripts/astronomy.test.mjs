@@ -256,3 +256,19 @@ test("interpretAstronomy rejects invalid USNO moon-phase clock times", () => {
     assert.deepEqual(result, { ok: false, error: "schema-mismatch", summary: null }, time);
   }
 });
+
+
+test("interpretAstronomy rejects eclipse records from a different response year", () => {
+  const source = buildAstronomySources(new Date("2026-08-12T10:00:00Z"))[2];
+  const payload = {
+    year: 2026,
+    eclipses_in_year: [
+      { event: "Wrong year", year: 2025, month: 8, day: 12 },
+    ],
+  };
+  assert.deepEqual(interpretAstronomy(source, payload, "2026-08-12"), {
+    ok: false,
+    error: "schema-mismatch",
+    summary: null,
+  });
+});

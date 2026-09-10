@@ -81,9 +81,25 @@ function isNoaaScaleValue(value, allowNull) {
   return typeof value === "string" && /^[0-5]$/.test(value);
 }
 
+function isNoaaScaleTimestamp(dateStamp, timeStamp) {
+  if (typeof dateStamp !== "string" || typeof timeStamp !== "string") return false;
+  const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStamp.trim());
+  const timeMatch = /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.exec(timeStamp.trim());
+  if (!dateMatch || !timeMatch) return false;
+  const year = Number(dateMatch[1]);
+  const month = Number(dateMatch[2]);
+  const day = Number(dateMatch[3]);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return (
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day
+  );
+}
+
 function isNoaaScaleEntry(entry, allowNull = false) {
   if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
-  if (typeof entry.DateStamp !== "string" || typeof entry.TimeStamp !== "string") return false;
+  if (!isNoaaScaleTimestamp(entry.DateStamp, entry.TimeStamp)) return false;
   return ["R", "S", "G"].every((kind) => {
     const scale = entry[kind];
     return (
