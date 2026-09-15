@@ -1,0 +1,15 @@
+{
+  "schema_version": "theseus.verification.claim.v1",
+  "slug": "tid-navier-stokes-threshold",
+  "title": "TID Navier-Stokes threshold arithmetic check",
+  "stage": "VERIFICATION_PILOT",
+  "epistemic_status": "ARITHMETIC_CHECK_ONLY",
+  "claim_id": "tid-ns-critical-threshold-arithmetic-001",
+  "asserted_expression": "1/2 (1 - 1/(7/5))",
+  "asserted_exact_value": "1/50",
+  "asserted_decimal_value": 0.02,
+  "wolfram_code": "crit=FullSimplify[1/2 (1-1/(7/5))]; ExportString[<|\"exact\"->ToString[InputForm[crit]],\"decimal\"->N[crit,12],\"equals_asserted\"->FullSimplify[crit==1/50]|>,\"RawJSON\"]",
+  "expected_verification_status": "VERIFIED_FALSE",
+  "expected_exact_result": "1/7",
+  "does_not_establish": "This checks only the arithmetic substitution in one historical TID Navier-Stokes argument. It does not prove or disprove Navier-Stokes regularity, finite-time blow-up, or the broader TID framework."
+}
