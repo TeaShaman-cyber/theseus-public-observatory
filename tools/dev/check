@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+export PYTHONDONTWRITEBYTECODE=1
+
+echo '== node/data contract =='
+npm test
+
+echo '== site tests =='
+python3 -m unittest discover -s observatory_site/tests -v
+
+echo '== archive-pack tests =='
+python3 -m unittest scripts/test_archive_pack.py -v
+
+echo '== python lint/format =='
+python3 -m ruff check observatory_site scripts
+python3 -m ruff format --check observatory_site scripts
+
+echo '== whitespace =='
+git diff --check
+
+echo DEV_CHECK_PASS
