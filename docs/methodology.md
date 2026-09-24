@@ -233,3 +233,26 @@ Useful gates include:
 - explicit `FACT / INFERENCE / HYPOTHESIS / UNKNOWN` disposition.
 
 Research leads live in [docs/research](research/README.md). Listing a lead does not turn it into an observation or conclusion.
+
+
+## 11. Agent Working Contract
+
+This section defines the Observatory-specific work rhythm for agents. It does not replace or override the Project Contract or workspace runtime rules.
+
+- **Goal-bound work.** Each work cycle should materially advance the current repository goal or issue.
+- **Five actions as an attractor.** Roughly five logical actions is the preferred size of one work cycle, not a hard execution limit. Finish earlier when the unit is complete; exceed it only when a small number of additional steps closes the same atomic unit safely.
+- **Durable over conversational.** Research that materially changes the project should land in an issue, registry entry, code change, test, receipt, or explicit decision checkpoint rather than remaining only in chat.
+- **Exploration is subordinate.** Side investigations are useful when they answer a concrete repository question, refine a testable hypothesis, identify a source, or define a control. Interesting-but-unbounded exploration should stop at a checkpoint.
+- **Hypothesis-first exporters.** A collector/exporter may be built to test a plausible, measurable hypothesis. The hypothesis does not need to be established in advance. Admission depends on a relevant observable, sustainable/public access, known controls or confounders, observable source health, and a bounded test or stopping rule.
+- **Natural stopping boundary.** When a second independent work unit appears, checkpoint the current result and continue in a later cycle instead of silently expanding scope.
+
+These distinctions remain explicit:
+
+```text
+interesting != actionable
+actionable != authorized
+authorized != verified
+verified != scientifically established
+```
+
+The contract exists to keep exploratory research productive without turning the Observatory into an unbounded discussion surface.
