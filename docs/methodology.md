@@ -169,34 +169,37 @@ MarcoPolo can run bounded canaries, but promoted scientific/verification evidenc
 
 Codespaces can reduce development friction but does not replace CI acceptance.
 
-## 8. Verification Lane
+## 8. Analysis and Verification Boundary
 
-Claim verification is separate from continuous telemetry.
-
-Candidate backends are selected by the claim:
+The Observatory verifies the evidence plane it owns:
 
 ```text
-repository-owned exact/Open Source code in Actions
-  -> default baseline
-
-Precise Special Functions MCP
-  -> high-precision special functions
-
-remote Wolfram
-  -> optional independent symbolic/knowledge cross-check
-
-Lean
-  -> formal certificate when the encoded theorem warrants it
+collection / source-health contract
+canonical JSONL integrity
+latest/report projection consistency
+archive-pack manifest + hashes
+rebuildable analytical projections
+hypothesis-analysis input identity
 ```
 
-A verifier outage is a backend-state observation, not a mathematical result.
+It does not own a general mathematical claim-verification framework.
+
+A hypothesis consumer that needs theorem proving, symbolic verification, specialist numerical witnesses, or other domain verification should keep that machinery in the repository that owns the research question and bind its result back to exact Observatory input identities.
+
+For long-window correlation work, a result receipt should identify at least:
 
 ```text
-verifier unavailable
-!= claim false
+input release-pack tags / hashes
+time range and source coverage
+analysis code / exact commit
+event definitions
+predeclared lag windows / controls
+missing-data treatment
+result + uncertainty
+FACT / INFERENCE / HYPOTHESIS / UNKNOWN disposition
 ```
 
-A Lean certificate establishes the encoded theorem under its formal assumptions. It does not automatically establish that the encoding captures the intended physical interpretation.
+A successful Observatory QA run establishes repository/data invariants only. It does not establish a causal or mathematical claim.
 
 ## 9. Interpretation Boundary
 

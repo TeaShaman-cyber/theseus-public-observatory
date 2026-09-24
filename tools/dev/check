@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+export PYTHONDONTWRITEBYTECODE=1
+
+echo '== node/data contract =='
+npm test
+
+echo '== site tests =='
+python3 -m unittest discover -s observatory_site/tests -v
+
+echo '== archive-pack tests =='
+python3 -m unittest scripts/test_archive_pack.py -v
+
+echo '== python lint/format =='
+python3 -m ruff check observatory_site scripts
+python3 -m ruff format --check observatory_site scripts
+
+echo '== committed/working-tree whitespace =='
+base_ref="${QA_BASE_REF:-origin/main}"
+if ! git rev-parse --verify --quiet "$base_ref^{commit}" >/dev/null; then
+  echo "QA base ref unavailable: $base_ref" >&2
+  echo "Set QA_BASE_REF to the pull-request base commit/ref." >&2
+  exit 2
+fi
+base_commit=$(git merge-base "$base_ref" HEAD)
+git diff --check "$base_commit"..HEAD
+git diff --cached --check
+git diff --check
+
+echo DEV_CHECK_PASS
