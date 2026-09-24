@@ -20,6 +20,6 @@
     "summary.json": "cb5db1d00b45edbe343e176cbdecc0ff9bdb2bffcea4f2c53703ad5c82127d43"
   },
   "workflow_url": "https://github.com/TeaShaman-cyber/theseus-public-observatory/actions/runs/30123923344",
-  "code_url": "https://github.com/TeaShaman-cyber/theseus-public-observatory/tree/feat/tid-root-ligo-pilot",
+  "code_url": "https://github.com/TeaShaman-cyber/theseus-public-observatory/tree/4defb526b9fce68824055a2c8c16e9aeacd94fee",
   "next_gate": "Expand to a larger off-event null distribution with symmetric whitening and detector time alignment before calibrated inference."
 }
