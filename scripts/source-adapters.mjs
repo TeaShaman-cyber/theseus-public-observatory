@@ -121,8 +121,8 @@ function noaaScales(json) {
   if (observed !== null && !isNoaaScaleEntry(observed)) return schemaMismatch();
   if (current !== null && !isNoaaScaleEntry(current)) return schemaMismatch();
   if (forecast !== null && !isNoaaScaleEntry(forecast, true)) return schemaMismatch();
-  const selected = [observed, current, forecast].filter((entry) => entry !== null);
-  const hasMeasurement = selected.some((entry) =>
+  const measured = [observed, current].filter((entry) => entry !== null);
+  const hasMeasurement = measured.some((entry) =>
     ["R", "S", "G"].some((kind) => entry[kind].Scale !== null),
   );
   if (!hasMeasurement) return schemaMismatch();

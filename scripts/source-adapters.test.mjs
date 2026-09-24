@@ -173,13 +173,15 @@ test("NOAA scales adapter rejects R/S/G shells without scale fields", () => {
   assert.equal(result.error, "schema-mismatch");
 });
 
-test("NOAA scales adapter rejects forecast-only payloads without a measured scale", () => {
-  const result = summarizeSource(
-    { id: "noaa_scales", adapter: "noaa-scales-v1" },
-    { "1": noaaScaleEntry(null) },
-  );
-  assert.equal(result.ok, false);
-  assert.equal(result.error, "schema-mismatch");
+test("NOAA scales adapter rejects forecast-only payloads", () => {
+  for (const scale of [null, "2"]) {
+    const result = summarizeSource(
+      { id: "noaa_scales", adapter: "noaa-scales-v1" },
+      { "1": noaaScaleEntry(scale) },
+    );
+    assert.equal(result.ok, false, String(scale));
+    assert.equal(result.error, "schema-mismatch", String(scale));
+  }
 });
 
 
