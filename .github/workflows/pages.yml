@@ -35,12 +35,7 @@ jobs:
           python -m pip install -r observatory_site/requirements.txt -r observatory_site/requirements-dev.txt
 
       - name: Test repository and site
-        run: |
-          npm test
-          python -m unittest discover -s observatory_site/tests -v
-          python -m unittest scripts/test_archive_pack.py -v
-          python -m ruff check observatory_site scripts
-          python -m ruff format --check observatory_site scripts
+        run: bash tools/dev/check
 
       - name: Rebuild disposable research index
         run: python scripts/build-observatory-index.py --repo-root . --output data/index/observatory.duckdb
