@@ -38,11 +38,17 @@ jobs:
         run: |
           npm test
           python -m unittest discover -s observatory_site/tests -v
+          python -m unittest scripts/test_archive_pack.py -v
           python -m ruff check observatory_site scripts
           python -m ruff format --check observatory_site scripts
 
       - name: Rebuild disposable research index
         run: python scripts/build-observatory-index.py --repo-root . --output data/index/observatory.duckdb
+
+      - name: Build historical archive-pack canary
+        run: |
+          python scripts/build_archive_pack.py build --repo-root . --period 2026-09 --output-dir /tmp/observatory-data-2026-09
+          python scripts/build_archive_pack.py verify --pack-dir /tmp/observatory-data-2026-09
 
       - name: Build static site
         run: python -m observatory_site.build --repo-root . --output public --base-path /theseus-public-observatory/
