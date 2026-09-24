@@ -8,7 +8,7 @@ It is intentionally small and versioned with the repository.
 - [Methodology](../methodology.md) — collection rules and interpretation boundary.
 - [Space-weather / AI lead ledger](space-weather-llm-leads.md) — leads extracted
   from prior discussions and public sources.
-- [Daily reports](../../reports/README.md) — dated source-health summaries.
+- [Public signal registry](source-registry.md) — hypothesis-testing inventory, source admission state, and stop criteria.\n- [Daily reports](../../reports/README.md) — dated source-health summaries.
 - [Machine-readable snapshots](../../data/README.md) — public collection output.
 - [Public experiments](../../experiments/public/) — explicitly scoped experiment
   inputs and fixtures.
