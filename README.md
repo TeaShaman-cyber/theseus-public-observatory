@@ -125,6 +125,24 @@ Collection itself is normally executed by GitHub Actions:
 npm run collect
 ```
 
+### Collector currentness
+
+The scheduled collector writes validated observation/report updates directly to `main`. A feature branch can therefore become stale even while its own tests remain green.
+
+Before review or promotion of repository changes:
+
+```text
+refresh origin/main
+verify exact feature head
+verify exact current base / mergeability
+require the relevant CI on the accepted head
+read back main after promotion
+```
+
+A previously green workflow proves only the tested commit. It does not prove that the branch is still current against the latest collection commits.
+
+Collection-only movement of `main` is not a reason to bypass these checks; reconcile or re-verify against current authority before promotion.
+
 ## Repository Map
 
 ```text
