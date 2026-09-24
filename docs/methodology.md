@@ -256,3 +256,42 @@ verified != scientifically established
 ```
 
 The contract exists to keep exploratory research productive without turning the Observatory into an unbounded discussion surface.
+
+
+## 12. Source Admissibility Boundary
+
+A received payload is not automatically evidence for the semantic role an
+analysis wants to use. Observatory keeps these transitions explicit:
+
+```text
+received
+  != parsed
+  != schema-valid
+  != semantically typed
+  != sufficiently covered/current
+  != provenance-bound
+  != admissible for a particular claim
+```
+
+Not every source can prove every layer. Coverage, freshness, or membership
+claims are required only when the source contract exposes evidence for them.
+Missing proof must not be invented.
+
+Examples of non-equivalence include:
+
+```text
+forecast != observation
+partial != complete
+missing != none
+stale != current
+payload presence != accepted evidence
+successful collection != scientific conclusion
+```
+
+Current JSON-family adapters are protected by an adversarial admissibility
+matrix. The matrix includes known-good fixtures and valid-looking negative
+mutations so that field presence, metadata, forecasts, invalid domains, or
+wrong-year/context records cannot silently become usable observations.
+
+Transport, parsing, semantic availability, and downstream scientific
+interpretation remain separate claims.
