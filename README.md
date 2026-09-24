@@ -29,7 +29,8 @@ public source
        |
        +-> latest JSON
        +-> daily report
-       +-> DuckDB research index
+       +-> immutable archive packs (raw + Parquet + manifest)
+       +-> DuckDB research index / temporary analysis cache
        +-> GitHub Pages
 ```
 
@@ -72,40 +73,39 @@ A collection run can therefore preserve a degraded observation and still fail a 
 - `data/YYYY-MM-DD/public-status.jsonl` — durable observation journal.
 - `data/latest/public-status.json` — latest projection.
 - `reports/YYYY-MM-DD.md` — human projection.
-- `data/index/observatory.duckdb` — disposable research projection.
+- immutable GitHub Release packs — durable packaged evidence for long-window reuse; they do not replace canonical JSONL authority.
+- `data/index/observatory.duckdb` — disposable research projection / temporary analysis cache.
 - GitHub Pages — presentation.
 - Issues/PRs/Git refs — durable coordination and accepted repository state.
-- GitHub Actions — reproducible compute/verification plane.
+- GitHub Actions — reproducible collection, packaging, and verification plane.
 
 `latest` and the daily report are checked against the final canonical JSONL record.
 
 ## Compute and Verification
 
-Substantive reproducible checks belong in **GitHub Actions**.
+The canonical local pre-review gate is:
 
-MarcoPolo is an operational workbench for repository inspection, code preparation, MCP probes, bounded canaries, orchestration, and readback. It is not treated as scientific compute authority.
+```bash
+bash tools/dev/check
+```
+
+GitHub Actions reruns that deterministic baseline and owns heavier repository acceptance steps such as rebuilding projections, archive-pack canaries, and Pages.
+
+MarcoPolo is an operational workbench for repository inspection, code preparation, bounded canaries, orchestration, and readback. It is not treated as scientific compute authority.
 
 GitHub Codespaces is an optional interactive repo-local Linux environment for dependency-heavy debugging or reproducing CI failures. It is not an acceptance authority.
 
-The separate claim-verification lane can use:
-
-- repository-owned exact/Open Source checks in CI;
-- Precise Special Functions MCP for high-precision zeta/Bessel/Gamma/hypergeometric/elliptic calculations;
-- remote Wolfram as an optional independent cross-check when available;
-- Lean certificates when a claim is worth and suitable for formalization.
-
-Verifier availability and claim truth are separate states.
+The Observatory verifies evidence integrity, source/sensor contracts, projections, packaging, and reproducible analysis inputs. General mathematical/theorem verification belongs in the research repository that owns the claim (for example the math research lab), not in an Observatory-owned verifier framework.
 
 ## Reproduce
 
 Repository contract:
 
 ```bash
-npm test
-python -m unittest discover -s observatory_site/tests -v
-python -m ruff check observatory_site scripts
-python -m ruff format --check observatory_site scripts
+bash tools/dev/check
 ```
+
+This is the cheap deterministic pre-review gate. CI additionally rebuilds the disposable research index, historical archive-pack canary, and static site.
 
 Rebuild disposable research index:
 
@@ -134,7 +134,9 @@ scripts/               collectors, adapters, validators, health checks
 observatory_site/      static Pages builder
 experiments/public/    public experiment descriptors
 docs/methodology.md    trust and interpretation contract
+docs/archive-packs.md  durable archive-pack contract
 docs/research/         research leads, not observations
+tools/dev/check        canonical local deterministic QA entrypoint
 .github/workflows/     collection and Pages execution
 ```
 
