@@ -189,7 +189,12 @@ function hasUsnoSchema(source, payload, localDate) {
   }
 
   if (source.kind === "usno-moon-phases") {
+    const requestedDate = source.observer_local_date ?? localDate ?? "";
+    const requestedYear = exactYear(String(requestedDate).slice(0, 4));
+    const payloadYear = exactYear(payload?.year);
     return (
+      payloadYear !== null &&
+      (requestedYear === null || payloadYear === requestedYear) &&
       Array.isArray(payload?.phasedata) &&
       payload.phasedata.length > 0 &&
       payload.phasedata.every(hasPhaseRecord)

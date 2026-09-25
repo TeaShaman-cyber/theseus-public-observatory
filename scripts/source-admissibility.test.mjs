@@ -184,6 +184,12 @@ const astronomyCases = [
           { phase: "Full Moon", year: 2026, month: 9, day: 26, time: "25:99" },
         ],
       })],
+      ["well-formed phase data from the wrong requested year", () => ({
+        year: 2025,
+        phasedata: [
+          { phase: "Full Moon", year: 2025, month: 9, day: 26, time: "16:49" },
+        ],
+      })],
     ],
   },
   {
