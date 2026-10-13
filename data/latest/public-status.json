@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "collected_at": "2026-10-12T19:50:27.305Z",
+  "collected_at": "2026-10-13T02:04:02.073Z",
   "run": {
-    "github_run_id": "38300283274",
+    "github_run_id": "38335110295",
     "github_run_attempt": 1,
     "github_repository": "TeaShaman-cyber/theseus-public-observatory",
     "github_workflow": "Collect public observatory data",
     "github_ref": "refs/heads/main",
-    "github_sha": "8ff81e9a90098c96a890f4998b946e39c51aa2a2",
+    "github_sha": "bf479b8dca435bd2e8fc3a37ce12a71900f2cf0c",
     "collector": "collect-public-status-v1"
   },
   "sources": [
@@ -19,7 +19,7 @@
       "adapter": "statuspage-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 306,
+      "latency_ms": 552,
       "content_type": "application/json",
       "payload_sha256": "97cd6ef62ecc64bf94d6037928247ed19ace4d9f578ecd43c6f8376dd0dbee8d",
       "transport": {
@@ -45,9 +45,9 @@
       "adapter": "statuspage-summary-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 91,
+      "latency_ms": 95,
       "content_type": "application/json; charset=utf-8",
-      "payload_sha256": "80dcf730e22253eab570f920922eaad821f38748f00cc4a9451b4927550c0379",
+      "payload_sha256": "63bb6d294b45f6bb48c8e7550f7f489e02f7b2cbe1cd0dabf9bdda01ab737d0a",
       "transport": {
         "status": "ok"
       },
@@ -62,7 +62,7 @@
         "description": "All Systems Operational",
         "page_name": "GitHub",
         "components": 12,
-        "incidents": 1
+        "incidents": 0
       }
     },
     {
@@ -73,9 +73,9 @@
       "adapter": "huggingface-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 610,
+      "latency_ms": 576,
       "content_type": "application/json; charset=utf-8",
-      "payload_sha256": "4f644b44829946e40336add83ce0a6438448076f57325d3fdff385df492c8e6d",
+      "payload_sha256": "9216789d6840fd673d0b770e1cb3864554816943fc2af026509ac63e6e684ed8",
       "transport": {
         "status": "ok"
       },
@@ -91,7 +91,7 @@
         "page_name": "Hugging Face",
         "resources": 8,
         "incidents": 7,
-        "updated_at": "2026-10-12T19:18:15.159Z"
+        "updated_at": "2026-10-13T01:18:14.871Z"
       }
     },
     {
@@ -102,9 +102,9 @@
       "adapter": "noaa-kp-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 177,
+      "latency_ms": 384,
       "content_type": "application/json",
-      "payload_sha256": "53c8bb600aab28393f05a339e2b6f08752c68c42dcd75e30f6be82a765ec9d3c",
+      "payload_sha256": "20a1f2e55a91e4c068d6676b0a00b788291c788ddee98a4e28827c148ce557af",
       "transport": {
         "status": "ok"
       },
@@ -115,9 +115,9 @@
         "status": "available"
       },
       "summary": {
-        "rows": 62,
+        "rows": 56,
         "latest": {
-          "time_tag": "2026-10-12T15:00:00",
+          "time_tag": "2026-10-12T21:00:00",
           "Kp": 1.33,
           "a_running": 5,
           "station_count": 8
@@ -132,9 +132,9 @@
       "adapter": "noaa-scales-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 176,
+      "latency_ms": 384,
       "content_type": "application/json",
-      "payload_sha256": "87c0ae8da702a349f2c256444d24969f1eb8ac3587497714c5a3cbf26a886a3e",
+      "payload_sha256": "55c3b0ba8c7f56bf1c82bfd8f229fdb5b4ec5b32af4a6f78c4ad430c151eac67",
       "transport": {
         "status": "ok"
       },
@@ -146,8 +146,8 @@
       },
       "summary": {
         "observed": {
-          "DateStamp": "2026-10-11",
-          "TimeStamp": "19:48:00",
+          "DateStamp": "2026-10-12",
+          "TimeStamp": "02:02:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -165,8 +165,8 @@
           }
         },
         "current": {
-          "DateStamp": "2026-10-12",
-          "TimeStamp": "19:48:00",
+          "DateStamp": "2026-10-13",
+          "TimeStamp": "02:02:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -184,8 +184,8 @@
           }
         },
         "forecast": {
-          "DateStamp": "2026-10-12",
-          "TimeStamp": "19:48:00",
+          "DateStamp": "2026-10-13",
+          "TimeStamp": "02:02:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -198,8 +198,8 @@
             "Prob": "5"
           },
           "G": {
-            "Scale": "0",
-            "Text": "none"
+            "Scale": "1",
+            "Text": "minor"
           }
         }
       }
@@ -208,13 +208,13 @@
       "schema_version": 1,
       "id": "usno_sun_moon",
       "label": "USNO Sun and Moon Data",
-      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-10-12&coords=54.7104%2C20.4522&tz=2",
+      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-10-13&coords=54.7104%2C20.4522&tz=2",
       "adapter": "usno-sun-moon-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 689,
+      "latency_ms": 541,
       "content_type": "application/json",
-      "payload_sha256": "f87fa795e6cdede495624dc2e4782443f0334b2df0c54f4723bf938c76975fc3",
+      "payload_sha256": "6c5f62520b443a0ab5629ae6fa9c0d648acdf306586c60486007340d26a91fb3",
       "transport": {
         "status": "ok"
       },
@@ -234,7 +234,7 @@
         },
         "moon": {
           "current_phase": "Waxing Crescent",
-          "illumination_percent": 3,
+          "illumination_percent": 8,
           "closest_primary_phase": {
             "day": 10,
             "month": 10,
@@ -243,35 +243,35 @@
             "year": 2026
           },
           "events": {
-            "rise": "09:29",
-            "upper_transit": "13:41",
-            "set": "17:41"
+            "rise": "10:51",
+            "upper_transit": "14:29",
+            "set": "17:59"
           }
         },
         "sun": {
           "events": {
-            "begin_civil_twilight": "06:25",
-            "rise": "07:01",
-            "upper_transit": "12:25",
-            "set": "17:47",
-            "end_civil_twilight": "18:23"
+            "begin_civil_twilight": "06:27",
+            "rise": "07:03",
+            "upper_transit": "12:24",
+            "set": "17:45",
+            "end_civil_twilight": "18:21"
           }
         },
         "timezone_offset_hours": 2
       },
-      "observer_local_date": "2026-10-12"
+      "observer_local_date": "2026-10-13"
     },
     {
       "schema_version": 1,
       "id": "usno_moon_phases",
       "label": "USNO Moon Phases",
-      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-10-12&nump=4",
+      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-10-13&nump=4",
       "adapter": "usno-moon-phases-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 631,
+      "latency_ms": 531,
       "content_type": "application/json",
-      "payload_sha256": "11f7eca8c7eb64bb522fea8bc4eea757294ec0a35aab3ca269c0b8f4a7e84c65",
+      "payload_sha256": "43aea384ca5f17f4a4cc7ac2e6e4537a85a0af1a3cd7a185e8bda3d607266003",
       "transport": {
         "status": "ok"
       },
@@ -314,7 +314,7 @@
           }
         ]
       },
-      "observer_local_date": "2026-10-12"
+      "observer_local_date": "2026-10-13"
     },
     {
       "schema_version": 1,
@@ -324,7 +324,7 @@
       "adapter": "usno-solar-eclipses-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 830,
+      "latency_ms": 573,
       "content_type": "application/json",
       "payload_sha256": "f21891385485ced992622bb4b74c567115a5ec97f24af13aadcffea8b379c8f1",
       "transport": {
@@ -355,7 +355,7 @@
         "event_today": null,
         "local_visibility": "not-provided-by-usno-year-endpoint"
       },
-      "observer_local_date": "2026-10-12"
+      "observer_local_date": "2026-10-13"
     }
   ]
 }
