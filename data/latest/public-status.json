@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "collected_at": "2026-10-26T00:26:09.989Z",
+  "collected_at": "2026-10-26T06:20:42.144Z",
   "run": {
-    "github_run_id": "40249339126",
+    "github_run_id": "40279256128",
     "github_run_attempt": 1,
     "github_repository": "TeaShaman-cyber/theseus-public-observatory",
     "github_workflow": "Collect public observatory data",
     "github_ref": "refs/heads/main",
-    "github_sha": "0b7cbb2277edfced89bdb3061114f3ec9cace4f4",
+    "github_sha": "b07d3148048f00414ca7e9081352ee0d0a57e73a",
     "collector": "collect-public-status-v1"
   },
   "sources": [
@@ -19,7 +19,7 @@
       "adapter": "statuspage-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 335,
+      "latency_ms": 337,
       "content_type": "application/json",
       "payload_sha256": "13920b826774020fce3764698a1b34ffa81e83dd96d568853f8cade84a296267",
       "transport": {
@@ -45,9 +45,9 @@
       "adapter": "statuspage-summary-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 153,
+      "latency_ms": 159,
       "content_type": "application/json; charset=utf-8",
-      "payload_sha256": "7b3c18fcf978ff2a2af8a945931ede827ed907db795bcaa6bcd2eec9028e1802",
+      "payload_sha256": "6f545c3b5cef89eafa6304f2f5afd45a335b6b1d4fc81ba76023c0de74efd348",
       "transport": {
         "status": "ok"
       },
@@ -73,9 +73,9 @@
       "adapter": "huggingface-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 534,
-      "content_type": "text/html; charset=utf-8",
-      "payload_sha256": "346fb6050815bbf735f02605089be6d2e894e561b7f406c9d5b1dd1ab85ee552",
+      "latency_ms": 553,
+      "content_type": "application/json; charset=utf-8",
+      "payload_sha256": "b08971f3303438bb925e8177052bf43fc18d8c230f7c45941311076924293743",
       "transport": {
         "status": "ok"
       },
@@ -91,7 +91,7 @@
         "page_name": "Hugging Face",
         "resources": 8,
         "incidents": 7,
-        "updated_at": "2026-10-26T00:20:12.050Z"
+        "updated_at": "2026-10-26T06:20:09.385Z"
       }
     },
     {
@@ -102,9 +102,9 @@
       "adapter": "noaa-kp-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 240,
+      "latency_ms": 250,
       "content_type": "application/json",
-      "payload_sha256": "92a2161e3228de2b9efe5985d9f06c6dcadfb5b364e42f0355fdf58be764db65",
+      "payload_sha256": "1023ac84d9f486399fd3b1296f60db048db151ee39f47dc7a0c3b0bf3cb71f46",
       "transport": {
         "status": "ok"
       },
@@ -115,9 +115,9 @@
         "status": "available"
       },
       "summary": {
-        "rows": 56,
+        "rows": 58,
         "latest": {
-          "time_tag": "2026-10-25T21:00:00",
+          "time_tag": "2026-10-26T03:00:00",
           "Kp": 1,
           "a_running": 4,
           "station_count": 8
@@ -132,9 +132,9 @@
       "adapter": "noaa-scales-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 238,
+      "latency_ms": 251,
       "content_type": "application/json",
-      "payload_sha256": "0159bed2898b2190524d0e4105217a545682c38d3b424c98c95ab593679650d1",
+      "payload_sha256": "3b7cd1fa1a9318c0d0fd121560aa0d53b80cff30d754e90b88eb7977b96f6e20",
       "transport": {
         "status": "ok"
       },
@@ -147,7 +147,7 @@
       "summary": {
         "observed": {
           "DateStamp": "2026-10-25",
-          "TimeStamp": "00:24:00",
+          "TimeStamp": "06:19:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -166,7 +166,7 @@
         },
         "current": {
           "DateStamp": "2026-10-26",
-          "TimeStamp": "00:24:00",
+          "TimeStamp": "06:19:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -185,7 +185,7 @@
         },
         "forecast": {
           "DateStamp": "2026-10-26",
-          "TimeStamp": "00:24:00",
+          "TimeStamp": "06:19:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -212,7 +212,7 @@
       "adapter": "usno-sun-moon-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 756,
+      "latency_ms": 774,
       "content_type": "application/json",
       "payload_sha256": "9e5984c6fc9e2865b4edd7e32978af49b3c87ea2746702f70171e1ff3e73ebfb",
       "transport": {
@@ -269,7 +269,7 @@
       "adapter": "usno-moon-phases-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 720,
+      "latency_ms": 749,
       "content_type": "application/json",
       "payload_sha256": "1dd448a2a98058d81886205e6a3942ccbde09b488995db4bafd7277659e082a1",
       "transport": {
@@ -324,7 +324,7 @@
       "adapter": "usno-solar-eclipses-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 855,
+      "latency_ms": 925,
       "content_type": "application/json",
       "payload_sha256": "f21891385485ced992622bb4b74c567115a5ec97f24af13aadcffea8b379c8f1",
       "transport": {
