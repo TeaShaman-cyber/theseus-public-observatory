@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "collected_at": "2026-11-25T15:42:55.209Z",
+  "collected_at": "2026-11-26T00:28:46.347Z",
   "run": {
-    "github_run_id": "45648248402",
+    "github_run_id": "45729003890",
     "github_run_attempt": 1,
     "github_repository": "TeaShaman-cyber/theseus-public-observatory",
     "github_workflow": "Collect public observatory data",
     "github_ref": "refs/heads/main",
-    "github_sha": "fc9c92ec1c97800e6ed5d4e234801499bfc64791",
+    "github_sha": "85d500ed173575dd5cb1a428e17e5126167e47f6",
     "collector": "collect-public-status-v1"
   },
   "sources": [
@@ -19,9 +19,9 @@
       "adapter": "statuspage-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 467,
+      "latency_ms": 306,
       "content_type": "application/json",
-      "payload_sha256": "2ed1a903b71f1551e7f0fe4f6d52e1f622496a9281f6b75069910db719de5568",
+      "payload_sha256": "8a8de994f5a0f738d00117574f2367c0efb3172cac941681d514b445e387c85b",
       "transport": {
         "status": "ok"
       },
@@ -45,9 +45,9 @@
       "adapter": "statuspage-summary-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 136,
+      "latency_ms": 143,
       "content_type": "application/json; charset=utf-8",
-      "payload_sha256": "a3f50238040ac8382fab107cae093bdefcdf19d859ae861e6d16710040a9deaf",
+      "payload_sha256": "0e9d1e50889952c151952dce364f8efa97a2563a565737a13504a55d0118a68f",
       "transport": {
         "status": "ok"
       },
@@ -62,7 +62,7 @@
         "description": "All Systems Operational",
         "page_name": "GitHub",
         "components": 12,
-        "incidents": 0
+        "incidents": 1
       }
     },
     {
@@ -73,7 +73,7 @@
       "adapter": "huggingface-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 617,
+      "latency_ms": 639,
       "content_type": "application/json; charset=utf-8",
       "payload_sha256": "93bc4eb89d7cdf410565e25c25799b31c3cdc417a9ea9007a6340b07b85e9bca",
       "transport": {
@@ -102,9 +102,9 @@
       "adapter": "noaa-kp-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 226,
+      "latency_ms": 270,
       "content_type": "application/json",
-      "payload_sha256": "ca2ac4c6fc34124932dec020f8b5556f25c03c24455c5e495f75f2e49ef172bd",
+      "payload_sha256": "c9188ec3d5ae2423a1fd4af63e2dae6058c0d2ac0f064e925da901abbf89755e",
       "transport": {
         "status": "ok"
       },
@@ -115,9 +115,9 @@
         "status": "available"
       },
       "summary": {
-        "rows": 61,
+        "rows": 56,
         "latest": {
-          "time_tag": "2026-11-25T12:00:00",
+          "time_tag": "2026-11-25T21:00:00",
           "Kp": 0.67,
           "a_running": 3,
           "station_count": 8
@@ -132,9 +132,9 @@
       "adapter": "noaa-scales-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 225,
+      "latency_ms": 268,
       "content_type": "application/json",
-      "payload_sha256": "f0b78f8e6841cbcbdceced7bbdc9e3bea1bc833342e4ae974fda8c791d4ed8ee",
+      "payload_sha256": "7f1400e654e46a18418c380896f07b9c93f79f4a88ff3030aca3087c9a222366",
       "transport": {
         "status": "ok"
       },
@@ -146,8 +146,8 @@
       },
       "summary": {
         "observed": {
-          "DateStamp": "2026-11-24",
-          "TimeStamp": "15:41:00",
+          "DateStamp": "2026-11-25",
+          "TimeStamp": "00:27:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -165,8 +165,8 @@
           }
         },
         "current": {
-          "DateStamp": "2026-11-25",
-          "TimeStamp": "15:41:00",
+          "DateStamp": "2026-11-26",
+          "TimeStamp": "00:27:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -184,8 +184,8 @@
           }
         },
         "forecast": {
-          "DateStamp": "2026-11-25",
-          "TimeStamp": "15:41:00",
+          "DateStamp": "2026-11-26",
+          "TimeStamp": "00:27:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -198,8 +198,8 @@
             "Prob": "1"
           },
           "G": {
-            "Scale": "0",
-            "Text": "none"
+            "Scale": "1",
+            "Text": "minor"
           }
         }
       }
@@ -208,31 +208,8 @@
       "schema_version": 1,
       "id": "usno_sun_moon",
       "label": "USNO Sun and Moon Data",
-      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-11-25&coords=54.7104%2C20.4522&tz=2",
+      "url": "https://aa.usno.navy.mil/api/rstt/oneday?date=2026-11-26&coords=54.7104%2C20.4522&tz=2",
       "adapter": "usno-sun-moon-v1",
-      "ok": false,
-      "http_status": null,
-      "latency_ms": 10491,
-      "content_type": null,
-      "payload_sha256": null,
-      "transport": {
-        "status": "fetch-error"
-      },
-      "parser": {
-        "status": "not-attempted"
-      },
-      "semantic": {
-        "status": "unavailable"
-      },
-      "error": "fetch failed",
-      "observer_local_date": "2026-11-25"
-    },
-    {
-      "schema_version": 1,
-      "id": "usno_moon_phases",
-      "label": "USNO Moon Phases",
-      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-11-25&nump=4",
-      "adapter": "usno-moon-phases-v1",
       "ok": false,
       "http_status": null,
       "latency_ms": 10490,
@@ -248,7 +225,30 @@
         "status": "unavailable"
       },
       "error": "fetch failed",
-      "observer_local_date": "2026-11-25"
+      "observer_local_date": "2026-11-26"
+    },
+    {
+      "schema_version": 1,
+      "id": "usno_moon_phases",
+      "label": "USNO Moon Phases",
+      "url": "https://aa.usno.navy.mil/api/moon/phases/date?date=2026-11-26&nump=4",
+      "adapter": "usno-moon-phases-v1",
+      "ok": false,
+      "http_status": null,
+      "latency_ms": 10489,
+      "content_type": null,
+      "payload_sha256": null,
+      "transport": {
+        "status": "fetch-error"
+      },
+      "parser": {
+        "status": "not-attempted"
+      },
+      "semantic": {
+        "status": "unavailable"
+      },
+      "error": "fetch failed",
+      "observer_local_date": "2026-11-26"
     },
     {
       "schema_version": 1,
@@ -258,7 +258,7 @@
       "adapter": "usno-solar-eclipses-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10490,
+      "latency_ms": 10488,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -271,7 +271,7 @@
         "status": "unavailable"
       },
       "error": "fetch failed",
-      "observer_local_date": "2026-11-25"
+      "observer_local_date": "2026-11-26"
     }
   ]
 }
