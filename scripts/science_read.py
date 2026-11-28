@@ -18,9 +18,11 @@ from urllib.request import HTTPRedirectHandler, build_opener
 import duckdb
 
 if __package__:
+    from .sierra_read import read_sierra
     from .schumann_read import read_nck
     from .magnetic_read import QUALITIES, STATIONS, read_magnetic
 else:
+    from sierra_read import read_sierra
     from schumann_read import read_nck
     from magnetic_read import QUALITIES, STATIONS, read_magnetic
 
@@ -270,6 +272,7 @@ def main():
             "gfz-kp-ap",
             "intermagnet-minute",
             "schumann-nck-frequency",
+            "schumann-sierra-nevada",
         ],
     )
     p.add_argument("--start", required=True)
@@ -277,7 +280,12 @@ def main():
     p.add_argument("--fields", nargs="+", choices=list(FIELDS))
     p.add_argument("--station", choices=STATIONS)
     p.add_argument("--quality", choices=QUALITIES)
+    p.add_argument("--sensor", type=int, choices=(0, 1))
     a = p.parse_args()
+    if a.source == "schumann-sierra-nevada" and a.sensor is None:
+        p.error("--sensor required for Sierra Nevada")
+    if a.source != "schumann-sierra-nevada" and a.sensor is not None:
+        p.error("--sensor only for Sierra Nevada")
     w = Window(a.start, a.end)
     if a.source != "nasa-omni-hourly" and a.fields:
         p.error("--fields is available only for OMNI")
@@ -288,7 +296,9 @@ def main():
     else:
         if a.station or a.quality:
             p.error("station/quality only for INTERMAGNET")
-        if a.source == "schumann-nck-frequency":
+        if a.source == "schumann-sierra-nevada":
+            result = read_sierra(w.begin, w.stop, a.sensor)
+        elif a.source == "schumann-nck-frequency":
             result = read_nck(w.begin, w.stop)
         else:
             result = (

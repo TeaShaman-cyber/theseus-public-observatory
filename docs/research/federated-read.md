@@ -142,3 +142,67 @@ c868264941f6cfcedfa84ffa3e2156688903003262aeb096235a968f3c7aee86.
 No data persisted on exe.dev or mirrored to Supabase. For a future
 published experiment, retain pinned input identities and verify
 lightning and environmental covariates before statistical inference.
+
+## Sierra Nevada: range-based remote archive (#50)
+
+University of Granada [dataset](https://hdl.handle.net/10481/71563),
+CC BY-NC-ND 3.0. Method: Salinas et al., 2022,
+https://doi.org/10.1016/j.cageo.2022.105148, section 7; original
+Packaging.py at asalinas62/Sierra_Nevada_SR commit
+499b41695aed7189a08e78eb76ec7598149ff1a1 confirms the positional arrays.
+Internal noncommercial research only; do not publish adapted data.
+Available monthly members March 2013–February 2017, each sensor
+separate (0 NS, 1 EW). No new local archive or database.
+
+```sh
+python3 scripts/science_read.py schumann-sierra-nevada --sensor 0 \
+  --start 2017-02-01T00:00:00Z --end 2017-02-02T00:00:00Z
+```
+
+The source ZIP is 3579685616 bytes; Last-Modified 2021-11-16 18:51:19
+GMT. Require matching length, Last-Modified, HTTP206 and exact Content-Range
+on every request; no redirects or full-body fallback. Python zipfile
+reads the directory and one explicitly named member, checks ZIP CRC and
+bounded size; 64 MiB response budget, at most 64 requests, 48 MiB member
+ceiling. No strong provider ETag was supplied, so the size/date checks
+are not a cryptographic version pin; record selected member SHA256.
+The selected NPZ is decoded in memory. Only four small NPY arrays are
+interpreted (saturation, chi-square, fitted peak amplitudes/frequencies,
+time); strict dtype/shape/byte length, no pickle or execution.
+Source code identifies three interleaved amplitude/frequency pairs.
+Peak amplitudes are spectral amplitude values, not raw field magnitudes.
+Do not compare them directly to NCK electric-field amplitudes.
+Retain exact UTC start tags, including microseconds; nominal ten-minute
+support, not a uniform exact grid. Nonfinite values become null, actual
+coverage unknown until gap/support audit; fit/saturation indicators are
+preserved, not interpreted as a passed quality filter. Only one calendar
+month per call; sub-month selection requires reading that month's member.
+
+Canary 2026-11-28: directory 98 entries, 8047 bytes transferred.
+February 2017 sensor 0 member SHA256
+26e9ee44b283089dd7d688ba3e8a8f5b2fb939bfbc94537333470b80ec0f2139,
+16139826 decoded bytes, 14689647 HTTP range bytes in six requests.
+1662 distinct records, first 2017-02-01T02:24:21.355000Z,
+last 2017-02-26T21:36:46.437000Z; all three frequency columns finite,
+not proof of month completeness. Common CLI day selection yielded 101
+records; selection digest
+b8df5d8e4bbf5848658524f7ffe96f669c6d35ea1f965b11508dd4374f03260d.
+No whole-archive download or persistent data files. EW not yet tested
+live. No inference or quality-filter threshold selected.
+
+### Lightning control access feasibility
+
+New WGLC 2026 release [Zenodo 20277101](https://zenodo.org/records/20277101)
+covers 2010–2025, overlapping both SR products. Separate NetCDF4 files,
+rather than the older 1.1 GB ZIP. The daily 0.5-degree grid file is
+1963832881 bytes, publisher MD5 45d5d39387fe4a1748dac51a90f9fa4e.
+Live Range 0–511 returned 206 and the HDF5 signature, no ETag or
+Last-Modified. Only the signature/transport is verified, not any
+lightning observations. Need a bounded HDF5/NetCDF subset reader
+with explicit source version, coordinate/time axes, fill and chunk
+semantics. No such library in the current pinned QA environment.
+Do not install an unpinned dependency or download the whole object.
+README and metadata disagree on CC BY-SA 4.0 versus CC BY 4.0;
+resolve before redistribution. Daily density is not hourly lightning
+and cannot explain individual ten-minute SR events without a
+separately justified temporal model.
