@@ -12,6 +12,7 @@ python3 -m unittest discover -s observatory_site/tests -v
 
 echo '== Radar pilot contract =='
 python3 -m unittest scripts.test_radar_pilot -v
+python3 scripts/check_radar_mutations.py
 
 echo '== archive-pack tests =='
 python3 -m unittest scripts/test_archive_pack.py -v

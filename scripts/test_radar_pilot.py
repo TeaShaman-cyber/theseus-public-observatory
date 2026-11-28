@@ -39,15 +39,23 @@ class RadarPilotTest(unittest.TestCase):
 
     def test_json_fail_closed(self):
         for text in (
-            '{"success":false,"success":true,"result":{}}',
-            '{"success":true,"result":{"x":NaN}}',
-            '{"success":true,"result":{"x":Infinity}}',
-            '{"success":true,"result":{"x":1e999}}',
+            '{"success":false,"success":true,"result":{"origins":[{"slug":"microsoft","regions":[{"region":"eastus"}]}]}}',
+            '{"success":true,"result":{"origins":[{"slug":"microsoft","regions":[{"region":"eastus"}]}],"x":NaN}}',
+            '{"success":true,"result":{"origins":[{"slug":"microsoft","regions":[{"region":"eastus"}]}],"x":Infinity}}',
+            '{"success":true,"result":{"origins":[{"slug":"microsoft","regions":[{"region":"eastus"}]}],"x":1e999}}',
             '{"success":false,"result":{"origins":[]}}',
             '{"success":1,"result":{"origins":[]}}',
         ):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 radar.inspect_payload(text, "catalogue")
+
+    def test_valid_looking_error_envelope_is_rejected(self):
+        result = {"origins": [{"slug": "microsoft", "regions": [{"region": "eastus"}]}]}
+        for success in (False, 1, None, "true"):
+            with self.subTest(success=success), self.assertRaises(ValueError):
+                radar.inspect_payload(
+                    json.dumps({"success": success, "result": result}), "catalogue"
+                )
 
     def test_series_requires_actual_samples_with_matching_lengths(self):
         valid = {
@@ -122,7 +130,12 @@ class RadarPilotTest(unittest.TestCase):
 
     def test_catalogue_failure_stops_series(self):
         with patch.object(
-            radar, "request", return_value={"status": "HTTP_ERROR"}
+            radar,
+            "request",
+            return_value={
+                "status": "HTTP_ERROR",
+                "summary": {"providers": ["microsoft"]},
+            },
         ) as req:
             result = radar.collect("secret-test-value")
         self.assertEqual(req.call_count, 1)

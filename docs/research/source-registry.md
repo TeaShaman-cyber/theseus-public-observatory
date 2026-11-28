@@ -392,7 +392,9 @@ time-series, provenance, control, and statistical verification layer.
 - **Authentication:** repository secret `CLOUDFLARE_RADAR_TOKEN` (Account / Radar / Read);
   never pass credentials in arguments, URLs, artifacts or logs.
 - **Retention:** sanitized schema receipt only (7-day CI artifact); no raw data redistribution
-  until terms and actual payload are reviewed. No change to canonical history.
+  until live payload and attribution are reviewed. Radar data is licensed CC BY-NC 4.0
+  per https://developers.cloudflare.com/radar/ (noncommercial use with attribution).
+  No change to canonical history.
 - **Health:** missing token, HTTP errors, transport failures, malformed/invalid data
   and schema success have distinct dispositions; failed samples are not zeros.
 - **Biases:** Cloudflare-observed aggregate origin traffic; unknown tenant/region allocation,
