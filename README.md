@@ -83,6 +83,8 @@ A collection run can therefore preserve a degraded observation and still fail a 
 
 ## Compute and Verification
 
+Repository-specific Codex review and outage fallback: [AGENTS.md](AGENTS.md).
+
 The canonical local pre-review gate is:
 
 ```bash
