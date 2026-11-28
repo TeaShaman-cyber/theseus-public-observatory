@@ -15,13 +15,13 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import HTTPRedirectHandler, build_opener
 
-import duckdb
-
 if __package__:
+    from .wglc_read import Selection, read_wglc
     from .sierra_read import read_sierra
     from .schumann_read import read_nck
     from .magnetic_read import QUALITIES, STATIONS, read_magnetic
 else:
+    from wglc_read import Selection, read_wglc
     from sierra_read import read_sierra
     from schumann_read import read_nck
     from magnetic_read import QUALITIES, STATIONS, read_magnetic
@@ -184,6 +184,8 @@ def read_omni(window, fields):
 
 
 def read_gfz(window):
+    import duckdb
+
     m = json.loads((ROOT / "experiments/historical/gfz/storage.json").read_text())
     url = (
         "https://supabase.int.exe.xyz/storage/v1/object/authenticated/"
@@ -273,6 +275,7 @@ def main():
             "intermagnet-minute",
             "schumann-nck-frequency",
             "schumann-sierra-nevada",
+            "wglc-daily-density",
         ],
     )
     p.add_argument("--start", required=True)
@@ -281,7 +284,12 @@ def main():
     p.add_argument("--station", choices=STATIONS)
     p.add_argument("--quality", choices=QUALITIES)
     p.add_argument("--sensor", type=int, choices=(0, 1))
+    p.add_argument(
+        "--bbox", type=float, nargs=4, metavar=("SOUTH", "NORTH", "WEST", "EAST")
+    )
     a = p.parse_args()
+    if (a.source == "wglc-daily-density") != (a.bbox is not None):
+        p.error("--bbox required only for WGLC")
     if a.source == "schumann-sierra-nevada" and a.sensor is None:
         p.error("--sensor required for Sierra Nevada")
     if a.source != "schumann-sierra-nevada" and a.sensor is not None:
@@ -296,7 +304,11 @@ def main():
     else:
         if a.station or a.quality:
             p.error("station/quality only for INTERMAGNET")
-        if a.source == "schumann-sierra-nevada":
+        if a.source == "wglc-daily-density":
+            if w.begin.hour or w.stop.hour:
+                p.error("WGLC requires whole UTC days")
+            result = read_wglc(Selection(w.begin.date(), w.stop.date(), *a.bbox))
+        elif a.source == "schumann-sierra-nevada":
             result = read_sierra(w.begin, w.stop, a.sensor)
         elif a.source == "schumann-nck-frequency":
             result = read_nck(w.begin, w.stop)
