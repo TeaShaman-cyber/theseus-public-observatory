@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 import duckdb
@@ -49,6 +50,31 @@ def _scale(summary: dict, key: str):
         return int(raw) if raw is not None else None
     except (TypeError, ValueError):
         return None
+
+
+def _kp_measurement(item: dict, collected_at: str, usable: bool):
+    if item["id"] != "noaa_planetary_k_index":
+        return None, None, None
+    latest = (item.get("summary") or {}).get("latest")
+    unknown = (None, None, "UNKNOWN")
+    if not usable or not isinstance(latest, dict):
+        return unknown
+    value, tag = latest.get("Kp"), latest.get("time_tag")
+    if type(value) not in (int, float) or not 0 <= value <= 9:
+        return unknown
+    if not isinstance(tag, str) or "T" not in tag:
+        return unknown
+    try:
+        measured = datetime.fromisoformat(tag)
+        observed = datetime.fromisoformat(collected_at)
+        # NOAA time tags without an explicit offset are UTC.
+        if measured.tzinfo is None:
+            measured = measured.replace(tzinfo=timezone.utc)
+        if observed.tzinfo is None or measured > observed:
+            return unknown
+    except (ValueError, TypeError, OverflowError):
+        return unknown
+    return float(value), measured, "available"
 
 
 def _event(summary: dict, body: str, name: str):
@@ -111,7 +137,10 @@ def build_index(repo_root: Path, output: Path) -> None:
               g_scale integer,
               kp_rows integer,
               provenance_path varchar,
-              provenance_line integer
+              provenance_line integer,
+              kp_value double,
+              kp_measured_at timestamptz,
+              kp_measurement_state varchar
             )
         """)
         con.execute("""
@@ -255,6 +284,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                             else None,
                             rel,
                             line_no,
+                            *_kp_measurement(item, ts, usable),
                         )
                     )
                 if sid in ASTRONOMY:
@@ -294,7 +324,7 @@ def build_index(repo_root: Path, output: Path) -> None:
             )
         if weather_rows:
             con.executemany(
-                "insert into space_weather values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "insert into space_weather values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 weather_rows,
             )
         if astronomy_rows:
