@@ -115,3 +115,64 @@ via attached REST proxy. Recurring job 4 active at */5; sustained cadence
 not yet measured. Existing journal refresh remains active. Security
 advisor reports the pre-existing pg_net-in-public warning only at warn
 level; no new public grants.
+
+## Operational magnetometer evidence buffer (#47)
+
+This supplements remote archive reads, not a definitive-data substitute.
+INTERMAGNET terms (https://intermagnet.org/data_conditions.html) permit
+noncommercial research with attribution, with institute-specific exceptions;
+bulk third-party distribution requires permission. The raw responses stay
+in the private `observatory_sync` schema; do not commit or expose them.
+
+Apply `supabase/migrations/*_magnetometer_capture_buffer.sql` once using the
+explicit authorized remote SQL-file route after the existing schedule.sql.
+Run `test_magnetometer_buffer.sql` in a rollback-only transaction.
+The owner-only collector captures IRT (Irkutsk) and KAK (Kakioka),
+`best-avail/PT1M/xyzf`, for the previous aligned 6h UTC window and the
+same window 72h later. This product can mix preliminary/revised quality;
+no definitive label or implied observation of physical truth is assigned.
+An HTTP 200 is only received_unvalidated until the payload is checked.
+Failed requests and size rejection are durable attempts too.
+
+`magnetic_payloads` deduplicates accepted-size response text by SHA256
+of its UTF-8 representation, not a claimed hash of compressed wire bytes.
+`magnetic_attempts` records each station/window/capture time/status/hash
+or transport SQLSTATE; later responses do not overwrite earlier evidence.
+Owner-only invoker functions, private schema, RLS and explicit grant
+revocations; triggers reject ordinary UPDATE/DELETE/TRUNCATE. This is
+append-only/tamper-evident by application design, **not** administrator-proof
+WORM storage; privileged DDL can disable triggers. No raw data is published.
+A future durable offline pack needs the provider's permission if shared in
+bulk. Storage/retention policy must be explicit before permanent scaling.
+
+`activate_magnetometer_buffer.sql` creates one job at minute 17 every
+6h, self-unscheduling after seven days on the next scheduled tick.
+Stop early: `select cron.unschedule('observatory-magnetic-buffer');`
+Expected 28 cycles, four requests each (112 attempts), plus bounded
+manual and acceptance runs. Each accepts at most 128KiB after receipt
+(roughly 14MiB maximum uncompressed response text for scheduled attempts,
+excluding DB overhead; observed successful response ~24KiB).
+Fixed source/parameters, 10s socket/request timeout configured, 3s connect,
+no redirect configured, advisory lock to prevent overlap. If the database
+transaction itself fails, cron records failure; no claim of exactly-once
+delivery across transaction failure. Late data beyond 72h are not yet
+automatically recovered; later archival reconciliation remains a separate
+explicit experiment. No inference or interpolation from a missing response.
+Retain pilot evidence; inspect actual size, coverage and cadence before
+extending. Existing jobs are unchanged.
+
+Acceptance 2026-11-28: first manual cycle 15:33Z. IRT 2026-11-28 06–12Z
+returned HTTP400; IRT 2026-11-25 06–12Z returned HTTP200/HAPI1200,
+360 timestamped non-fill lines. KAK both windows HTTP200/HAPI1200, 360
+timestamped non-fill lines each. This check is not a complete scientific
+schema/vector validation. Four attempts and four hashed payloads.
+Rollback fixtures preserve duplicate-content references, changed bodies,
+transport failure and deny mutation; existing pg_net public-schema warning
+unchanged. No new public grants. Hosted migration-history reconciliation
+remains open (explicit CLI SQL, not migration push).
+
+Scheduled acceptance: one-shot job 7 succeeded 15:34:02–15:34:03 UTC
+and self-unscheduled. Readback: eight attempts, four distinct payload
+bodies, six received_unvalidated; identical responses deduplicated
+without losing attempt timestamps. Recurring job 6 is active; the
+first regular 6-hour tick and actual 72-hour revisit are not yet verified.
