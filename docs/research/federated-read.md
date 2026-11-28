@@ -206,3 +206,56 @@ README and metadata disagree on CC BY-SA 4.0 versus CC BY 4.0;
 resolve before redistribution. Daily density is not hourly lightning
 and cannot explain individual ten-minute SR events without a
 separately justified temporal model.
+
+## WGLC daily lightning density (#53)
+
+The versioned 2026 WGLC release (Kaplan and Lau,
+https://doi.org/10.5281/zenodo.20277101) is now selectively readable via
+HDF5 on a bounded HTTP range cache. The actual daily NetCDF has 5844 days
+(2010-01-01 through 2025-12-31), 360 latitude and 720 longitude centers,
+0.5 degree spacing. The README's time dimension count is stale.
+Density units are strokes km^-2 day^-1; source counts are corrected for
+detection efficiency. Only density is admitted, not power fields.
+Zero is a valid value, -9999 is missing. Coordinates, dimension order,
+units, time origin/calendar, chunk shape, fill and scaling metadata
+are validated before reading the selected data. No interpolation.
+
+Use a dedicated optional environment (pinned Python 3.12 test route):
+
+```sh
+python3 -m venv /tmp/wglc-venv
+/tmp/wglc-venv/bin/pip install --only-binary=:all: -r experiments/wglc/requirements.txt
+/tmp/wglc-venv/bin/python scripts/science_read.py wglc-daily-density \
+  --start 2023-02-10T00:00:00Z --end 2023-02-13T00:00:00Z \
+  --bbox 46 48 16 18
+/tmp/wglc-venv/bin/python -m unittest discover -s experiments/wglc -v
+```
+
+Bounds: at most 31 complete UTC days; bounding box at most 10 degrees
+per axis, non-wrapping, half-open cell-center selection. Split antimeridian
+queries explicitly. HDF5 file-object access caches 256 KiB blocks in memory
+with 32 MiB / 128 requests per query and fails closed on range mismatch.
+The versioned URL, file size and internal DOI are checked; no strong ETag
+or Last-Modified is available. Publisher MD5 recorded, NOT verified
+over the full file. Slice SHA256 records the exact normalized result.
+No disk mirror, new storage service or scheduler. Optional HDF5 packages
+are pinned separately; no impact on existing readers. Dedicated CI runs
+a real synthetic chunked HDF5 fixture, including missing/zero and axis drift.
+
+Live checks 2026-11-28: three UTC days, 16 cells per day, 48 values each.
+Hungary bbox [46,48,16,18]: all 48 valid zeros.
+Equatorial Africa bbox [-5,-3,25,27]: 20 nonzero values, all 48 valid.
+Each query transferred 1160753 bytes, five ranges, out of 1963832881.
+Normalized slice hashes:
+e96896ecdd4a50281785f2de57578b32bdc5361e372b00ee371ec894bdae7d8f
+and 647045b4d653f315dbc8cd144b2c46c43625bd5f5f1a6b5e3cc1e74ae9ba4faf.
+Common CLI reproduces the Hungary digest. These are feasibility samples,
+not an estimate of global lightning or SR coupling. The daily resolution
+and local box are insufficient to explain sub-hourly SR dynamics; define
+global source-region aggregations and daily estimands separately.
+
+License discrepancy remains (Zenodo CC BY 4.0 vs file README CC BY-SA
+4.0). No raw or transformed dataset is republished here; internal research
+only until resolved. Cite both methodology papers:
+https://doi.org/10.5194/essd-13-3219-2021 and
+https://doi.org/10.5194/essd-14-5665-2022.
