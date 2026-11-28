@@ -226,3 +226,13 @@ test("NOAA Kp rejects malformed optional counts without rejecting missing counts
   }
   assert.equal(summarizeSource(source, [row]).ok, true);
 });
+
+test("NOAA Kp never promotes an earlier row when the final raw row is malformed", () => {
+  const source = { adapter: "noaa-kp-v1" };
+  const older = { time_tag: "2026-11-28T06:00:00", Kp: 0 };
+  const newer = { time_tag: "2026-11-28T09:00:00", Kp: 3 };
+  for (const changes of [{ station_count: -1 }, { a_running: "8" }, { Kp: 10 }, { time_tag: "bad" }]) {
+    assert.equal(summarizeSource(source, [older, { ...newer, ...changes }]).ok, false);
+  }
+  assert.equal(summarizeSource(source, [older, newer]).summary.latest.Kp, 3);
+});

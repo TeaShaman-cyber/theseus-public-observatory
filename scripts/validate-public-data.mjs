@@ -54,7 +54,7 @@ function validateScienceMeasurement(item, source) {
   let valid = true;
   switch (item.id) {
     case "noaa_planetary_k_index":
-      valid = Number.isSafeInteger(summary?.rows) && summary.rows > 0 &&
+      valid = Number.isSafeInteger(summary?.rows) && summary.rows > 0 && summary.rows <= 2147483647 &&
         summarizeSource({ adapter: "noaa-kp-v1" }, [summary.latest]).ok;
       break;
     case "noaa_scales":

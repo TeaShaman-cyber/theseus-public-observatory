@@ -71,7 +71,7 @@ function noaaKp(json) {
       isOptionalNonnegative(row.a_running) &&
       isOptionalNonnegative(row.station_count, true),
   );
-  if (rows.length === 0) return schemaMismatch();
+  if (rows.length === 0 || rows.at(-1) !== json.at(-1)) return schemaMismatch();
   const latest = rows.at(-1);
   return {
     ok: true,

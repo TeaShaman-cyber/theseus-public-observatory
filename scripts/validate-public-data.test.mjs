@@ -98,3 +98,10 @@ test("available science receipts enforce measurement domains without inventing m
   }
   for (const row of [kp,scale,moon]) assert.throws(() => check({...row,summary:{}}), /measurement/);
 });
+
+test("available Kp row counts fit the signed integer index column", () => {
+  const row = {...good(), id:"noaa_planetary_k_index", adapter:"noaa-kp-v1",
+    summary:{rows:2147483647,latest:{Kp:0,time_tag:"2026-11-28T09:00:00"}}};
+  assert.doesNotThrow(() => check(row));
+  assert.throws(() => check({...row,summary:{...row.summary,rows:2147483648}}), /measurement/);
+});
