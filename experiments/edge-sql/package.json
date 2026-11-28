@@ -1,0 +1,10 @@
+{
+  "name": "observatory-edge-sql-canary",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ducklings/workers": "2.0.0",
+    "esbuild": "0.28.2",
+    "miniflare": "4.20260730.0"
+  }
+}
