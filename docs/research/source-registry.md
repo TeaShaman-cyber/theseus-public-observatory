@@ -130,7 +130,7 @@ or a bounded test is the blocker — not the fact that the hypothesis remains op
 - **Limit:** definitive publication time unknown; retrospective only; ap is derived from Kp
 - **Consumers:** historical geophysics, SIF/environmental controls, independent physical response studies
 - **Cost:** one 2.5 MB compressed source snapshot; disposable local Parquet; no recurring collection
-- **Status:** EVALUATING until exact-head acceptance of #41
+- **Status:** ACCEPTED for retrospective analysis (#41 / merged PR #42)
 - **Stop/advance:** require verified archive projection and cross-check; no inference until independently defined analysis and second source
 
 ### NOAA R/S/G scales

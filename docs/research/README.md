@@ -5,6 +5,8 @@ It is intentionally small and versioned with the repository.
 
 ## Canonical map
 
+- [Historical archive storage](archive-storage.md) — remote Parquet and bounded staging.
+
 - [Scientific roadmap](roadmap.md) — research sequence, method templates and data admission.
 
 - [Methodology](../methodology.md) — collection rules and interpretation boundary.
