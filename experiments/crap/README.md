@@ -31,3 +31,18 @@ experiments/crap/requirements.txt, locked npm ci in experiments/crap,
 and CRAPPER_SOURCE pointing to the clean pinned upstream checkout.
 Run bash experiments/crap/run.sh with an absolute fresh output directory.
 CI retains JSON, text, LCOV and coverage.json for 14 days.
+
+### Collector failure-isolation follow-up
+
+Issue #55: native Node fixtures exercise mixed successful/unavailable
+sources, HTTP failure with plausible JSON, malformed JSON, schema drift,
+adapter exception, timeout, interrupted response body, sanitized transport
+error and concurrent local journal appends. The old read/replace append
+lost 19 of 20 concurrent records in the reproduction. Use appendFile
+instead; no claim of crash-atomic writes or cross-run Git push serialization.
+HTTP errors do not emit interpreted measurement summaries; received HTTP
+metadata and completed-body digest survive when available. Astronomy
+uses the same transport path and retains observer-local date. Existing
+historical receipts are unchanged. Tests use synthetic transport and
+temporary files, no external network requests or credentials. No changes
+to source catalogue or collection cadence.
