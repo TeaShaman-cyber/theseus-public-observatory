@@ -3,6 +3,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { validateRadarCohort } from "./radar-collection.mjs";
+import { summarizeSource } from "./source-adapters.mjs";
 
 function walk(dir) {
   if (!existsSync(dir)) return [];
@@ -48,6 +49,26 @@ function validateTransport(item, source) {
   }
 }
 
+function validateScienceMeasurement(item, source) {
+  const summary = item.summary;
+  let valid = true;
+  switch (item.id) {
+    case "noaa_planetary_k_index":
+      valid = Number.isSafeInteger(summary?.rows) && summary.rows > 0 && summary.rows <= 2147483647 &&
+        summarizeSource({ adapter: "noaa-kp-v1" }, [summary.latest]).ok;
+      break;
+    case "noaa_scales":
+      valid = summarizeSource({ adapter: "noaa-scales-v1" }, summary).ok;
+      break;
+    case "usno_sun_moon": {
+      const value = summary?.moon?.illumination_percent;
+      valid = typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100;
+      break;
+    }
+  }
+  if (!valid) throw new Error(`${source}: invalid science measurement: ${item.id}`);
+}
+
 function validateV1Source(item, source) {
   if (item.schema_version !== 1) throw new Error(`${source}: v1 source schema_version must be 1`);
   if (!nonempty(item.adapter)) throw new Error(`${source}: v1 source missing adapter`);
@@ -65,6 +86,7 @@ function validateV1Source(item, source) {
   if (item.summary !== undefined && !isObject(item.summary)) {
     throw new Error(`${source}: invalid summary`);
   }
+  if (available) validateScienceMeasurement(item, source);
   if (!available && item.summary && Object.keys(item.summary).length) {
     throw new Error(`${source}: unavailable source has measurement summary`);
   }

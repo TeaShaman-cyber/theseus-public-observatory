@@ -75,3 +75,33 @@ test("unsupported schema and malformed run metadata fail validation", () => {
     {latency_ms:-1}, {label:" "},
   ]) bad(change);
 });
+
+test("available science receipts enforce measurement domains without inventing missing values", () => {
+  const kp = { ...good(), id:"noaa_planetary_k_index", adapter:"noaa-kp-v1",
+    summary:{ rows:1, latest:{ Kp:0, time_tag:"2026-11-28T09:00:00" } } };
+  const scale = { ...good(), id:"noaa_scales", adapter:"noaa-scales-v1",
+    summary:{current:{DateStamp:"2026-11-28",TimeStamp:"09:00:00",R:{Scale:"0"},S:{Scale:"5"},G:{Scale:"1"}}} };
+  const moon = { ...good(), id:"usno_sun_moon", adapter:"usno-sun-moon-v1",
+    summary:{moon:{illumination_percent:0}} };
+  for (const row of [kp,scale,moon]) assert.doesNotThrow(() => check(row));
+  for (const value of [-1,10,true,"3",null]) {
+    assert.throws(() => check({...kp,summary:{...kp.summary,latest:{...kp.summary.latest,Kp:value}}}), /measurement/);
+  }
+  for (const rows of [0,-1,1.5,true,"1"]) {
+    assert.throws(() => check({...kp,summary:{...kp.summary,rows}}), /measurement/);
+  }
+  for (const value of ["6","-1",1.5,true,"01",null]) {
+    assert.throws(() => check({...scale,summary:{current:{...scale.summary.current,R:{Scale:value}}}}), /measurement/);
+  }
+  for (const value of [-1,101,true,"80",null]) {
+    assert.throws(() => check({...moon,summary:{moon:{illumination_percent:value}}}), /measurement/);
+  }
+  for (const row of [kp,scale,moon]) assert.throws(() => check({...row,summary:{}}), /measurement/);
+});
+
+test("available Kp row counts fit the signed integer index column", () => {
+  const row = {...good(), id:"noaa_planetary_k_index", adapter:"noaa-kp-v1",
+    summary:{rows:2147483647,latest:{Kp:0,time_tag:"2026-11-28T09:00:00"}}};
+  assert.doesNotThrow(() => check(row));
+  assert.throws(() => check({...row,summary:{...row.summary,rows:2147483648}}), /measurement/);
+});

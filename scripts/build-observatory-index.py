@@ -60,10 +60,15 @@ def _health_fields(snapshot: dict, item: dict):
 def _scale(summary: dict, key: str):
     cur = (summary.get("current") or {}).get(key) or {}
     raw = cur.get("Scale")
-    try:
-        return int(raw) if raw is not None else None
-    except (TypeError, ValueError):
-        return None
+    return int(raw) if isinstance(raw, str) and re.fullmatch(r"[0-5]", raw) else None
+
+
+def _positive_count(value):
+    return value if type(value) is int and 0 < value <= 2**31 - 1 else None
+
+
+def _illumination(value):
+    return float(value) if type(value) in (int, float) and 0 <= value <= 100 else None
 
 
 def _kp_measurement(item: dict, collected_at: str, usable: bool):
@@ -293,7 +298,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                             _scale(summary, "R"),
                             _scale(summary, "S"),
                             _scale(summary, "G"),
-                            summary.get("rows")
+                            _positive_count(summary.get("rows"))
                             if sid == "noaa_planetary_k_index"
                             else None,
                             rel,
@@ -310,7 +315,9 @@ def build_index(repo_root: Path, output: Path) -> None:
                             sid,
                             *health,
                             (summary.get("moon") or {}).get("current_phase"),
-                            (summary.get("moon") or {}).get("illumination_percent"),
+                            _illumination(
+                                (summary.get("moon") or {}).get("illumination_percent")
+                            ),
                             _event(summary, "moon", "rise"),
                             _event(summary, "moon", "set"),
                             _event(summary, "sun", "rise"),

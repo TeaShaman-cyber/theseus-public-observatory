@@ -44,6 +44,18 @@ function huggingFace(json) {
   };
 }
 
+function isKpTimestamp(value) {
+  if (typeof value !== "string") return false;
+  const match = /^(\d{4}-\d{2}-\d{2})T((?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d)(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)?$/.exec(value);
+  return Boolean(match && isNoaaScaleTimestamp(match[1], match[2]) && Number.isFinite(Date.parse(value)));
+}
+
+function isOptionalNonnegative(value, integer = false) {
+  return value == null ||
+    (typeof value === "number" && Number.isFinite(value) && value >= 0 &&
+      (!integer || Number.isSafeInteger(value)));
+}
+
 function noaaKp(json) {
   if (!Array.isArray(json)) return schemaMismatch();
   const rows = json.filter(
@@ -51,15 +63,15 @@ function noaaKp(json) {
       row &&
       !Array.isArray(row) &&
       typeof row === "object" &&
-      typeof row.time_tag === "string" &&
-      row.time_tag.trim().length > 0 &&
-      Number.isFinite(Date.parse(row.time_tag)) &&
+      isKpTimestamp(row.time_tag) &&
       typeof row.Kp === "number" &&
       Number.isFinite(row.Kp) &&
       row.Kp >= 0 &&
-      row.Kp <= 9,
+      row.Kp <= 9 &&
+      isOptionalNonnegative(row.a_running) &&
+      isOptionalNonnegative(row.station_count, true),
   );
-  if (rows.length === 0) return schemaMismatch();
+  if (rows.length === 0 || rows.at(-1) !== json.at(-1)) return schemaMismatch();
   const latest = rows.at(-1);
   return {
     ok: true,
