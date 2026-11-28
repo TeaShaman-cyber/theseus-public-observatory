@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { buildAstronomySources, interpretAstronomy } from "./astronomy.mjs";
@@ -44,116 +44,68 @@ function today(date = new Date()) {
   return date.toISOString().slice(0, 10);
 }
 
-async function fetchJson(source, timeoutMs = 30000) {
+export async function fetchJson(source, timeoutMs = 30000, interpret = summarizeSource) {
   const started = Date.now();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  let httpStatus = null;
+  let contentType = null;
+  let text;
+  let transportStatus;
   try {
     const response = await fetch(source.url, {
       signal: controller.signal,
       headers: { "user-agent": "theseus-public-observatory/0.1" },
     });
-    const text = await response.text();
-    const contentType = response.headers.get("content-type");
-    const transportStatus = response.ok ? "ok" : "http-error";
-    let json = null;
-    try {
-      json = JSON.parse(text);
-    } catch {
-      return createSourceReceipt({
-        source,
-        httpStatus: response.status,
-        latencyMs: Date.now() - started,
-        contentType,
-        payloadText: text,
-        transportStatus,
-        parserStatus: "invalid-json",
-      });
-    }
-    const interpreted = summarizeSource(source, json);
-    return createSourceReceipt({
-      source,
-      httpStatus: response.status,
-      latencyMs: Date.now() - started,
-      contentType,
-      payloadText: text,
-      transportStatus,
-      parserStatus: interpreted.ok ? "ok" : "schema-mismatch",
-      adapterResult: interpreted,
-    });
+    httpStatus = response.status;
+    contentType = response.headers.get("content-type");
+    text = await response.text();
+    transportStatus = response.ok ? "ok" : "http-error";
   } catch (error) {
-    const transportStatus = error?.name === "AbortError" ? "timeout" : "fetch-error";
+    const timedOut = controller.signal.aborted || error?.name === "AbortError";
     return createSourceReceipt({
-      source,
-      httpStatus: null,
-      latencyMs: Date.now() - started,
-      transportStatus,
+      source, httpStatus, contentType, latencyMs: Date.now() - started,
+      transportStatus: timedOut ? "timeout" : "fetch-error",
       parserStatus: "not-attempted",
-      transportError: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
+      transportError: timedOut ? "timeout" : "fetch-failed",
     });
   } finally {
     clearTimeout(timeout);
   }
+  const base = {
+    source, httpStatus, contentType, latencyMs: Date.now() - started,
+    payloadText: text, transportStatus,
+  };
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    return createSourceReceipt({ ...base, parserStatus: "invalid-json" });
+  }
+  // A plausible error body is not an observation, even if it parses.
+  if (transportStatus !== "ok") {
+    return createSourceReceipt({ ...base, parserStatus: "not-attempted" });
+  }
+  let interpreted;
+  try {
+    interpreted = interpret(source, json);
+  } catch {
+    // Malformed provider data must not be mislabeled as a network failure.
+    return createSourceReceipt({ ...base, parserStatus: "schema-mismatch" });
+  }
+  return createSourceReceipt({
+    ...base,
+    parserStatus: interpreted.ok ? "ok" : "schema-mismatch",
+    adapterResult: interpreted.ok ? interpreted : null,
+  });
 }
 
 async function fetchAstronomy(date) {
-  const day = buildAstronomySources(date)[0].observer_local_date;
-  return Promise.all(
-    buildAstronomySources(date).map(async (source) => {
-      const started = Date.now();
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
-      try {
-        const response = await fetch(source.url, {
-          signal: controller.signal,
-          headers: { "user-agent": "theseus-public-observatory/0.1" },
-        });
-        const text = await response.text();
-        const contentType = response.headers.get("content-type");
-        const transportStatus = response.ok ? "ok" : "http-error";
-        let json = null;
-        try {
-          json = JSON.parse(text);
-        } catch {
-          const receipt = createSourceReceipt({
-            source,
-            httpStatus: response.status,
-            latencyMs: Date.now() - started,
-            contentType,
-            payloadText: text,
-            transportStatus,
-            parserStatus: "invalid-json",
-          });
-          return { ...receipt, observer_local_date: source.observer_local_date };
-        }
-        const interpreted = interpretAstronomy(source, json, day);
-        const receipt = createSourceReceipt({
-          source,
-          httpStatus: response.status,
-          latencyMs: Date.now() - started,
-          contentType,
-          payloadText: text,
-          transportStatus,
-          parserStatus: interpreted.ok ? "ok" : "schema-mismatch",
-          adapterResult: interpreted,
-        });
-        return { ...receipt, observer_local_date: source.observer_local_date };
-      } catch (error) {
-        const transportStatus = error?.name === "AbortError" ? "timeout" : "fetch-error";
-        const receipt = createSourceReceipt({
-          source,
-          httpStatus: null,
-          latencyMs: Date.now() - started,
-          transportStatus,
-          parserStatus: "not-attempted",
-          transportError: error?.name === "AbortError" ? "timeout" : error?.message || "fetch-failed",
-        });
-        return { ...receipt, observer_local_date: source.observer_local_date };
-      } finally {
-        clearTimeout(timeout);
-      }
-    }),
-  );
+  return Promise.all(buildAstronomySources(date).map(async (source) => ({
+    ...await fetchJson(source, 30000, (item, json) =>
+      interpretAstronomy(item, json, source.observer_local_date)),
+    observer_local_date: source.observer_local_date,
+  })));
 }
 
 export function renderReport(snapshot) {
@@ -226,27 +178,25 @@ export function renderReport(snapshot) {
   return lines.join("\n");
 }
 
-async function appendJsonl(path, value) {
+export async function appendJsonl(path, value) {
   await mkdir(dirname(path), { recursive: true });
-  let previous = "";
-  try {
-    previous = await readFile(path, "utf8");
-  } catch {
-    previous = "";
-  }
-  await writeFile(path, `${previous}${JSON.stringify(value)}\n`, "utf8");
+  await appendFile(path, `${JSON.stringify(value)}\n`, "utf8");
 }
 
-async function main() {
-  const now = new Date();
-  const snapshot = createSnapshot({
+export async function collectSnapshot(now, radarReader = fetchRadar) {
+  return createSnapshot({
     collectedAt: now.toISOString(),
     sources: [
       ...(await Promise.all(SOURCES.map((source) => fetchJson(source)))),
       ...(await fetchAstronomy(now)),
-      ...(await fetchRadar()),
+      ...(await radarReader()),
     ],
   });
+}
+
+async function main() {
+  const now = new Date();
+  const snapshot = await collectSnapshot(now);
 
   const day = today(now);
   const jsonlPath = join("data", day, "public-status.jsonl");
