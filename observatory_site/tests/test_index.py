@@ -586,3 +586,73 @@ class UnavailableMeasurementTests(unittest.TestCase):
                     ).fetchone(),
                     (4,),
                 )
+
+
+class MeasurementDomainTests(unittest.TestCase):
+    def test_index_never_coerces_invalid_numeric_measurements(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            day = root / "data/2026-11-28"
+            day.mkdir(parents=True)
+            cases = [
+                ("0", 0, 0, (0, 0.0, None)),
+                ("5", 100, 1, (5, 100.0, 1)),
+                (1.5, 101, -1, (None, None, None)),
+                (True, True, True, (None, None, None)),
+                ("6", "80", "2", (None, None, None)),
+                ("01", -1, 1.5, (None, None, None)),
+                (None, None, None, (None, None, None)),
+            ]
+            snapshots = []
+            for scale, moon, count, _ in cases:
+                sources = [
+                    {
+                        "id": "noaa_scales",
+                        "summary": {"current": {"R": {"Scale": scale}}},
+                    },
+                    {
+                        "id": "usno_sun_moon",
+                        "summary": {"moon": {"illumination_percent": moon}},
+                    },
+                    {"id": "noaa_planetary_k_index", "summary": {"rows": count}},
+                ]
+                for item in sources:
+                    item.update(ok=True, http_status=200, latency_ms=1)
+                snapshots.append(
+                    {"collected_at": "2026-11-28T12:00:00Z", "sources": sources}
+                )
+            (day / "public-status.jsonl").write_text(
+                "\n".join(map(json.dumps, snapshots)) + "\n"
+            )
+            db = root / "index.duckdb"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--repo-root",
+                    str(root),
+                    "--output",
+                    str(db),
+                ],
+                check=True,
+            )
+            with duckdb.connect(str(db), read_only=True) as con:
+                scales = con.execute(
+                    "select r_scale from space_weather where source_id='noaa_scales' order by provenance_line"
+                ).fetchall()
+                moons = con.execute(
+                    "select illumination_percent from astronomy order by provenance_line"
+                ).fetchall()
+                counts = con.execute(
+                    "select kp_rows from space_weather where source_id='noaa_planetary_k_index' order by provenance_line"
+                ).fetchall()
+            self.assertEqual(
+                list(
+                    zip(
+                        [x[0] for x in scales],
+                        [x[0] for x in moons],
+                        [x[0] for x in counts],
+                    )
+                ),
+                [x[3] for x in cases],
+            )

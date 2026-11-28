@@ -202,3 +202,27 @@ test("NOAA scales adapter rejects invalid observation timestamps", () => {
     assert.equal(result.error, "schema-mismatch", JSON.stringify(entry));
   }
 });
+
+test("NOAA Kp rejects normalized impossible calendar dates and non-ISO timestamps", () => {
+  const source = { adapter: "noaa-kp-v1" };
+  for (const time_tag of ["2026-02-30T09:00:00", "2026-11-28", "11/28/2026", "2026-11-28T24:00:00"]) {
+    assert.equal(summarizeSource(source, [{ time_tag, Kp: 0 }]).ok, false, time_tag);
+  }
+  for (const time_tag of ["2024-02-29T09:00:00", "2026-11-28T09:00:00Z", "2026-11-28T11:00:00+02:00"]) {
+    assert.equal(summarizeSource(source, [{ time_tag, Kp: 0 }]).ok, true, time_tag);
+  }
+});
+
+test("NOAA Kp rejects malformed optional counts without rejecting missing counts", () => {
+  const source = { adapter: "noaa-kp-v1" };
+  const row = { time_tag: "2026-11-28T09:00:00", Kp: 0 };
+  for (const key of ["a_running", "station_count"]) {
+    for (const value of [-1, true, "8", Infinity, ...(key === "station_count" ? [1.5] : [])]) {
+      assert.equal(summarizeSource(source, [{ ...row, [key]: value }]).ok, false, key + ":" + value);
+    }
+    for (const value of [null, 0, 8, ...(key === "a_running" ? [1.5] : [])]) {
+      assert.equal(summarizeSource(source, [{ ...row, [key]: value }]).ok, true);
+    }
+  }
+  assert.equal(summarizeSource(source, [row]).ok, true);
+});
