@@ -375,3 +375,32 @@ Specialized tools such as smarts.bio may support later biological mechanism or
 dataset analysis (sequence, protein/domain, transcriptomic, or related workflows).
 They are not Observatory exporters and do not substitute for the Observatory's
 time-series, provenance, control, and statistical verification layer.
+
+### Cloudflare Radar Origins — infrastructure pressure proxy
+
+- **Status:** `EVALUATING` (#25); not a canonical continuous source.
+- **Authority:** Cloudflare Radar HTTP origin observations, not OpenAI internal telemetry.
+- **Routes:** https://developers.cloudflare.com/api/resources/radar/subresources/origins/ ;
+  https://developers.cloudflare.com/radar/get-started/first-request/
+- **Observable:** provider catalogue; normalized request activity and connection failures.
+  Regional latency and success-rate series are follow-up candidates.
+- **Units/type:** provider normalization, aggregation interval, time range and sample timestamps
+  must remain attached; a normalized value is not an absolute request count.
+- **Pilot cadence:** manual, at most one catalogue plus two 1-day/15-minute series for each
+  of four supported providers. No recurring collection until real response admission.
+- **Time semantics:** UTC samples, source update time, collection receipt time are distinct.
+- **Authentication:** repository secret `CLOUDFLARE_RADAR_TOKEN` (Account / Radar / Read);
+  never pass credentials in arguments, URLs, artifacts or logs.
+- **Retention:** sanitized schema receipt only (7-day CI artifact); no raw data redistribution
+  until live payload and attribution are reviewed. Radar data is licensed CC BY-NC 4.0
+  per https://developers.cloudflare.com/radar/ (noncommercial use with attribution).
+  No change to canonical history.
+- **Health:** missing token, HTTP errors, transport failures, malformed/invalid data
+  and schema success have distinct dispositions; failed samples are not zeros.
+- **Biases:** Cloudflare-observed aggregate origin traffic; unknown tenant/region allocation,
+  sampling, normalization and coverage. Not GPU utilization or proof of OpenAI routing,
+  throttling or causality.
+- **Consumer:** infrastructure-vs-agentic drift research; independent time windows
+  and comparators; preserve counterexamples.
+- **Stop/advance:** verify live response and permissions, document redistribution terms,
+  then admit specific measurements with tests, bounded storage, CLI and optional Kusto projection.

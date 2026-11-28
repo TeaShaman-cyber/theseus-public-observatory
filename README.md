@@ -165,3 +165,14 @@ Only public data belongs in this repository. No private chat history, account te
 If a future source requires authentication, its design must be reviewed before it is added.
 
 See [Methodology](docs/methodology.md), [Data](data/README.md), [Reports](reports/README.md), and the [research index](docs/research/README.md).
+
+### Cloud infrastructure pilot
+
+The manual **Cloudflare Radar schema pilot** workflow is separate from the
+scheduled collector. Create a Cloudflare custom API token with **Account →
+Radar → Read** and add it under repository Settings → Secrets and variables →
+Actions → New repository secret, named `CLOUDFLARE_RADAR_TOKEN`.
+Run the workflow from the Actions tab. It writes a sanitized short-lived
+receipt, not canonical observations; an absent token fails explicitly.
+See #25 and the source registry. Radar measures aggregate HTTP origin
+activity, not OpenAI tenant compute or GPU utilization.
