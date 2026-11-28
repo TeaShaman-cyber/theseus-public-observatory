@@ -118,6 +118,21 @@ or a bounded test is the blocker — not the fact that the hypothesis remains op
 - **Privacy/ethics:** low
 - **Status:** `ACCEPTED`
 
+### GFZ historical Kp/ap (independent retrospective source)
+
+- **Authority:** GFZ Helmholtz Centre for Geosciences, DOI 10.5880/Kp.0001
+- **Route and snapshot:** [historical archive](../../experiments/historical/gfz/README.md)
+- **License:** CC BY 4.0; attribution in snapshot documentation
+- **Observable:** Kp (dimensionless ordinal-scale index) and derived ap
+- **Support:** half-open 3 h UTC intervals; definitive vs preliminary explicit
+- **Coverage:** 1932-01-01 through 2026-10-31 definitive, later preliminary through 2026-11-27
+- **Health:** pinned source digests, continuous unique interval grid, missing sentinel as NULL, independent API sample parity
+- **Limit:** definitive publication time unknown; retrospective only; ap is derived from Kp
+- **Consumers:** historical geophysics, SIF/environmental controls, independent physical response studies
+- **Cost:** one 2.5 MB compressed source snapshot; disposable local Parquet; no recurring collection
+- **Status:** EVALUATING until exact-head acceptance of #41
+- **Stop/advance:** require verified archive projection and cross-check; no inference until independently defined analysis and second source
+
 ### NOAA R/S/G scales
 
 - **Family:** space-weather context

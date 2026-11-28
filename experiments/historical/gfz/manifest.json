@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "source_url": "https://kp.gfz.de/fileadmin/files_for_gfz_cms/Kp_ap_since_1932.txt",
+  "source": "GFZ Helmholtz Centre for Geosciences, Geomagnetic Observatory Niemegk",
+  "license": "CC BY 4.0",
+  "doi": "10.5880/Kp.0001",
+  "method_doi": "10.1029/2020SW002641",
+  "retrieved_date_utc": "2026-11-28",
+  "raw_bytes": 16641162,
+  "raw_sha256": "04d9d06c54aa825a9499d4b91d013fca1cac96ada28c62ae27bd349aa11d1a95",
+  "gzip_sha256": "b15340bd85ad2527b8cd02c4f22c806d3aaf09e83a361429349faf57ad208594",
+  "rows": 277320,
+  "definitive_rows": 277104,
+  "missing_rows": 0,
+  "interval_start": "1932-01-01T00:00:00Z",
+  "interval_end_exclusive": "2026-11-28T00:00:00Z",
+  "definitive_end_exclusive": "2026-11-01T00:00:00Z",
+  "timestamp_semantics": "UTC 3-hour interval start/end, definitive values retrospective; publication time not known"
+}
