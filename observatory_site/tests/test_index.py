@@ -273,6 +273,7 @@ class IndexTests(unittest.TestCase):
                         "transport": {"status": "ok"},
                         "parser": {"status": "ok"},
                         "semantic": {"status": "available"},
+                        "payload_sha256": "a" * 64,
                         "summary": {
                             "indicator": "operational",
                             "description": "Operational",
@@ -331,6 +332,9 @@ class RadarIndexTests(unittest.TestCase):
                                 "schema_version": 1,
                                 "ok": True,
                                 "semantic": {"status": "available"},
+                                "transport": {"status": "ok"},
+                                "parser": {"status": "ok"},
+                                "http_status": 200,
                                 "payload_sha256": str(hour)[-1] * 64,
                                 "observed_at": f"2026-11-28T{hour}:01:00Z",
                                 "summary": {
@@ -416,6 +420,12 @@ class KpMeasurementTests(unittest.TestCase):
                                 "id": "noaa_planetary_k_index",
                                 "adapter": "noaa-kp-v1",
                                 "ok": available,
+                                "transport": {"status": "ok"},
+                                "parser": {
+                                    "status": "ok" if available else "schema-mismatch"
+                                },
+                                "http_status": 200,
+                                "payload_sha256": "a" * 64,
                                 "semantic": {
                                     "status": "available"
                                     if available
@@ -459,3 +469,120 @@ class KpMeasurementTests(unittest.TestCase):
                 for i, (_, _, _, expected) in enumerate(cases, 1)
             ]
             self.assertEqual(result, expected)
+
+
+class UnavailableMeasurementTests(unittest.TestCase):
+    def test_unavailable_and_contradictory_receipts_do_not_emit_measurements(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            day = root / "data/2026-11-28"
+            day.mkdir(parents=True)
+            sources = [
+                {
+                    "id": "noaa_scales",
+                    "ok": False,
+                    "semantic": {"status": "unavailable"},
+                    "transport": {"status": "ok"},
+                    "parser": {"status": "schema-mismatch"},
+                    "summary": {"current": {"R": {"Scale": "4"}, "S": {"Scale": "0"}}},
+                },
+                {
+                    "id": "usno_sun_moon",
+                    "ok": False,
+                    "semantic": {"status": "unavailable"},
+                    "transport": {"status": "ok"},
+                    "parser": {"status": "schema-mismatch"},
+                    "summary": {
+                        "moon": {
+                            "current_phase": "Full Moon",
+                            "illumination_percent": 100,
+                        }
+                    },
+                },
+                {
+                    "id": "noaa_planetary_k_index",
+                    "ok": True,
+                    "semantic": {"status": "available"},
+                    "transport": {"status": "http-error"},
+                    "parser": {"status": "ok"},
+                    "summary": {
+                        "rows": 1,
+                        "latest": {"Kp": 4, "time_tag": "2026-11-28T09:00:00Z"},
+                    },
+                },
+                {
+                    "id": "openai_status",
+                    "ok": True,
+                    "semantic": {"status": "available"},
+                    "transport": {"status": "ok"},
+                    "parser": {"status": "invalid-json"},
+                    "summary": {"indicator": "none"},
+                },
+            ]
+            for source in sources:
+                source.update(
+                    schema_version=1,
+                    http_status=503
+                    if source["transport"]["status"] == "http-error"
+                    else 200,
+                    payload_sha256="a" * 64,
+                )
+            (day / "public-status.jsonl").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "collected_at": "2026-11-28T12:00:00Z",
+                        "sources": sources,
+                    }
+                )
+                + "\n"
+            )
+            db = root / "index.duckdb"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--repo-root",
+                    str(root),
+                    "--output",
+                    str(db),
+                ],
+                check=True,
+            )
+            with duckdb.connect(str(db), read_only=True) as con:
+                self.assertEqual(
+                    con.execute(
+                        "select count(*) from observations where not usable"
+                    ).fetchone(),
+                    (4,),
+                )
+                self.assertEqual(
+                    con.execute(
+                        "select r_scale,s_scale,g_scale from space_weather where source_id='noaa_scales'"
+                    ).fetchone(),
+                    (None, None, None),
+                )
+                self.assertEqual(
+                    con.execute(
+                        "select kp_rows,kp_value,kp_measurement_state from space_weather where source_id='noaa_planetary_k_index'"
+                    ).fetchone(),
+                    (None, None, "UNKNOWN"),
+                )
+                self.assertEqual(
+                    con.execute(
+                        "select current_phase,illumination_percent from astronomy"
+                    ).fetchone(),
+                    (None, None),
+                )
+                self.assertEqual(
+                    con.execute(
+                        "select source_status,usable from provider_status"
+                    ).fetchone(),
+                    ("UNKNOWN", False),
+                )
+                self.assertEqual(
+                    con.execute(
+                        "select count(*) from v_probe_timeline where not usable and source_status='UNKNOWN'"
+                    ).fetchone(),
+                    (4,),
+                )
