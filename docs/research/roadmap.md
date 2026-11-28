@@ -96,3 +96,49 @@ remain UNKNOWN. Valid zero is zero. Duplicate time tags are retained
 with line provenance; subsequent analysis must resolve revisions and
 measurement intervals deliberately, not count them as independent points.
 Neither archival source data nor existing Supabase collectors are changed.
+
+### Temporal matching canary (#13)
+
+The reusable `scripts/temporal_matching.py` matches at target time
+(outcome time minus lag) using the newest measurement tag already observed
+by that target. A maximum age is explicit. Repeated identical observations
+retain their provenance but share a measurement identity. Conflicting known
+revisions are excluded, not averaged; unknown or stale latest tags are not
+replaced by older values. A negative lag is retrospective, never predictive.
+This is a tag-based as-of join, not an interval-overlap estimator. Missing
+measurement tags cannot establish an unknown interval: coverage is bounded
+by recorded tagged observations. Source availability is conservatively
+approximated by the first recorded observation, not actual publication time.
+
+The status/Kp CLI canary uses the existing #11 lags −6, −3, 0, +3, +6 h
+and a provisional 3 h maximum tag age, fixed before examining its output.
+It emits per-pair provenance, repeated-exposure counts, input/index and code
+digests, and descriptive Pearson r only when both matched variables vary.
+Provider maintenance and unknown indicators are excluded, not coded healthy.
+The old irregular snapshot series is not a regular measurement grid.
+No p-value or complete #11 verdict is emitted.
+
+```sh
+python3 scripts/build-observatory-index.py --repo-root . --output /tmp/obs-index.duckdb
+python3 scripts/analyze-status-kp.py --index /tmp/obs-index.duckdb --output /tmp/obs-receipt.json
+```
+
+The separate circular-shift reference accepts only equal, complete,
+nonconstant regular grids of 4–2048 points. It enumerates every rotation
+including identity in the reference fraction. The circular null requires
+cyclic shift invariance to justify inferential calibration; ordinary
+stationarity alone is not enough. Synthetic positive and rejection
+fixtures verify mechanics; do not apply it to the irregular archive or
+claim causal significance. Block resampling, event-level analysis, G/R/S,
+multiple-testing and motivating-window sensitivity remain open.
+
+Initial archive canary, source tree 3f3749c9ae3a7a42bb7ce808644f2a5fb3a17357:
+1089 provider rows each, 352 numeric Kp receipts. At lag 0 only one pair
+per provider meets the 3 h age/availability contract; at other lags zero
+or one. No correlation estimate is defined. This is insufficient coverage
+for this strict tag-based canary, not NO_SIGNAL or a completed #11 study.
+Do not relax tolerances after looking at outcomes. Next evaluate definitive
+historical GFZ Kp/ap with explicit 3 h interval semantics and a separately
+declared retrospective design; distinguish measurement support from
+publication latency. This can serve independent physical and biological
+studies regardless of the #11 outcome.
