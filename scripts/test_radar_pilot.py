@@ -112,7 +112,7 @@ class RadarPilotTest(unittest.TestCase):
         req = call.call_args.args[0]
         self.assertEqual(
             req.full_url,
-            "https://api.cloudflare.com/client/v4/radar/origins?format=JSON&limit=100",
+            "https://api.cloudflare.com/client/v4/radar/origins?format=JSON&limit=5",
         )
         self.assertEqual(req.get_header("Authorization"), "Bearer secret-test-value")
         self.assertEqual(result["status"], "SCHEMA_OK")
