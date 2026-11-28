@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import platform
+import re
 import subprocess
 import tarfile
 from collections import Counter
@@ -150,6 +151,13 @@ def signals(
 
 
 def load_rows(root: Path, files: list[Path]) -> tuple[list[tuple], list[tuple], dict]:
+    return project_rows(
+        (file.relative_to(root).as_posix(), file.read_text(encoding="utf-8"))
+        for file in files
+    )
+
+
+def project_rows(inputs) -> tuple[list[tuple], list[tuple], dict]:
     obs, sig = [], []
     collection_versions, source_versions, source_counts = (
         Counter(),
@@ -159,9 +167,8 @@ def load_rows(root: Path, files: list[Path]) -> tuple[list[tuple], list[tuple], 
     first = last = None
     collections = 0
 
-    for file in files:
-        rel = file.relative_to(root).as_posix()
-        for lineno, raw in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
+    for rel, content in inputs:
+        for lineno, raw in enumerate(content.splitlines(), 1):
             if not raw.strip():
                 continue
             snap = json.loads(raw)
@@ -223,35 +230,41 @@ def load_rows(root: Path, files: list[Path]) -> tuple[list[tuple], list[tuple], 
     )
 
 
-def write_parquet(
-    obs_path: Path, sig_path: Path, obs: list[tuple], sig: list[tuple]
-) -> None:
-    con = duckdb.connect()
-    try:
-        con.execute("""create table observations(
-          collected_at timestamptz, run_id varchar, run_sha varchar,
-          source_id varchar, label varchar, url varchar, adapter varchar,
-          source_schema_version integer, legacy_collector_ok boolean,
-          transport_status varchar, parser_status varchar, semantic_status varchar,
-          usable boolean, source_status varchar, http_status integer, latency_ms double,
-          payload_sha256 varchar, summary_json varchar,
-          provenance_path varchar, provenance_line integer)""")
-        con.execute("""create table signals(
-          collected_at timestamptz, measurement_at timestamptz,
-          source_id varchar, source_schema_version integer, signal_name varchar,
-          value_num double, value_text varchar, unit varchar, scale varchar,
-          usable boolean, provenance_path varchar, provenance_line integer)""")
+def projection_tables(con, obs, sig):
+    con.execute("set timezone='UTC'")
+    con.execute("""create table observations(
+      collected_at timestamptz, run_id varchar, run_sha varchar,
+      source_id varchar, label varchar, url varchar, adapter varchar,
+      source_schema_version integer, legacy_collector_ok boolean,
+      transport_status varchar, parser_status varchar, semantic_status varchar,
+      usable boolean, source_status varchar, http_status integer, latency_ms double,
+      payload_sha256 varchar, summary_json varchar,
+      provenance_path varchar, provenance_line integer)""")
+    con.execute("""create table signals(
+      collected_at timestamptz, measurement_at timestamptz,
+      source_id varchar, source_schema_version integer, signal_name varchar,
+      value_num double, value_text varchar, unit varchar, scale varchar,
+      usable boolean, provenance_path varchar, provenance_line integer)""")
+    if obs:
         con.executemany(
             "insert into observations values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             obs,
         )
+    if sig:
         con.executemany("insert into signals values (?,?,?,?,?,?,?,?,?,?,?,?)", sig)
-        o = str(obs_path).replace("'", "''")
-        s = str(sig_path).replace("'", "''")
-        con.execute(f"COPY observations TO '{o}' (FORMAT PARQUET, COMPRESSION ZSTD)")
-        con.execute(f"COPY signals TO '{s}' (FORMAT PARQUET, COMPRESSION ZSTD)")
-    finally:
-        con.close()
+
+
+def write_parquet(
+    obs_path: Path, sig_path: Path, obs: list[tuple], sig: list[tuple]
+) -> None:
+    with duckdb.connect() as con:
+        projection_tables(con, obs, sig)
+        con.execute(
+            "COPY observations TO ? (FORMAT PARQUET, COMPRESSION ZSTD)", [str(obs_path)]
+        )
+        con.execute(
+            "COPY signals TO ? (FORMAT PARQUET, COMPRESSION ZSTD)", [str(sig_path)]
+        )
 
 
 def write_raw(root: Path, files: list[Path], target: Path) -> None:
@@ -366,13 +379,8 @@ def build(root: Path, period: str, out: Path) -> Path:
     return out
 
 
-def verify(pack: Path) -> dict:
-    pack = pack.resolve()
-    manifest = json.loads((pack / "manifest.json").read_text())
+def verify_checksums(pack):
     sums = {}
-    for line in (pack / "SHA256SUMS").read_text().splitlines():
-        digest, name = line.split("  ", 1)
-        sums[name] = digest
     expected = {
         "raw-jsonl.tar.gz",
         "observations.parquet",
@@ -380,65 +388,133 @@ def verify(pack: Path) -> dict:
         "schema.json",
         "manifest.json",
     }
+    for line in (pack / "SHA256SUMS").read_text().splitlines():
+        digest, name = line.split("  ", 1)
+        if name in sums:
+            raise SystemExit("duplicate checksum record")
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise SystemExit("invalid checksum digest")
+        sums[name] = digest
     if set(sums) != expected:
         raise SystemExit("SHA256SUMS file set mismatch")
     for name, digest in sums.items():
-        if sha_file(pack / name) != digest:
+        path = pack / name
+        if path.is_symlink() or not path.is_file():
+            raise SystemExit(f"missing or nonregular asset: {name}")
+        if sha_file(path) != digest:
             raise SystemExit(f"hash mismatch: {name}")
+    return sums
 
-    expected_raw = {x["path"]: x for x in manifest["inputs"]}
+
+def verify_raw(pack, manifest):
+    period = manifest["period"]
+    if not re.fullmatch(r"[0-9]{4}-[0-9]{2}", period):
+        raise SystemExit("invalid period")
+    expected_days = calendar.monthrange(*map(int, period.split("-")))[1]
+    expected_raw = {}
+    for item in manifest["inputs"]:
+        name = item["path"]
+        if name in expected_raw:
+            raise SystemExit("duplicate manifest input")
+        match = re.fullmatch(
+            r"data/(" + period + r"-[0-9]{2})/public-status[.]jsonl", name
+        )
+        if not match or not 1 <= int(match[1][-2:]) <= expected_days:
+            raise SystemExit("invalid raw member path")
+        expected_raw[name] = {k: item[k] for k in ("bytes", "lines", "sha256")}
+    if not expected_raw:
+        raise SystemExit("empty raw manifest")
+    raw = {}
     with tarfile.open(pack / "raw-jsonl.tar.gz", "r:gz") as tf:
-        actual_raw = {}
-        for member in tf.getmembers():
-            if not member.isfile():
-                continue
-            f = tf.extractfile(member)
-            data = f.read() if f else b""
-            actual_raw[member.name] = {
+        for member in tf:
+            if not member.isfile() or member.name not in expected_raw:
+                raise SystemExit("unexpected or nonregular raw member")
+            if member.name in raw:
+                raise SystemExit("duplicate raw member")
+            if member.size != expected_raw[member.name]["bytes"]:
+                raise SystemExit("raw archive differs from manifest")
+            with tf.extractfile(member) as f:
+                data = f.read()
+            meta = {
                 "bytes": len(data),
                 "lines": sum(1 for line in data.splitlines() if line.strip()),
                 "sha256": sha_bytes(data),
             }
-    if actual_raw != {
-        k: {x: v[x] for x in ("bytes", "lines", "sha256")}
-        for k, v in expected_raw.items()
-    }:
+            if meta != expected_raw[member.name]:
+                raise SystemExit("raw archive differs from manifest")
+            raw[member.name] = data.decode("utf-8")
+    if raw.keys() != expected_raw.keys():
         raise SystemExit("raw archive differs from manifest")
+    obs, sig, stats = project_rows(sorted(raw.items()))
+    dates = [name.split("/")[1] for name in sorted(raw)]
+    expected_coverage = {
+        **stats,
+        "observed_dates": dates,
+        "observed_days": len(dates),
+        "expected_days": expected_days,
+    }
+    if manifest["coverage"] != json.loads(json.dumps(expected_coverage)) or manifest[
+        "period_complete"
+    ] is not (len(dates) == expected_days):
+        raise SystemExit("coverage differs from raw archive")
+    return obs, sig
 
-    con = duckdb.connect()
-    try:
-        obs = str(pack / "observations.parquet").replace("'", "''")
-        sig = str(pack / "signals.parquet").replace("'", "''")
-        obs_count = con.execute(
-            f"select count(*) from read_parquet('{obs}')"
-        ).fetchone()[0]
-        sig_count = con.execute(
-            f"select count(*) from read_parquet('{sig}')"
-        ).fetchone()[0]
-        kp_count = con.execute(
-            f"select count(*) from read_parquet('{sig}') where signal_name='kp' and value_num is not null"
-        ).fetchone()[0]
-        bad_legacy = con.execute(
-            f"select count(*) from read_parquet('{sig}') where signal_name='kp' and source_schema_version=0"
-        ).fetchone()[0]
-    finally:
-        con.close()
 
-    cov = manifest["coverage"]
-    if obs_count != cov["source_observations"] or sig_count != cov["signal_rows"]:
-        raise SystemExit("Parquet row counts differ from manifest")
-    if bad_legacy:
-        raise SystemExit("legacy v0 was incorrectly converted to Kp")
-    if int(cov["source_schema_versions"].get("1", 0)) and not kp_count:
-        raise SystemExit("v1 exists but typed Kp is missing")
+def verify_projection(pack, obs, sig):
+    with duckdb.connect() as con:
+        projection_tables(con, obs, sig)
+        for table in ("observations", "signals"):
+            path = str(pack / (table + ".parquet"))
+            actual = con.execute(
+                "describe select * from read_parquet(?)", [path]
+            ).fetchall()
+            expected = con.execute(f"describe select * from {table}").fetchall()
+            if [(r[0], r[1]) for r in actual] != [(r[0], r[1]) for r in expected]:
+                raise SystemExit(f"projection schema differs: {table}")
+            # EXCEPT ALL compares multisets in both directions, including duplicate rows and NULL.
+            mismatch = con.execute(
+                f"""select exists (
+                    (select * from {table} except all select * from read_parquet(?))
+                    union all
+                    (select * from read_parquet(?) except all select * from {table})
+                )""",
+                [path, path],
+            ).fetchone()[0]
+            if mismatch:
+                raise SystemExit(f"projection differs from raw archive: {table}")
+        kp_count, bad_legacy = con.execute("""
+            select count(*) filter(where signal_name='kp' and value_num is not null),
+                count(*) filter(where signal_name='kp' and source_schema_version=0)
+            from signals
+        """).fetchone()
+        if bad_legacy:
+            raise SystemExit("legacy v0 was incorrectly converted to Kp")
+    return kp_count
+
+
+def verify(pack: Path) -> dict:
+    pack = pack.resolve()
+    sums = verify_checksums(pack)
+    manifest = json.loads((pack / "manifest.json").read_text())
+    if manifest["archive_schema_version"] != ARCHIVE_VERSION:
+        raise SystemExit("unsupported archive schema version")
+    expected_assets = {
+        name: {"bytes": (pack / name).stat().st_size, "sha256": digest}
+        for name, digest in sums.items()
+        if name != "manifest.json"
+    }
+    if manifest["assets"] != expected_assets:
+        raise SystemExit("asset metadata differs from checksums")
+    obs, sig = verify_raw(pack, manifest)
+    kp_count = verify_projection(pack, obs, sig)
     return {
         "status": "VERIFIED",
         "pack_id": manifest["pack_id"],
         "period": manifest["period"],
         "period_complete": manifest["period_complete"],
-        "collection_rows": cov["collection_rows"],
-        "source_observations": obs_count,
-        "signal_rows": sig_count,
+        "collection_rows": manifest["coverage"]["collection_rows"],
+        "source_observations": len(obs),
+        "signal_rows": len(sig),
         "kp_measurements": kp_count,
     }
 
