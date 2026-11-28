@@ -5,6 +5,8 @@ It is intentionally small and versioned with the repository.
 
 ## Canonical map
 
+- [Global physical source queue](global-physical-sources.md) — independent solar, geospace, ELF and atmosphere candidates.
+
 - [Federated scientific reads](federated-read.md) — selective remote queries beside existing exporters.
 
 - [Historical archive storage](archive-storage.md) — remote Parquet and bounded staging.
