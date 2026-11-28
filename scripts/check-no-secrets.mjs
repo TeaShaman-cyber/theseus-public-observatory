@@ -24,7 +24,12 @@ function walk(dir) {
 const hits = [];
 for (const file of walk(".")) {
   if (statSync(file).size > 1_000_000) continue;
-  const text = readFileSync(file, "utf8");
+  let text = readFileSync(file, "utf8");
+  // Only a complete workflow environment assignment to an Actions secret
+  // reference is non-secret. Do not exempt other files or trailing content.
+  if (/^\.github\/workflows\/[^/]+\.ya?ml$/.test(file)) {
+    text = text.replace(/^([ \t]+)[A-Z][A-Z0-9_]*: \$\{\{ secrets\.[A-Z][A-Z0-9_]* \}\}[ \t]*$/gm, "");
+  }
   for (const pattern of SECRET_PATTERNS) {
     if (pattern.test(text)) hits.push(file);
   }

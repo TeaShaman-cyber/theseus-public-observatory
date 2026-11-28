@@ -10,6 +10,9 @@ npm test
 echo '== site tests =='
 python3 -m unittest discover -s observatory_site/tests -v
 
+echo '== Radar pilot contract =='
+python3 -m unittest scripts.test_radar_pilot -v
+
 echo '== archive-pack tests =='
 python3 -m unittest scripts/test_archive_pack.py -v
 
