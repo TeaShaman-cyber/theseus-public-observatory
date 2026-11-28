@@ -1,0 +1,416 @@
+{
+  "schema": "observatory.resource-graph.v1",
+  "as_of": "2026-11-28",
+  "source_revision": "baff6716c0b67d44baf39202c88f29c37fa74656",
+  "semantics": "Edges point from consumer or capability to required dependency in a selected scenario. Reachability is modeled exposure, not predicted outage. Alternative routes are separate capability roots, not AND dependencies.",
+  "nodes": [
+    {
+      "id": "agent_history",
+      "kind": "capability",
+      "status": "candidate"
+    },
+    {
+      "id": "agent_live",
+      "kind": "capability",
+      "status": "candidate"
+    },
+    {
+      "id": "collection",
+      "kind": "capability",
+      "status": "verified_current"
+    },
+    {
+      "id": "recovery",
+      "kind": "capability",
+      "status": "verified_current"
+    },
+    {
+      "id": "heavy_analysis",
+      "kind": "capability",
+      "status": "candidate"
+    },
+    {
+      "id": "fast_probe",
+      "kind": "capability",
+      "status": "candidate"
+    },
+    {
+      "id": "repo_search",
+      "kind": "other_project",
+      "status": "documented"
+    },
+    {
+      "id": "dreaming",
+      "kind": "other_project",
+      "status": "observed_worker_exists"
+    },
+    {
+      "id": "github_runner",
+      "kind": "execution",
+      "status": "verified_current"
+    },
+    {
+      "id": "github_journal",
+      "kind": "canonical_archive",
+      "status": "verified_current"
+    },
+    {
+      "id": "github_service",
+      "kind": "failure_domain",
+      "status": "documented"
+    },
+    {
+      "id": "github_runner_pool",
+      "kind": "quota_domain",
+      "status": "shared_account_limits_unknown"
+    },
+    {
+      "id": "public_sources",
+      "kind": "external_source",
+      "status": "verified_current"
+    },
+    {
+      "id": "radar",
+      "kind": "external_source",
+      "status": "verified_current"
+    },
+    {
+      "id": "cloudflare_network",
+      "kind": "failure_domain",
+      "status": "modeled_common_provider"
+    },
+    {
+      "id": "d1",
+      "kind": "sql_storage_compute",
+      "status": "verified_canary_not_deployed"
+    },
+    {
+      "id": "d1_quota",
+      "kind": "quota_domain",
+      "status": "free_limits_documented"
+    },
+    {
+      "id": "duckdb_native",
+      "kind": "analytics",
+      "status": "verified_current"
+    },
+    {
+      "id": "ducklings",
+      "kind": "analytics",
+      "status": "emulation_only"
+    },
+    {
+      "id": "workers",
+      "kind": "execution",
+      "status": "candidate"
+    },
+    {
+      "id": "workers_quota",
+      "kind": "quota_domain",
+      "status": "shared_account_usage_unknown"
+    },
+    {
+      "id": "exe_shell",
+      "kind": "execution",
+      "status": "verified_current"
+    },
+    {
+      "id": "exe_pool",
+      "kind": "quota_domain",
+      "status": "shared_capacity_unknown"
+    },
+    {
+      "id": "turso",
+      "kind": "reserved_other_project",
+      "status": "documented"
+    },
+    {
+      "id": "motherduck",
+      "kind": "reserved_other_project",
+      "status": "documented"
+    },
+    {
+      "id": "kusto",
+      "kind": "optional_analytics",
+      "status": "documented"
+    },
+    {
+      "id": "r2",
+      "kind": "object_storage",
+      "status": "blocked_entitlement"
+    },
+    {
+      "id": "independent_probe_vm",
+      "kind": "execution",
+      "status": "candidate_not_provisioned"
+    },
+    {
+      "id": "checkpoint",
+      "kind": "archive_export",
+      "status": "candidate"
+    },
+    {
+      "id": "projection_sync",
+      "kind": "capability",
+      "status": "candidate"
+    }
+  ],
+  "shared_edges": [
+    [
+      "github_runner",
+      "github_service"
+    ],
+    [
+      "github_runner",
+      "github_runner_pool"
+    ],
+    [
+      "github_journal",
+      "github_service"
+    ],
+    [
+      "radar",
+      "cloudflare_network"
+    ],
+    [
+      "d1",
+      "cloudflare_network"
+    ],
+    [
+      "d1",
+      "d1_quota"
+    ],
+    [
+      "workers",
+      "cloudflare_network"
+    ],
+    [
+      "workers",
+      "workers_quota"
+    ],
+    [
+      "ducklings",
+      "workers"
+    ],
+    [
+      "r2",
+      "cloudflare_network"
+    ],
+    [
+      "exe_shell",
+      "exe_pool"
+    ],
+    [
+      "independent_probe_vm",
+      "exe_pool"
+    ],
+    [
+      "repo_search",
+      "turso"
+    ],
+    [
+      "repo_search",
+      "motherduck"
+    ],
+    [
+      "repo_search",
+      "kusto"
+    ],
+    [
+      "repo_search",
+      "exe_shell"
+    ],
+    [
+      "dreaming",
+      "workers"
+    ]
+  ],
+  "scenarios": {
+    "current": [
+      [
+        "collection",
+        "github_runner"
+      ],
+      [
+        "collection",
+        "github_journal"
+      ],
+      [
+        "collection",
+        "public_sources"
+      ],
+      [
+        "collection",
+        "radar"
+      ],
+      [
+        "agent_history",
+        "duckdb_native"
+      ],
+      [
+        "duckdb_native",
+        "exe_shell"
+      ],
+      [
+        "duckdb_native",
+        "github_journal"
+      ],
+      [
+        "recovery",
+        "github_journal"
+      ]
+    ],
+    "d1_candidate": [
+      [
+        "collection",
+        "github_runner"
+      ],
+      [
+        "collection",
+        "public_sources"
+      ],
+      [
+        "collection",
+        "radar"
+      ],
+      [
+        "collection",
+        "github_journal"
+      ],
+      [
+        "agent_live",
+        "d1"
+      ],
+      [
+        "agent_history",
+        "duckdb_native"
+      ],
+      [
+        "duckdb_native",
+        "github_journal"
+      ],
+      [
+        "duckdb_native",
+        "exe_shell"
+      ],
+      [
+        "recovery",
+        "github_journal"
+      ],
+      [
+        "heavy_analysis",
+        "github_runner"
+      ],
+      [
+        "heavy_analysis",
+        "github_journal"
+      ],
+      [
+        "fast_probe",
+        "independent_probe_vm"
+      ],
+      [
+        "fast_probe",
+        "d1"
+      ],
+      [
+        "fast_probe",
+        "public_sources"
+      ],
+      [
+        "projection_sync",
+        "github_journal"
+      ],
+      [
+        "projection_sync",
+        "github_runner"
+      ],
+      [
+        "projection_sync",
+        "d1"
+      ]
+    ],
+    "worker_candidate": [
+      [
+        "collection",
+        "workers"
+      ],
+      [
+        "collection",
+        "d1"
+      ],
+      [
+        "collection",
+        "public_sources"
+      ],
+      [
+        "collection",
+        "radar"
+      ],
+      [
+        "agent_live",
+        "ducklings"
+      ],
+      [
+        "agent_live",
+        "d1"
+      ],
+      [
+        "ducklings",
+        "r2"
+      ],
+      [
+        "checkpoint",
+        "github_runner"
+      ],
+      [
+        "checkpoint",
+        "d1"
+      ],
+      [
+        "checkpoint",
+        "github_journal"
+      ],
+      [
+        "agent_history",
+        "duckdb_native"
+      ],
+      [
+        "duckdb_native",
+        "github_journal"
+      ],
+      [
+        "duckdb_native",
+        "exe_shell"
+      ],
+      [
+        "recovery",
+        "github_journal"
+      ],
+      [
+        "heavy_analysis",
+        "github_runner"
+      ],
+      [
+        "heavy_analysis",
+        "github_journal"
+      ],
+      [
+        "fast_probe",
+        "independent_probe_vm"
+      ],
+      [
+        "fast_probe",
+        "d1"
+      ],
+      [
+        "fast_probe",
+        "public_sources"
+      ],
+      [
+        "projection_sync",
+        "checkpoint"
+      ]
+    ]
+  }
+}
