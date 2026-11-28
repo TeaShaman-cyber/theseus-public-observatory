@@ -18,8 +18,10 @@ from urllib.request import HTTPRedirectHandler, build_opener
 import duckdb
 
 if __package__:
+    from .schumann_read import read_nck
     from .magnetic_read import QUALITIES, STATIONS, read_magnetic
 else:
+    from schumann_read import read_nck
     from magnetic_read import QUALITIES, STATIONS, read_magnetic
 
 HAPI = "https://cdaweb.gsfc.nasa.gov/hapi"
@@ -262,7 +264,13 @@ def validate_gfz(records, window):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
-        "source", choices=["nasa-omni-hourly", "gfz-kp-ap", "intermagnet-minute"]
+        "source",
+        choices=[
+            "nasa-omni-hourly",
+            "gfz-kp-ap",
+            "intermagnet-minute",
+            "schumann-nck-frequency",
+        ],
     )
     p.add_argument("--start", required=True)
     p.add_argument("--end", required=True)
@@ -280,11 +288,14 @@ def main():
     else:
         if a.station or a.quality:
             p.error("station/quality only for INTERMAGNET")
-        result = (
-            read_omni(w, a.fields or list(FIELDS))
-            if a.source == "nasa-omni-hourly"
-            else read_gfz(w)
-        )
+        if a.source == "schumann-nck-frequency":
+            result = read_nck(w.begin, w.stop)
+        else:
+            result = (
+                read_omni(w, a.fields or list(FIELDS))
+                if a.source == "nasa-omni-hourly"
+                else read_gfz(w)
+            )
     print(
         json.dumps(
             {
