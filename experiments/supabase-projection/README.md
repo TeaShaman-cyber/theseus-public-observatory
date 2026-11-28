@@ -176,3 +176,8 @@ and self-unscheduled. Readback: eight attempts, four distinct payload
 bodies, six received_unvalidated; identical responses deduplicated
 without losing attempt timestamps. Recurring job 6 is active; the
 first regular 6-hour tick and actual 72-hour revisit are not yet verified.
+
+Read-only follow-up: see [federated read documentation](../../docs/research/federated-read.md#intermagnet-minute-vectors-and-capture-reconciliation-47).
+The private buffer reconciliation CLI validates payload hashes and
+scientific transport/schema/coverage without changing capture evidence.
+No raw station values are emitted by the reconciliation report.

@@ -53,3 +53,61 @@ experiments because provider archives can be revised.
 
 Source metadata: https://cdaweb.gsfc.nasa.gov/hapi/info?id=OMNI2_H0_MRG1HR
 and https://omniweb.gsfc.nasa.gov/html/ow_data.html .
+
+## INTERMAGNET minute vectors and capture reconciliation (#47)
+
+The common reader now accepts `intermagnet-minute`, with explicit station
+`irt`, `kak`, `lzh`, or `had` and quality `definitive` (default)
+or `best-avail`. No automatic substitution across quality classes or
+stations. Maximum request duration 24h, same whole-hour CLI boundaries,
+minute-level UTC support in the parser. XYZ and independent scalar F
+are in nT. Header validation checks HAPI 3.1/status, station and quality
+description, orientation, parameter shape/components/units/fill,
+coordinates and minute-start semantics. Reject duplicate, unordered,
+out-of-window and malformed rows. Missing entire minutes and channel
+fill values remain missing, not zeros. A schema-valid all-fill response
+has partial coverage, not a healthy observation.
+
+```sh
+python3 scripts/science_read.py intermagnet-minute --station lzh \
+  --quality definitive --start 2017-09-08T01:00:00Z \
+  --end 2017-09-08T02:00:00Z
+```
+
+Live canary from exe.dev, 2026-11-28: 2017-09-08 01:00–02:00 UTC,
+60/60 minutes for each IRT, KAK and LZH, all four channels present.
+Response sizes 5626, 5583, 5585 bytes respectively. This verifies
+selective historical access; it does not establish continuous coverage
+or physical coherence. Source conditions:
+https://intermagnet.org/data_conditions.html .
+Keep raw station data within permitted research scope; no bulk publication.
+
+For the private operational buffer, use the existing authorized Supabase
+CLI, explicit project reference, UTC six-hour boundaries and at most seven
+days per query:
+
+```sh
+python3 scripts/magnetic_read.py --project-ref YOUR_PROJECT_REF \
+  --start 2026-11-25T00:00:00Z --end 2026-11-29T00:00:00Z
+```
+
+This reads at most 200 attempts (rejects overflow), verifies each saved
+payload hash in memory, validates received snapshots using the same
+parser, and reports per-window/channel coverage and transitions between
+successive schema-valid snapshots. Changed, unchanged, newly available and
+subsequently missing channel values are counted separately. A failed or
+malformed later attempt never erases the last valid snapshot. First and
+latest valid timestamps, latest attempt status and union of ever-observed
+channels are reported without exposing raw measurements. Only observed
+window groups are returned, not a scheduler completeness audit. No
+permanent local archive, new database table, credential or collector.
+
+Live buffer check: eight attempts, four windows, three complete windows
+with 360 minutes/1440 channels each, two valid snapshots per complete
+window. All repeated channels identical (4320 comparisons total). The
+fresh IRT window has two HTTP400 attempts and zero valid snapshots; do not
+call this a recovered gap or a station outage. Actual 72h revisit still
+needs time to occur. Synthetic fixtures demonstrate changed/recovered/lost
+channels and preservation across errors; no natural revision has yet
+been observed. Comparisons use parsed finite double values, not exact
+decimal lexical identity; raw payload hashes preserve byte-level evidence.
