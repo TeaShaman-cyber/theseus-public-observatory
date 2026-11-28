@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "collected_at": "2026-11-28T12:54:39.140Z",
+  "collected_at": "2026-11-28T13:09:27.882Z",
   "run": {
-    "github_run_id": "46146965513",
+    "github_run_id": "46148188279",
     "github_run_attempt": 1,
     "github_repository": "TeaShaman-cyber/theseus-public-observatory",
     "github_workflow": "Collect public observatory data",
     "github_ref": "refs/heads/main",
-    "github_sha": "9547efd160f60b77e660dd4f2cacf2b86f8216c2",
+    "github_sha": "0cd8257cc5c02168872861117766d1b41ce8bf25",
     "collector": "collect-public-status-v1"
   },
   "sources": [
@@ -19,7 +19,7 @@
       "adapter": "statuspage-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 194,
+      "latency_ms": 288,
       "content_type": "application/json",
       "payload_sha256": "13920b826774020fce3764698a1b34ffa81e83dd96d568853f8cade84a296267",
       "transport": {
@@ -45,7 +45,7 @@
       "adapter": "statuspage-summary-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 96,
+      "latency_ms": 123,
       "content_type": "application/json; charset=utf-8",
       "payload_sha256": "895276261d6967974e6808d1281b5bddaa0b6c23f107fb4dd998a1a70e285451",
       "transport": {
@@ -73,7 +73,7 @@
       "adapter": "huggingface-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 362,
+      "latency_ms": 498,
       "content_type": "application/json; charset=utf-8",
       "payload_sha256": "101321db4753b647866be008b778bcce6c6a1759b4144565b5c0df40bd7d7209",
       "transport": {
@@ -102,7 +102,7 @@
       "adapter": "noaa-kp-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 217,
+      "latency_ms": 235,
       "content_type": "application/json",
       "payload_sha256": "436fc44a052eff898fe129b1ea436a0aa8f9c73ade2757290971993ca255b032",
       "transport": {
@@ -132,9 +132,9 @@
       "adapter": "noaa-scales-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 216,
+      "latency_ms": 233,
       "content_type": "application/json",
-      "payload_sha256": "d64b89fb8b81570a617858e6dfdfd9dc4737e808ae8fc99f40c78ace4a3098a7",
+      "payload_sha256": "46c52285a873e7d68cd596999469f2f17f99c465f78898dfc9d70844425b0568",
       "transport": {
         "status": "ok"
       },
@@ -147,7 +147,7 @@
       "summary": {
         "observed": {
           "DateStamp": "2026-11-27",
-          "TimeStamp": "12:53:00",
+          "TimeStamp": "13:07:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -166,7 +166,7 @@
         },
         "current": {
           "DateStamp": "2026-11-28",
-          "TimeStamp": "12:53:00",
+          "TimeStamp": "13:07:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -185,7 +185,7 @@
         },
         "forecast": {
           "DateStamp": "2026-11-28",
-          "TimeStamp": "12:53:00",
+          "TimeStamp": "13:07:00",
           "R": {
             "Scale": null,
             "Text": null,
@@ -212,7 +212,7 @@
       "adapter": "usno-sun-moon-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10130,
+      "latency_ms": 9999,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -235,7 +235,7 @@
       "adapter": "usno-moon-phases-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10129,
+      "latency_ms": 9998,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -258,7 +258,7 @@
       "adapter": "usno-solar-eclipses-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10127,
+      "latency_ms": 9997,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -282,7 +282,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "98f85550810419c336657c4c386f26baa943424da34eb8418c4711bcac7ad5cc",
+      "payload_sha256": "76cb336f37e73dde682893247cc92d6a7bde154e34f3250927b2b2bdea85c6cb",
       "transport": {
         "status": "ok"
       },
@@ -293,14 +293,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 92,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
         "last": "2026-11-28T11:30:00Z",
         "last_updated": "2026-11-28T11:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -308,10 +308,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.829062
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.866476
@@ -680,8 +676,8 @@
         "provider": "amazon",
         "metric": "REQUESTS"
       },
-      "latency_ms": 599,
-      "observed_at": "2026-11-28T12:54:51.318812+00:00"
+      "latency_ms": 550,
+      "observed_at": "2026-11-28T13:09:40.147599+00:00"
     },
     {
       "schema_version": 1,
@@ -692,7 +688,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "df9f924a2a0b9f013aacba89bd106b96ffe9fd0fd9b46a1315a6b6018ca29756",
+      "payload_sha256": "6f4b2baca35468ea40c751a35259419b32cb127dcddf190b495d31cbdb21d1bb",
       "transport": {
         "status": "ok"
       },
@@ -703,14 +699,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 92,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
         "last": "2026-11-28T11:30:00Z",
         "last_updated": "2026-11-28T11:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -718,10 +714,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.118894
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.087508
@@ -1090,8 +1082,8 @@
         "provider": "amazon",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 10087,
-      "observed_at": "2026-11-28T12:55:00.808281+00:00"
+      "latency_ms": 997,
+      "observed_at": "2026-11-28T13:09:40.595036+00:00"
     },
     {
       "schema_version": 1,
@@ -1102,7 +1094,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "6fd2b6ddef64fd6a7d71e59cbc001fcda64a0f6be3b04c86b4b2d5cb6b3b4e86",
+      "payload_sha256": "dccb9a806b18db779e3f4a72ea3afee80966edbf8cc03d1efe287ba437a9aea2",
       "transport": {
         "status": "ok"
       },
@@ -1113,14 +1105,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 88,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
-        "last": "2026-11-28T10:30:00Z",
-        "last_updated": "2026-11-28T10:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -1128,10 +1120,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.866823
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.897374
@@ -1479,13 +1467,29 @@
           {
             "measured_at": "2026-11-28T10:30:00Z",
             "value": 0.68572
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.685404
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.700113
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.700706
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.710355
           }
         ],
         "provider": "google",
         "metric": "REQUESTS"
       },
-      "latency_ms": 582,
-      "observed_at": "2026-11-28T12:54:51.303736+00:00"
+      "latency_ms": 599,
+      "observed_at": "2026-11-28T13:09:40.197431+00:00"
     },
     {
       "schema_version": 1,
@@ -1496,7 +1500,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "a6d4d839e39465e5e6d7e7d2e39873c71ad5f95d6f14a5a8245bee15f050d9ab",
+      "payload_sha256": "97d679680a8a80b47c2a1109563ca1f80b2a48f9a82fcb4d7403443ee018978e",
       "transport": {
         "status": "ok"
       },
@@ -1507,14 +1511,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 92,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
         "last": "2026-11-28T11:30:00Z",
         "last_updated": "2026-11-28T11:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -1522,10 +1526,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.535545
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.484597
@@ -1894,8 +1894,8 @@
         "provider": "google",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 589,
-      "observed_at": "2026-11-28T12:54:51.310571+00:00"
+      "latency_ms": 559,
+      "observed_at": "2026-11-28T13:09:40.158119+00:00"
     },
     {
       "schema_version": 1,
@@ -1906,7 +1906,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "20a2e0d8158b5f55795e8b9e4297c5f0a3e6e6c7f918f69d0e646d3575a0308f",
+      "payload_sha256": "6b8ff33966da1c4e0e81e0816487bd9297a26ea1f3d3496cb01c7887242fe89a",
       "transport": {
         "status": "ok"
       },
@@ -1917,14 +1917,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 88,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
-        "last": "2026-11-28T10:30:00Z",
-        "last_updated": "2026-11-28T10:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -1932,10 +1932,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.943309
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.962144
@@ -2283,13 +2279,29 @@
           {
             "measured_at": "2026-11-28T10:30:00Z",
             "value": 0.729603
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.735424
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.747167
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.748302
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.760001
           }
         ],
         "provider": "microsoft",
         "metric": "REQUESTS"
       },
-      "latency_ms": 828,
-      "observed_at": "2026-11-28T12:54:52.131480+00:00"
+      "latency_ms": 428,
+      "observed_at": "2026-11-28T13:09:40.576035+00:00"
     },
     {
       "schema_version": 1,
@@ -2300,7 +2312,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "3c84c8104dced47a39d5a1bd78fe8a2d4019fb4966f90b2f4d0f5b749f29c12f",
+      "payload_sha256": "a6fbbf25d9240ef400fa16b2e14de0407f766b51fbea726b109574c50b0732a3",
       "transport": {
         "status": "ok"
       },
@@ -2311,14 +2323,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 92,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
         "last": "2026-11-28T11:30:00Z",
         "last_updated": "2026-11-28T11:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -2326,10 +2338,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.68059
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.842752
@@ -2698,8 +2706,8 @@
         "provider": "microsoft",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 594,
-      "observed_at": "2026-11-28T12:54:51.904506+00:00"
+      "latency_ms": 502,
+      "observed_at": "2026-11-28T13:09:40.660295+00:00"
     },
     {
       "schema_version": 1,
@@ -2710,7 +2718,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "add6edfd8df03af9efa4d3936467762a857fe4a595692d14bb135e307e253496",
+      "payload_sha256": "20d53401b608d11b918316c30b37d7409baab439add867252a12ac50d75e2026",
       "transport": {
         "status": "ok"
       },
@@ -2721,14 +2729,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 92,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
         "last": "2026-11-28T11:30:00Z",
         "last_updated": "2026-11-28T11:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -2736,10 +2744,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.961395
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.969035
@@ -3108,8 +3112,8 @@
         "provider": "oracle",
         "metric": "REQUESTS"
       },
-      "latency_ms": 517,
-      "observed_at": "2026-11-28T12:54:51.835838+00:00"
+      "latency_ms": 616,
+      "observed_at": "2026-11-28T13:09:40.813448+00:00"
     },
     {
       "schema_version": 1,
@@ -3120,7 +3124,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "9ffe77784840edabf14485b876ef815cd320cc60dacf821a7f30b1f4c4bfc24e",
+      "payload_sha256": "2bd93775a1db5c9f4abbd72dccedff55bc9201c957a50c21c93072a5dee92230",
       "transport": {
         "status": "ok"
       },
@@ -3131,14 +3135,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 92,
+        "samples": 91,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T12:45:00Z",
+        "first": "2026-11-27T13:00:00Z",
         "last": "2026-11-28T11:30:00Z",
         "last_updated": "2026-11-28T11:30:00Z",
-        "window_start": "2026-11-27T12:45:00Z",
-        "window_end": "2026-11-28T12:45:00Z",
+        "window_start": "2026-11-27T13:00:00Z",
+        "window_end": "2026-11-28T13:00:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -3146,10 +3150,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.5
-          },
           {
             "measured_at": "2026-11-27T13:00:00Z",
             "value": 0.4
@@ -3518,8 +3518,8 @@
         "provider": "oracle",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 652,
-      "observed_at": "2026-11-28T12:54:52.488361+00:00"
+      "latency_ms": 393,
+      "observed_at": "2026-11-28T13:09:40.968635+00:00"
     }
   ]
 }
