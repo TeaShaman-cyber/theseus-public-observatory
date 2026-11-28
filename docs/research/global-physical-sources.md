@@ -42,8 +42,8 @@ local amplitude or biological/technological causation.
 |---|---|---|
 | [Tomsk SOS-70](https://sos70.ru/?page_id=48) | Public current plots of frequency/amplitude/Q, four modes; [long-term research](https://sos70.ru/?page_id=42) | Numeric archive and redistribution terms not verified; graph colors not calibrated measurements; timezone UTC+7 for local-time plots |
 | [Sierra Nevada ELF](https://doi.org/10.1016/j.cageo.2022.105148) | March 2013–Feb 2017 raw and processed measurements, 10-minute mode parameters | Prefer [processed archive](https://digibug.ugr.es/handle/10481/71563), ~3.33 GB as listed; raw months ~2.6 GB; metadata and limited member selection first, never whole archive on VM |
-| [Nagycenk, Hungary](https://zenodo.org/records/13220677) | Measured and modeled frequency series; independent electric channel | Explicit measured versus modeled columns; verify support and terms before query |
-| [Vernadsky Antarctic / SOUSY Arctic](https://zenodo.org/records/5919944) | Daily spectra and first-mode frequencies, 2002–2020 and 2013–2020 respectively | Separate station/channel/time, choose numeric products and verify resolution |
+| [Nagycenk, Hungary](https://zenodo.org/records/13220677) | Measured and modeled frequency series; independent electric channel | Measured 2023 three-mode reader verified (#50); longer monthly diurnal averages need distinct support; CC BY 4.0 |
+| [Vernadsky Antarctic / SOUSY Arctic](https://zenodo.org/records/5919944) | Daily spectrogram and first-mode frequency PNG plots, 2002–2020 and 2013–2020 respectively | Source ReadMe.txt confirms image-only ZIP members; not admitted for numeric inference; seek underlying numerical series |
 | [Syowa Antarctica / Japan NIPR](https://scidbase.nipr.ac.jp/modules/metadata/index.php?content_id=105&ml_lang=en) | 1–100 Hz ULF/ELF observations | Metadata known; actual numeric access and dates unknown |
 | [WWLLN WGLC](https://doi.org/10.5194/essd-13-3219-2021) | Global gridded lightning density and stroke power, corrected for detection efficiency | [Versioned archive](https://zenodo.org/records/4774529), daily/monthly products; match resolution to SR estimand; no inferred hourly data from daily values |
 | [ERA5](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels) | Atmospheric reanalysis: temperature, precipitation, wind, radiation | Model/reanalysis, not independent raw station evidence; bounded subset and terms first |
@@ -87,3 +87,5 @@ Lanzhou b1c86f453d53a337b1cb1115ad193a192f201a63c200f5253b15d7062bbd4d60
 (2216 bytes), Kakioka cabae71ee1195a4fc60e6db9c8fd326fcb0da49eb9ad500084764d99f69bb4bd
 (2173 bytes). These are transport/data feasibility witnesses, not a
 statistical comparison. Actual station coverage must be checked per window.
+
+NCK admission detail: [federated reader](federated-read.md#schumann-resonance-measured-frequencies-50). Polar archive ReadMe.txt (Zenodo 5919944) checked directly: daily frequencies are PNG plots, not a validated numerical table. Sierra Nevada processed month/sensor NPZ remains a separate candidate (about 43 MB per month/sensor per publication); inspect archive packaging and selective access before any download.

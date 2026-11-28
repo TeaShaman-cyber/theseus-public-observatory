@@ -111,3 +111,34 @@ needs time to occur. Synthetic fixtures demonstrate changed/recovered/lost
 channels and preservation across errors; no natural revision has yet
 been observed. Comparisons use parsed finite double values, not exact
 decimal lexical identity; raw payload hashes preserve byte-level evidence.
+
+## Schumann resonance measured frequencies (#50)
+
+`schumann-nck-frequency` reads three measured modal peak-frequency
+matrices (vertical electric component Ez) from the version-specific
+Zenodo record [13220677](https://doi.org/10.5281/zenodo.13220677),
+prepared by Tamás Bozóki, 2024-08-05, CC BY 4.0. Station Nagycenk,
+Hungary (47.6 N, 16.7 E). Source metadata and exact per-file hashes
+are pinned; reject changed bytes, malformed grids, nonfinite values
+other than the published nan missing markers. No modeled frequency
+file is admitted. Each selected mode requires a complete tiny 5662-byte
+source file, read into memory, not a server-side temporal query.
+The common CLI selects a subset of the decoded time tags.
+
+```sh
+python3 scripts/science_read.py schumann-nck-frequency \
+  --start 2023-02-10T00:00:00Z --end 2023-02-21T00:00:00Z
+```
+
+Coverage is strictly 2023-02-10 through 20 inclusive, 48 UT labels per
+day. Do not infer exact averaging support or publication time from the
+half-hour labels: rows carry sample_at, not fabricated interval bounds.
+No interpolation. The longer NCK files are monthly diurnal averages,
+not continuous hourly measurements; separate product adapter required.
+Amplitude units/support need separate validation before admission.
+Live verification 2026-11-28: 528 tags, 525 finite values per mode,
+three missing per mode, 16986 source bytes, selection SHA256
+c868264941f6cfcedfa84ffa3e2156688903003262aeb096235a968f3c7aee86.
+No data persisted on exe.dev or mirrored to Supabase. For a future
+published experiment, retain pinned input identities and verify
+lightning and environmental covariates before statistical inference.
