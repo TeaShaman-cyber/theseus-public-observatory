@@ -5,6 +5,9 @@ on:
       - 'experiments/edge-sql/**'
       - '.github/workflows/edge-sql-canary.yml'
   workflow_dispatch:
+concurrency:
+  group: edge-sql-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
