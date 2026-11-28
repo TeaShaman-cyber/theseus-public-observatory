@@ -1,0 +1,45 @@
+name: Advisory CRAP report
+on:
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: crap-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  advisory-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.13"
+      - name: Install isolated report dependencies
+        run: |
+          python -m pip install -r observatory_site/requirements.txt -r observatory_site/requirements-dev.txt -r experiments/wglc/requirements.txt -r experiments/crap/requirements.txt
+          npm ci --prefix experiments/crap --ignore-scripts --no-audit --no-fund
+          git init "$RUNNER_TEMP/crapper"
+          git -C "$RUNNER_TEMP/crapper" fetch --depth=1 https://github.com/unclebob/crapper.git fdd0c01387e4211c74b23c2cdd11c06d90883838
+          git -C "$RUNNER_TEMP/crapper" checkout --detach FETCH_HEAD
+      - name: Measure existing tests
+        run: |
+          export CRAPPER_SOURCE="$RUNNER_TEMP/crapper"
+          bash experiments/crap/run.sh "$RUNNER_TEMP/crap"
+          cat "$RUNNER_TEMP/crap/summary.txt" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: advisory-crap
+          path: |
+            ${{ runner.temp }}/crap/report.json
+            ${{ runner.temp }}/crap/summary.txt
+            ${{ runner.temp }}/crap/python.lcov
+            ${{ runner.temp }}/crap/python.json
+            ${{ runner.temp }}/crap/js/lcov.info
+          retention-days: 14
