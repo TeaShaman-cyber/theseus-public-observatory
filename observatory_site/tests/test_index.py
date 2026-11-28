@@ -385,3 +385,77 @@ class RadarIndexTests(unittest.TestCase):
                 )
             finally:
                 con.close()
+
+
+class KpMeasurementTests(unittest.TestCase):
+    def test_kp_values_and_time_tags_are_preserved_only_when_valid(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            day = root / "data" / "2026-11-28"
+            day.mkdir(parents=True)
+            rows = []
+            cases = [
+                (3.33, "2026-11-28T09:00:00", True, 3.33),
+                (0, "2026-11-28T09:00:00Z", True, 0.0),
+                (False, "2026-11-28T09:00:00", True, None),
+                (10, "2026-11-28T09:00:00", True, None),
+                ("3.33", "2026-11-28T09:00:00", True, None),
+                (3.33, "not-a-time", True, None),
+                (3.33, "2026-11-28T15:00:00Z", True, None),
+                (3.33, "2026-11-28T09:00:00", False, None),
+                (None, None, True, None),
+            ]
+            for value, tag, available, _ in cases:
+                rows.append(
+                    {
+                        "schema_version": 1,
+                        "collected_at": "2026-11-28T13:00:00Z",
+                        "sources": [
+                            {
+                                "schema_version": 1,
+                                "id": "noaa_planetary_k_index",
+                                "adapter": "noaa-kp-v1",
+                                "ok": available,
+                                "semantic": {
+                                    "status": "available"
+                                    if available
+                                    else "unavailable"
+                                },
+                                "summary": {
+                                    "rows": 1,
+                                    "latest": {"Kp": value, "time_tag": tag},
+                                },
+                            }
+                        ],
+                    }
+                )
+            (day / "public-status.jsonl").write_text(
+                "\n".join(map(json.dumps, rows)) + "\n", encoding="utf-8"
+            )
+            db = root / "index.duckdb"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--repo-root",
+                    str(root),
+                    "--output",
+                    str(db),
+                ],
+                check=True,
+            )
+            with duckdb.connect(str(db), read_only=True) as con:
+                result = con.execute(
+                    "select kp_value, epoch(kp_measured_at), kp_measurement_state,"
+                    " provenance_line from space_weather order by provenance_line"
+                ).fetchall()
+            expected = [
+                (
+                    expected,
+                    1795856400.0 if expected is not None else None,
+                    "available" if expected is not None else "UNKNOWN",
+                    i,
+                )
+                for i, (_, _, _, expected) in enumerate(cases, 1)
+            ]
+            self.assertEqual(result, expected)
