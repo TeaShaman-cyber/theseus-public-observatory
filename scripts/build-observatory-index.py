@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,15 +32,28 @@ def _source_status(item: dict, usable: bool) -> str:
 
 
 def _health_fields(snapshot: dict, item: dict):
-    is_v1 = snapshot.get("schema_version") == 1 and item.get("schema_version") == 1
+    is_v1 = snapshot.get("schema_version") == 1 or item.get("schema_version") == 1
     if is_v1:
         transport_status = (item.get("transport") or {}).get("status")
         parser_status = (item.get("parser") or {}).get("status")
         semantic_status = (item.get("semantic") or {}).get("status")
-        usable = semantic_status == "available"
+        code = item.get("http_status")
+        digest = item.get("payload_sha256")
+        usable = (
+            snapshot.get("schema_version") == 1
+            and item.get("schema_version") == 1
+            and item.get("ok") is True
+            and transport_status == "ok"
+            and parser_status == "ok"
+            and semantic_status == "available"
+            and type(code) is int
+            and 200 <= code < 300
+            and isinstance(digest, str)
+            and re.fullmatch(r"[0-9a-f]{64}", digest) is not None
+        )
         return 1, None, transport_status, parser_status, semantic_status, usable
 
-    collector_ok = bool(item.get("ok", False))
+    collector_ok = item.get("ok") is True
     return 0, collector_ok, None, None, None, collector_ok
 
 
@@ -270,7 +284,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                         )
                     )
                 if sid in SPACE_WEATHER:
-                    summary = item.get("summary") or {}
+                    summary = (item.get("summary") or {}) if usable else {}
                     weather_rows.append(
                         (
                             ts,
@@ -288,7 +302,7 @@ def build_index(repo_root: Path, output: Path) -> None:
                         )
                     )
                 if sid in ASTRONOMY:
-                    summary = item.get("summary") or {}
+                    summary = (item.get("summary") or {}) if usable else {}
                     event_today = summary.get("event_today") or {}
                     astronomy_rows.append(
                         (
@@ -346,9 +360,9 @@ def build_index(repo_root: Path, output: Path) -> None:
           create view v_probe_timeline as
           select collected_at, source_id, 'provider' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, source_status, provenance_path from provider_status
           union all
-          select collected_at, source_id, 'space_weather' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, 'OBSERVED' as source_status, provenance_path from space_weather
+          select collected_at, source_id, 'space_weather' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, case when usable then 'OBSERVED' else 'UNKNOWN' end as source_status, provenance_path from space_weather
           union all
-          select collected_at, source_id, 'astronomy' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, coalesce(current_phase, solar_eclipse_event, 'OBSERVED') as source_status, provenance_path from astronomy
+          select collected_at, source_id, 'astronomy' as probe_family, schema_version, collector_ok, transport_status, parser_status, semantic_status, usable, case when usable then coalesce(current_phase, solar_eclipse_event, 'OBSERVED') else 'UNKNOWN' end as source_status, provenance_path from astronomy
         """)
         con.execute("checkpoint")
     finally:

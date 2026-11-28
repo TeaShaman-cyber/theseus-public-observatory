@@ -46,3 +46,25 @@ uses the same transport path and retains observer-local date. Existing
 historical receipts are unchanged. Tests use synthetic transport and
 temporary files, no external network requests or credentials. No changes
 to source catalogue or collection cadence.
+
+### Receipt validation and index admission (#55)
+
+Validation is now import-safe and tests cross-layer invariants: unique source
+identity, finite nonnegative latency, HTTP status consistent with transport,
+payload digest presence for completed responses, unavailable sources cannot
+carry nonempty measurement summaries, and availability requires successful
+transport and parser. Historical HTTP errors with invalid JSON remain valid
+failure receipts; interrupted body reads can retain their known HTTP status.
+The index additionally gates v1 usability on both schema versions, explicit
+ok/transport/parser/semantic success, 2xx status and digest shape. Unknown
+legacy semantics are not upgraded. Failed weather/astronomy receipts retain
+health/provenance but emit no typed measurements; timeline status UNKNOWN.
+This validates receipt consistency, not the underlying physical instrument
+or cryptographic authenticity of a digest. No changes to canonical data.
+Historical comparison at main ea9a6a8: 2840 v1 source receipts, no nonempty
+unavailable summaries; all five base index tables identical as multisets
+(7653 observations, 3267 provider, 2178 weather, 2184 astronomy, 2184 Radar
+samples). 90 previously misleading unavailable timeline labels corrected;
+832 unavailable timeline rows now UNKNOWN. Archive projection format and
+published packs unchanged; broader archive admission, source-specific value
+validation and Git push concurrency remain separate follow-ups.
