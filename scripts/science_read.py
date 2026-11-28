@@ -17,6 +17,11 @@ from urllib.request import HTTPRedirectHandler, build_opener
 
 import duckdb
 
+if __package__:
+    from .magnetic_read import QUALITIES, STATIONS, read_magnetic
+else:
+    from magnetic_read import QUALITIES, STATIONS, read_magnetic
+
 HAPI = "https://cdaweb.gsfc.nasa.gov/hapi"
 DATASET = "OMNI2_H0_MRG1HR"
 FIELDS = {
@@ -256,19 +261,30 @@ def validate_gfz(records, window):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("source", choices=["nasa-omni-hourly", "gfz-kp-ap"])
+    p.add_argument(
+        "source", choices=["nasa-omni-hourly", "gfz-kp-ap", "intermagnet-minute"]
+    )
     p.add_argument("--start", required=True)
     p.add_argument("--end", required=True)
     p.add_argument("--fields", nargs="+", choices=list(FIELDS))
+    p.add_argument("--station", choices=STATIONS)
+    p.add_argument("--quality", choices=QUALITIES)
     a = p.parse_args()
     w = Window(a.start, a.end)
-    if a.source == "gfz-kp-ap" and a.fields:
-        p.error("GFZ returns Kp/ap together")
-    result = (
-        read_omni(w, a.fields or list(FIELDS))
-        if a.source == "nasa-omni-hourly"
-        else read_gfz(w)
-    )
+    if a.source != "nasa-omni-hourly" and a.fields:
+        p.error("--fields is available only for OMNI")
+    if a.source == "intermagnet-minute":
+        if not a.station:
+            p.error("--station required")
+        result = read_magnetic(w.begin, w.stop, a.station, a.quality or "definitive")
+    else:
+        if a.station or a.quality:
+            p.error("station/quality only for INTERMAGNET")
+        result = (
+            read_omni(w, a.fields or list(FIELDS))
+            if a.source == "nasa-omni-hourly"
+            else read_gfz(w)
+        )
     print(
         json.dumps(
             {
