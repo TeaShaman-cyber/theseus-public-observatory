@@ -150,6 +150,7 @@ def parse_omni(raw, window, fields):
                 raise ValueError("invalid numeric value") from exc
         rows.append(record)
     expected = (window.stop - window.begin) // HOUR
+    missing = {field: count + expected - len(rows) for field, count in missing.items()}
     return {
         "rows": rows,
         "expected_rows": expected,
@@ -255,6 +256,7 @@ def validate_gfz(records, window):
                 missing[field] += 1
             elif type(value) not in (int, float) or not 0 <= value <= limit:
                 raise ValueError("invalid GFZ value")
+    missing = {field: count + len(expected - seen) for field, count in missing.items()}
     return {
         "rows": records,
         "expected_rows": len(expected),
