@@ -108,6 +108,72 @@ async function fetchAstronomy(date) {
   })));
 }
 
+function appendSourceHealth(lines, sources) {
+  for (const source of sources) {
+    const state = source.ok ? "ok" : "error";
+    lines.push(`- ${source.label}: ${state}, ${source.latency_ms} ms`);
+    if (source.summary?.indicator || source.summary?.description) {
+      lines.push(`  - status: ${source.summary.indicator || "unknown"} / ${source.summary.description || "n/a"}`);
+    }
+    if (source.error) lines.push(`  - error: ${source.error}`);
+  }
+}
+
+function appendRadar(lines, sources) {
+  const radar = sources.filter(source => source.adapter === "cloudflare-radar-origins-v1");
+  if (!radar.length) return;
+
+  lines.push("", "## Cloudflare Radar Origins", "",
+    "- Source: Cloudflare Radar (https://radar.cloudflare.com/), CC BY-NC 4.0.",
+    "- Values are fractions of the maximum in each response window, not absolute counts, error rates, or GPU utilization.");
+  for (const source of radar) {
+    if (!source.ok) {
+      lines.push(`- ${source.label}: unavailable (${source.error}).`);
+      continue;
+    }
+    const s = source.summary;
+    lines.push(`- ${s.provider} ${s.metric}: ${s.samples}/${s.expected_samples} samples (${s.coverage}), window ${s.window_start} – ${s.window_end}, updated ${s.last_updated}.`);
+  }
+}
+
+function appendMoon(lines, sunMoon) {
+  if (sunMoon?.observer_local_date) {
+    lines.push(`- Observer local date: ${sunMoon.observer_local_date} (Kaliningrad, UTC+2)`);
+  }
+  const moon = sunMoon?.summary?.moon;
+  if (!moon) return;
+
+  lines.push(`- Moon: ${moon.current_phase || "unknown"}, ${moon.illumination_percent ?? "unknown"}% illuminated`);
+  const phase = moon.closest_primary_phase;
+  if (!phase) return;
+
+  lines.push(`  - closest primary phase: ${phase.phase || "unknown"}, ${phase.year}-${String(phase.month).padStart(2, "0")}-${String(phase.day).padStart(2, "0")} ${phase.time || ""} local time`);
+}
+
+function appendEclipse(lines, solarEclipse) {
+  if (solarEclipse?.summary?.event_today) {
+    lines.push(`- Solar eclipse event on this date (global list): ${solarEclipse.summary.event_today.event}`);
+    lines.push(`  - local visibility: ${solarEclipse.summary.local_visibility || "not recorded"}`);
+    return;
+  }
+  if (solarEclipse?.semantic?.status === "available") {
+    lines.push("- Solar eclipse event on this date (global list): none");
+  } else {
+    lines.push("- Solar eclipse event on this date (global list): unknown (source unavailable)");
+  }
+}
+
+function appendAstronomy(lines, sources) {
+  const sunMoon = sources.find((source) => source.id === "usno_sun_moon");
+  const solarEclipse = sources.find((source) => source.id === "usno_solar_eclipses");
+  if (!sunMoon && !solarEclipse) return;
+
+  lines.push("", "## Astronomy Context", "");
+  appendMoon(lines, sunMoon);
+  appendEclipse(lines, solarEclipse);
+  lines.push("- Astronomy values are contextual observations; this report does not claim effects on AI or infrastructure.");
+}
+
 export function renderReport(snapshot) {
   const lines = [
     `# Public Observatory Report ${today(new Date(snapshot.collected_at))}`,
@@ -118,55 +184,9 @@ export function renderReport(snapshot) {
     "",
   ];
 
-  for (const source of snapshot.sources) {
-    const state = source.ok ? "ok" : "error";
-    lines.push(`- ${source.label}: ${state}, ${source.latency_ms} ms`);
-    if (source.summary?.indicator || source.summary?.description) {
-      lines.push(`  - status: ${source.summary.indicator || "unknown"} / ${source.summary.description || "n/a"}`);
-    }
-    if (source.error) lines.push(`  - error: ${source.error}`);
-  }
-
-  const radar = snapshot.sources.filter(source => source.adapter === "cloudflare-radar-origins-v1");
-  if (radar.length) {
-    lines.push("", "## Cloudflare Radar Origins", "",
-      "- Source: Cloudflare Radar (https://radar.cloudflare.com/), CC BY-NC 4.0.",
-      "- Values are fractions of the maximum in each response window, not absolute counts, error rates, or GPU utilization.");
-    for (const source of radar) {
-      if (source.ok) {
-        const s = source.summary;
-        lines.push(`- ${s.provider} ${s.metric}: ${s.samples}/${s.expected_samples} samples (${s.coverage}), window ${s.window_start} – ${s.window_end}, updated ${s.last_updated}.`);
-      } else {
-        lines.push(`- ${source.label}: unavailable (${source.error}).`);
-      }
-    }
-  }
-
-  const sunMoon = snapshot.sources.find((source) => source.id === "usno_sun_moon");
-  const solarEclipse = snapshot.sources.find((source) => source.id === "usno_solar_eclipses");
-  if (sunMoon || solarEclipse) {
-    lines.push("", "## Astronomy Context", "");
-    if (sunMoon?.observer_local_date) {
-      lines.push(`- Observer local date: ${sunMoon.observer_local_date} (Kaliningrad, UTC+2)`);
-    }
-    if (sunMoon?.summary?.moon) {
-      const moon = sunMoon.summary.moon;
-      lines.push(`- Moon: ${moon.current_phase || "unknown"}, ${moon.illumination_percent ?? "unknown"}% illuminated`);
-      if (moon.closest_primary_phase) {
-        const phase = moon.closest_primary_phase;
-        lines.push(`  - closest primary phase: ${phase.phase || "unknown"}, ${phase.year}-${String(phase.month).padStart(2, "0")}-${String(phase.day).padStart(2, "0")} ${phase.time || ""} local time`);
-      }
-    }
-    if (solarEclipse?.summary?.event_today) {
-      lines.push(`- Solar eclipse event on this date (global list): ${solarEclipse.summary.event_today.event}`);
-      lines.push(`  - local visibility: ${solarEclipse.summary.local_visibility || "not recorded"}`);
-    } else if (solarEclipse?.semantic?.status === "available") {
-      lines.push("- Solar eclipse event on this date (global list): none");
-    } else {
-      lines.push("- Solar eclipse event on this date (global list): unknown (source unavailable)");
-    }
-    lines.push("- Astronomy values are contextual observations; this report does not claim effects on AI or infrastructure.");
-  }
+  appendSourceHealth(lines, snapshot.sources);
+  appendRadar(lines, snapshot.sources);
+  appendAstronomy(lines, snapshot.sources);
 
   lines.push(
     "",
