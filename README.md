@@ -72,6 +72,18 @@ A collection run can therefore preserve a degraded observation and still fail a 
 
 - `data/YYYY-MM-DD/public-status.jsonl` — durable observation journal.
 - `data/latest/public-status.json` — latest projection.
+
+Collection runs on the same ref are serialized; an already running collection
+is not cancelled. GitHub may supersede a pending run before it starts. A
+collected snapshot is published from a fresh branch tip in a disposable worktree
+with at most three ordinary fast-forward push attempts. A moved tip is fetched
+and verified before retry; no force push or new network collection is performed.
+An exact already-published observation is a no-op. Stale/conflicting snapshots
+are rejected instead of regressing the latest projection. On publication or
+validation failure the captured snapshot is retained as a seven-day workflow
+artifact for manual recovery, not treated as canonical data. Abrupt runner loss
+or cancellation may prevent artifact upload.
+
 - `reports/YYYY-MM-DD.md` — human projection.
 - immutable GitHub Release packs — durable packaged evidence for long-window reuse; they do not replace canonical JSONL authority.
 - `data/index/observatory.duckdb` — disposable research projection / temporary analysis cache.
