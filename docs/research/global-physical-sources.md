@@ -75,3 +75,15 @@ evidence of station absence. Do not broaden quality class automatically.
 No bulk download or new recurring collector. Next adapter: validate HAPI
 vector shapes, fill/units, station metadata, date coverage and per-channel
 missingness; then remote multistation queries alongside OMNI/GFZ.
+
+Follow-up metadata explains the two HTTP400 responses: the listed
+definitive Lanzhou series ends 2019-04-22 and Tiksi ends 1991-12-31,
+outside the 2023 request. The Irkutsk series spans 1998–2024 but
+has internal missing values. A common historical window within the
+catalogued coverage, 2017-09-08 01:00–01:05 UTC, returned five valid
+rows each for Lanzhou, Irkutsk and Kakioka. Exact response SHA-256:
+Lanzhou b1c86f453d53a337b1cb1115ad193a192f201a63c200f5253b15d7062bbd4d60
+(2175 bytes), Irkutsk 88f8a71c9151da0039cfa78b8b134db75c981737b0d9b1956c2842fa19998417
+(2216 bytes), Kakioka cabae71ee1195a4fc60e6db9c8fd326fcb0da49eb9ad500084764d99f69bb4bd
+(2173 bytes). These are transport/data feasibility witnesses, not a
+statistical comparison. Actual station coverage must be checked per window.
