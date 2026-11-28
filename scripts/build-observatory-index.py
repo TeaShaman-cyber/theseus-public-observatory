@@ -137,6 +137,31 @@ def build_index(repo_root: Path, output: Path) -> None:
             )
         """)
 
+        con.execute("""
+            create table radar_window_samples(
+              collected_at timestamptz,
+              observed_at timestamptz,
+              source_id varchar,
+              provider varchar,
+              metric varchar,
+              window_start timestamptz,
+              window_end timestamptz,
+              last_updated timestamptz,
+              measured_at timestamptz,
+              value double,
+              normalization varchar,
+              agg_interval varchar,
+              source_unit varchar,
+              value_unit varchar,
+              samples integer,
+              expected_samples integer,
+              coverage varchar,
+              payload_sha256 varchar,
+              provenance_path varchar,
+              provenance_line integer
+            )
+        """)
+        radar_rows = []
         obs_rows = []
         provider_rows = []
         weather_rows = []
@@ -175,6 +200,33 @@ def build_index(repo_root: Path, output: Path) -> None:
                     line_no,
                 )
                 obs_rows.append(base)
+                if item.get("adapter") == "cloudflare-radar-origins-v1" and usable:
+                    summary = item["summary"]
+                    for point in summary["points"]:
+                        radar_rows.append(
+                            (
+                                ts,
+                                item["observed_at"],
+                                sid,
+                                summary["provider"],
+                                summary["metric"],
+                                summary["window_start"],
+                                summary["window_end"],
+                                summary["last_updated"],
+                                point["measured_at"],
+                                point["value"],
+                                summary["normalization"],
+                                summary["agg_interval"],
+                                summary["source_unit"],
+                                summary["value_unit"],
+                                summary["samples"],
+                                summary["expected_samples"],
+                                summary["coverage"],
+                                item["payload_sha256"],
+                                rel,
+                                line_no,
+                            )
+                        )
                 if sid in PROVIDERS:
                     provider_rows.append(
                         (
@@ -225,6 +277,11 @@ def build_index(repo_root: Path, output: Path) -> None:
                             line_no,
                         )
                     )
+        if radar_rows:
+            con.executemany(
+                "insert into radar_window_samples values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                radar_rows,
+            )
         if obs_rows:
             con.executemany(
                 "insert into observations values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",

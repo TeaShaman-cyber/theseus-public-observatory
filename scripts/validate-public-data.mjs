@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { validateRadarCohort } from "./radar-collection.mjs";
 
 function walk(dir) {
   if (!existsSync(dir)) return [];
@@ -43,6 +44,8 @@ function validateSnapshot(snapshot, source) {
   if (isV1 && (!snapshot.run || snapshot.run.collector !== "collect-public-status-v1")) {
     throw new Error(`${source}: v1 snapshot missing run metadata`);
   }
+  const radar = snapshot.sources.filter(item => item.adapter === "cloudflare-radar-origins-v1" || item.id?.startsWith("radar_"));
+  if (radar.length) validateRadarCohort(radar);
   for (const item of snapshot.sources) {
     if (!item.id || !item.label || !item.url) throw new Error(`${source}: source item missing id/label/url`);
     if (!/^https:\/\//.test(item.url)) throw new Error(`${source}: source URL must be HTTPS`);

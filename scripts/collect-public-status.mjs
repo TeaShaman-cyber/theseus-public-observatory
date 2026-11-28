@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { buildAstronomySources, interpretAstronomy } from "./astronomy.mjs";
 import { summarizeSource } from "./source-adapters.mjs";
+import { fetchRadar } from "./radar-collection.mjs";
 import { createSnapshot, createSourceReceipt } from "./observation-receipt.mjs";
 
 const SOURCES = [
@@ -174,6 +175,21 @@ export function renderReport(snapshot) {
     if (source.error) lines.push(`  - error: ${source.error}`);
   }
 
+  const radar = snapshot.sources.filter(source => source.adapter === "cloudflare-radar-origins-v1");
+  if (radar.length) {
+    lines.push("", "## Cloudflare Radar Origins", "",
+      "- Source: Cloudflare Radar (https://radar.cloudflare.com/), CC BY-NC 4.0.",
+      "- Values are fractions of the maximum in each response window, not absolute counts, error rates, or GPU utilization.");
+    for (const source of radar) {
+      if (source.ok) {
+        const s = source.summary;
+        lines.push(`- ${s.provider} ${s.metric}: ${s.samples}/${s.expected_samples} samples (${s.coverage}), window ${s.window_start} – ${s.window_end}, updated ${s.last_updated}.`);
+      } else {
+        lines.push(`- ${source.label}: unavailable (${source.error}).`);
+      }
+    }
+  }
+
   const sunMoon = snapshot.sources.find((source) => source.id === "usno_sun_moon");
   const solarEclipse = snapshot.sources.find((source) => source.id === "usno_solar_eclipses");
   if (sunMoon || solarEclipse) {
@@ -228,6 +244,7 @@ async function main() {
     sources: [
       ...(await Promise.all(SOURCES.map((source) => fetchJson(source)))),
       ...(await fetchAstronomy(now)),
+      ...(await fetchRadar()),
     ],
   });
 

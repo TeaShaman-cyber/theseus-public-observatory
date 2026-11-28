@@ -6,6 +6,11 @@ export function findSensorContractFailures(snapshot) {
   if (snapshot?.schema_version !== 1 || !Array.isArray(snapshot?.sources)) return [];
   const failures = [];
   for (const source of snapshot.sources) {
+    if (source.adapter === "cloudflare-radar-origins-v1" &&
+        ["auth-required", "radar-worker-failed"].includes(source.error)) {
+      failures.push({ id: source.id, layer: "configuration", status: source.error });
+      continue;
+    }
     const transport = source?.transport?.status;
     const parser = source?.parser?.status;
     const semantic = source?.semantic?.status;

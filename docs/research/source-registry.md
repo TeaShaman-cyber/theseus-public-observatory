@@ -378,7 +378,7 @@ time-series, provenance, control, and statistical verification layer.
 
 ### Cloudflare Radar Origins — infrastructure pressure proxy
 
-- **Status:** `EVALUATING` (#25); not a canonical continuous source.
+- **Status:** hosted schema pilot verified (#25); canonical hourly collection candidate (#29).
 - **Authority:** Cloudflare Radar HTTP origin observations, not OpenAI internal telemetry.
 - **Routes:** https://developers.cloudflare.com/api/resources/radar/subresources/origins/ ;
   https://developers.cloudflare.com/radar/get-started/first-request/
@@ -387,12 +387,12 @@ time-series, provenance, control, and statistical verification layer.
 - **Units/type:** provider normalization, aggregation interval, time range and sample timestamps
   must remain attached; a normalized value is not an absolute request count.
 - **Pilot cadence:** manual, at most one catalogue plus two 1-day/15-minute series for each
-  of four supported providers. No recurring collection until real response admission.
+  of four supported providers. Hourly collection candidate (#29) uses eight fixed provider/metric requests; admission requires hosted collection readback.
 - **Time semantics:** UTC samples, source update time, collection receipt time are distinct.
 - **Authentication:** repository secret `CLOUDFLARE_RADAR_TOKEN` (Account / Radar / Read);
   never pass credentials in arguments, URLs, artifacts or logs.
 - **Retention:** sanitized schema receipt only (7-day CI artifact); no raw data redistribution
-  until live payload and attribution are reviewed. Radar data is licensed CC BY-NC 4.0
+  until live payload and attribution are reviewed. Canonical candidate #29 stores validated public samples with attribution, not raw API bodies. Radar data is licensed CC BY-NC 4.0
   per https://developers.cloudflare.com/radar/ (noncommercial use with attribution).
   No change to canonical history.
 - **Health:** missing token, HTTP errors, transport failures, malformed/invalid data
@@ -411,3 +411,5 @@ maximum 10); limit=5 returned all four supported providers. Microsoft REQUESTS
 and CONNECTION_FAILURES returned 88 samples in a requested 24h window,
 15-minute interval, MIN0_MAX normalization and lastUpdated 07:30 UTC for
 window ending 09:45 UTC. Partial coverage and upstream lag are not zeros.
+
+Canonical candidate (#29) preserves one snapshot receipt per provider/metric with exact response window, source update and observation timestamps, sample values and coverage, response hash and attribution. MIN0_MAX is a fraction of the response-window maximum; independently normalized overlapping windows must stay separate. The derived DuckDB table radar_window_samples preserves canonical path/line. Raw JSONL and archive observation summary JSON retain all samples. No GPU or tenant inference.

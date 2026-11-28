@@ -65,3 +65,10 @@ test("schema mismatch accompanying an HTTP transport failure is not a sensor con
   });
   assert.deepEqual(failures, []);
 });
+
+test("Radar missing auth and worker failure are configuration failures, not outages", () => {
+  const radar = {...source("radar_amazon_requests", "fetch-error", "not-attempted", "unavailable"),
+    adapter: "cloudflare-radar-origins-v1", error: "auth-required"};
+  assert.deepEqual(findSensorContractFailures({schema_version: 1, sources: [radar]}),
+    [{id: radar.id, layer: "configuration", status: "auth-required"}]);
+});
