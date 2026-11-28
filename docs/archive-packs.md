@@ -45,3 +45,24 @@ Kp measurement.
 
 GitHub Actions artifacts are transient transport only. Durable published packs are
 intended to be immutable GitHub Release assets.
+
+## Integrity verification
+
+The verifier checks the exact expected checksum entries and rejects duplicate
+entries, missing or nonregular assets, manifest asset hash/size mismatches,
+duplicate input paths, invalid calendar paths and unexpected/duplicate
+tar members. It recomputes coverage metadata from the raw JSONL and rebuilds
+both typed projections in an in-memory DuckDB connection with UTC timezone.
+Schema and row multisets (including duplicate counts and null values) must
+match the stored Parquet in both directions. Row counts alone are insufficient.
+A v1 period can legitimately contain no Kp measurements; absence is preserved.
+The legacy v0 Kp prohibition remains.
+
+VERIFIED means internal consistency under the current v1 projection algorithm,
+not proof of external authenticity. A separately trusted digest or comparison
+to the canonical Git revision is still necessary to detect coordinated changes
+to raw data, manifest and projections. The verifier and builder share the
+projection rules; this is not an independent proof of those rules. Calendar
+completeness means presence of all dates, not uninterrupted sensor coverage.
+Verification rebuilds rows in memory; it is not a resource-hardened parser for
+arbitrarily large untrusted packs. No published archives were rewritten.
