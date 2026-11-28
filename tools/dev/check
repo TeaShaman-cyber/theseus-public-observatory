@@ -20,9 +20,12 @@ python3 -m unittest scripts/test_archive_pack.py -v
 echo '== resource graph tests =='
 python3 -m unittest discover -s experiments/resource-graph -v
 
+echo '== Supabase projection tests =='
+python3 -m unittest discover -s experiments/supabase-projection -v
+
 echo '== python lint/format =='
-python3 -m ruff check observatory_site scripts experiments/resource-graph
-python3 -m ruff format --check observatory_site scripts experiments/resource-graph
+python3 -m ruff check observatory_site scripts experiments/resource-graph experiments/supabase-projection
+python3 -m ruff format --check observatory_site scripts experiments/resource-graph experiments/supabase-projection
 
 echo '== committed/working-tree whitespace =='
 base_ref="${QA_BASE_REF:-origin/main}"
