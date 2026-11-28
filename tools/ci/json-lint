@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+test "$(biome --version)" = 'Version: 2.6.6'
+paths=$(mktemp)
+trap 'rm -f "$paths"' EXIT
+git ls-files -z -- '*.json' > "$paths"
+test -s "$paths"
+xargs -0 biome lint --config-path biome.json --diagnostic-level=warn --error-on-warnings < "$paths"

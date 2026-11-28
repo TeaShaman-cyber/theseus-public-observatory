@@ -92,5 +92,5 @@ class CollectionWorkflowTests(unittest.TestCase):
         text = (repo / ".github" / "workflows" / "pages.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("actions/setup-node@v4", text)
+        self.assertRegex(text, r"actions/setup-node@[0-9a-f]{40} # v4")
         self.assertIn('node-version: "22"', text)

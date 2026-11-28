@@ -29,6 +29,7 @@ for (const file of walk(".")) {
   // reference is non-secret. Do not exempt other files or trailing content.
   if (/^\.github\/workflows\/[^/]+\.ya?ml$/.test(file)) {
     text = text.replace(/^([ \t]+)[A-Z][A-Z0-9_]*: \$\{\{ secrets\.[A-Z][A-Z0-9_]* \}\}[ \t]*$/gm, "");
+    text = text.replace(/^[ \t]+GH_TOKEN[:] \$\{\{ github\.token \}\}[ \t]*$/gm, "");
   }
   for (const pattern of SECRET_PATTERNS) {
     if (pattern.test(text)) hits.push(file);

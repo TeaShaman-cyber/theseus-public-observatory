@@ -32,3 +32,13 @@ test("reference exemption is restricted to workflow YAML and exact full line", (
   assert.equal(scan("plain.txt", assignment(reference)), 1);
   assert.equal(scan(".github/workflows/radar.yml", assignment(reference + " fake")), 1);
 });
+
+test("only the exact workflow GH_TOKEN binding to github.token is allowed", () => {
+  const name = "GH_" + "TOKEN";
+  const context = "$" + "{{ github.token }}";
+  const line = "          " + name + ": " + context;
+  assert.equal(scan(".github/workflows/collect.yml", line), 0);
+  assert.equal(scan("plain.txt", line), 1);
+  assert.equal(scan(".github/workflows/collect.yml", line + " extra"), 1);
+  assert.equal(scan(".github/workflows/collect.yml", "          " + name + ": fake-literal-value"), 1);
+});
