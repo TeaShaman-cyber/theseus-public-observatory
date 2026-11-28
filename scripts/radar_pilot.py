@@ -140,7 +140,7 @@ def open_response(req):
 
 def request(kind, token, *, provider=None, metric=None):
     if kind == "catalogue":
-        url = BASE + "?" + urlencode({"format": "JSON", "limit": 100})
+        url = BASE + "?" + urlencode({"format": "JSON", "limit": 5})
     elif kind == "series" and provider in PROVIDERS and metric in METRICS:
         url = (
             BASE

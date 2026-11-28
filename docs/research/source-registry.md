@@ -404,3 +404,10 @@ time-series, provenance, control, and statistical verification layer.
   and comparators; preserve counterexamples.
 - **Stop/advance:** verify live response and permissions, document redistribution terms,
   then admit specific measurements with tests, bounded storage, CLI and optional Kusto projection.
+
+Pilot receipt 2026-11-28: run 46132294969 reached Cloudflare HTTP 400.
+Independent read-only proxy probe identified error 2001 (catalogue limit above
+maximum 10); limit=5 returned all four supported providers. Microsoft REQUESTS
+and CONNECTION_FAILURES returned 88 samples in a requested 24h window,
+15-minute interval, MIN0_MAX normalization and lastUpdated 07:30 UTC for
+window ending 09:45 UTC. Partial coverage and upstream lag are not zeros.
