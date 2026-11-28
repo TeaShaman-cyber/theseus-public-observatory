@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "source_git_commit": "be248de4f599b3485e160ccca00939e69b0f845e",
+  "raw_sha256": "04d9d06c54aa825a9499d4b91d013fca1cac96ada28c62ae27bd349aa11d1a95",
+  "projection_format": "parquet",
+  "projection_sha256": "794cd7325a5335f5ca849df2c56ed4f63a4406233ca98db9fc1808ccd801bee2",
+  "projection_bytes": 2795409,
+  "rows": 277320,
+  "definitive_rows": 277104,
+  "provider": "supabase-storage",
+  "bucket": "observatory-archives",
+  "object": "gfz/kp-ap/794cd7325a5335f5ca849df2c56ed4f63a4406233ca98db9fc1808ccd801bee2.parquet",
+  "public": false,
+  "role": "rebuildable analytical projection",
+  "verified_date_utc": "2026-11-28"
+}
