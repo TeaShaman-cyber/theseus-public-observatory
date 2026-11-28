@@ -8,11 +8,9 @@ from pathlib import Path
 import duckdb
 
 REVISION = "2b53406f741ae8e2d2b078d9233e1d2317a47185"
-QUERIES = {
-    "health": "SELECT usable, count(*) AS n FROM sources GROUP BY usable ORDER BY usable",
-    "join": "SELECT s.id,count(p.measured_at) AS n,round(avg(p.value),8) AS mean_value FROM sources s LEFT JOIN samples p ON s.id=p.source_id GROUP BY s.id ORDER BY s.id",
-    "window": "WITH lagged AS (SELECT source_id,value-lag(value) OVER(PARTITION BY source_id,window_start,window_end ORDER BY measured_at) AS delta FROM samples) SELECT source_id,count(delta) AS n,round(max(abs(delta)),8) AS max_delta FROM lagged GROUP BY source_id ORDER BY source_id",
-}
+QUERIES = json.loads(
+    Path(__file__).with_name("queries.json").read_text(encoding="utf-8")
+)
 
 
 def main():

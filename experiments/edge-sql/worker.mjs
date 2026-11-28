@@ -1,9 +1,10 @@
 import { DuckDB, init, version } from "@ducklings/workers";
 import wasmModule from "./duckdb-workers.wasm";
+import queries from "./queries.json";
 
 export default {
   async fetch(request) {
-    const { sources, samples, queries } = await request.json();
+    const { sources, samples } = await request.json();
     await init({ wasmModule });
     const db = new DuckDB({ customConfig: { threads: "1", memory_limit: "48MB" } });
     const conn = db.connect();

@@ -23,7 +23,6 @@ assert.ok(total < 64 * 1024 * 1024, "bundle exceeds documented Workers size ceil
 const body = JSON.stringify({
   sources: [...await readFile(resolve(dir, "sources.parquet"))],
   samples: [...await readFile(resolve(dir, "samples.parquet"))],
-  queries: fixture.queries,
 });
 const started = performance.now();
 const mf = new Miniflare({
