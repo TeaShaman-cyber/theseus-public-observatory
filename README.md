@@ -176,3 +176,21 @@ Run the workflow from the Actions tab. It writes a sanitized short-lived
 receipt, not canonical observations; an absent token fails explicitly.
 See #25 and the source registry. Radar measures aggregate HTTP origin
 activity, not OpenAI tenant compute or GPU utilization.
+
+### Radar time-series interpretation
+
+The hourly collection workflow stores eight Cloudflare Radar Origins series
+(Amazon, Google, Microsoft and Oracle; requests and connection failures).
+Each successful receipt preserves the exact rolling 24-hour response window,
+15-minute sample timestamps, upstream update time, observed time, payload
+hash, and coverage. Missing samples remain absent. The source is
+[Cloudflare Radar](https://radar.cloudflare.com/), licensed
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+
+`MIN0_MAX` values are fractions of the maximum within the response window.
+They are not absolute requests, failure rates, tenant load, or GPU utilization.
+Do not merge overlapping independently normalized windows into one time series.
+The disposable DuckDB table `radar_window_samples` retains the window,
+collection identity and canonical JSONL path/line for every sample. Archive
+packs preserve the original receipts and their summary JSON; their generic
+signals table does not flatten these window-dependent values.

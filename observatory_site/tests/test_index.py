@@ -310,3 +310,78 @@ class IndexTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RadarIndexTests(unittest.TestCase):
+    def test_overlapping_normalized_windows_keep_separate_provenance(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            day = root / "data" / "2026-11-28"
+            day.mkdir(parents=True)
+            rows = []
+            for hour, value in [(10, 0.5), (11, 0.7)]:
+                rows.append(
+                    {
+                        "schema_version": 1,
+                        "collected_at": f"2026-11-28T{hour}:00:00Z",
+                        "sources": [
+                            {
+                                "id": "radar_microsoft_requests",
+                                "adapter": "cloudflare-radar-origins-v1",
+                                "schema_version": 1,
+                                "ok": True,
+                                "semantic": {"status": "available"},
+                                "payload_sha256": str(hour)[-1] * 64,
+                                "observed_at": f"2026-11-28T{hour}:01:00Z",
+                                "summary": {
+                                    "provider": "microsoft",
+                                    "metric": "REQUESTS",
+                                    "window_start": f"2026-11-27T{hour}:00:00Z",
+                                    "window_end": f"2026-11-28T{hour}:00:00Z",
+                                    "last_updated": "2026-11-28T09:45:00Z",
+                                    "normalization": "MIN0_MAX",
+                                    "agg_interval": "FIFTEEN_MINUTES",
+                                    "source_unit": "requests",
+                                    "value_unit": "window_max_fraction",
+                                    "samples": 1,
+                                    "expected_samples": 97,
+                                    "coverage": "partial",
+                                    "points": [
+                                        {
+                                            "measured_at": "2026-11-28T09:45:00Z",
+                                            "value": value,
+                                        }
+                                    ],
+                                },
+                            }
+                        ],
+                    }
+                )
+            (day / "public-status.jsonl").write_text(
+                "\n".join(json.dumps(row) for row in rows) + "\n",
+                encoding="utf-8",
+            )
+            db = root / "index.duckdb"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--repo-root",
+                    str(root),
+                    "--output",
+                    str(db),
+                ],
+                check=True,
+            )
+            con = duckdb.connect(str(db), read_only=True)
+            try:
+                got = con.execute(
+                    "select value, provenance_line, normalization, coverage "
+                    "from radar_window_samples order by window_end"
+                ).fetchall()
+                self.assertEqual(
+                    got,
+                    [(0.5, 1, "MIN0_MAX", "partial"), (0.7, 2, "MIN0_MAX", "partial")],
+                )
+            finally:
+                con.close()
