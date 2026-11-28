@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "collected_at": "2026-11-28T10:05:38.916Z",
+  "collected_at": "2026-11-28T12:54:39.140Z",
   "run": {
-    "github_run_id": "46133495168",
+    "github_run_id": "46146965513",
     "github_run_attempt": 1,
     "github_repository": "TeaShaman-cyber/theseus-public-observatory",
     "github_workflow": "Collect public observatory data",
     "github_ref": "refs/heads/main",
-    "github_sha": "b997ec3041cffcecacc392a714e383c11f919c00",
+    "github_sha": "9547efd160f60b77e660dd4f2cacf2b86f8216c2",
     "collector": "collect-public-status-v1"
   },
   "sources": [
@@ -19,7 +19,7 @@
       "adapter": "statuspage-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 258,
+      "latency_ms": 194,
       "content_type": "application/json",
       "payload_sha256": "13920b826774020fce3764698a1b34ffa81e83dd96d568853f8cade84a296267",
       "transport": {
@@ -45,9 +45,9 @@
       "adapter": "statuspage-summary-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 35,
+      "latency_ms": 96,
       "content_type": "application/json; charset=utf-8",
-      "payload_sha256": "fd22f998a413af72cd39c0729f311977319cfb35c82441805f19130b8e64f5f2",
+      "payload_sha256": "895276261d6967974e6808d1281b5bddaa0b6c23f107fb4dd998a1a70e285451",
       "transport": {
         "status": "ok"
       },
@@ -73,7 +73,7 @@
       "adapter": "huggingface-status-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 308,
+      "latency_ms": 362,
       "content_type": "application/json; charset=utf-8",
       "payload_sha256": "101321db4753b647866be008b778bcce6c6a1759b4144565b5c0df40bd7d7209",
       "transport": {
@@ -102,9 +102,9 @@
       "adapter": "noaa-kp-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 120,
+      "latency_ms": 217,
       "content_type": "application/json",
-      "payload_sha256": "fc4032ce21d78dae7373a662fb176f940654c8ef50ebf7204ef16e90e7e05461",
+      "payload_sha256": "436fc44a052eff898fe129b1ea436a0aa8f9c73ade2757290971993ca255b032",
       "transport": {
         "status": "ok"
       },
@@ -115,9 +115,9 @@
         "status": "available"
       },
       "summary": {
-        "rows": 59,
+        "rows": 60,
         "latest": {
-          "time_tag": "2026-11-28T06:00:00",
+          "time_tag": "2026-11-28T09:00:00",
           "Kp": 3.33,
           "a_running": 18,
           "station_count": 8
@@ -132,9 +132,9 @@
       "adapter": "noaa-scales-v1",
       "ok": true,
       "http_status": 200,
-      "latency_ms": 118,
+      "latency_ms": 216,
       "content_type": "application/json",
-      "payload_sha256": "34bac8e616ab95447a2e3109de40e0be7d2f772467ad686db2a8032aa21e67b7",
+      "payload_sha256": "d64b89fb8b81570a617858e6dfdfd9dc4737e808ae8fc99f40c78ace4a3098a7",
       "transport": {
         "status": "ok"
       },
@@ -147,7 +147,7 @@
       "summary": {
         "observed": {
           "DateStamp": "2026-11-27",
-          "TimeStamp": "10:04:00",
+          "TimeStamp": "12:53:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -166,7 +166,7 @@
         },
         "current": {
           "DateStamp": "2026-11-28",
-          "TimeStamp": "10:04:00",
+          "TimeStamp": "12:53:00",
           "R": {
             "Scale": "0",
             "Text": "none",
@@ -185,11 +185,11 @@
         },
         "forecast": {
           "DateStamp": "2026-11-28",
-          "TimeStamp": "10:04:00",
+          "TimeStamp": "12:53:00",
           "R": {
             "Scale": null,
             "Text": null,
-            "MinorProb": "1",
+            "MinorProb": "5",
             "MajorProb": "1"
           },
           "S": {
@@ -212,7 +212,7 @@
       "adapter": "usno-sun-moon-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10183,
+      "latency_ms": 10130,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -235,7 +235,7 @@
       "adapter": "usno-moon-phases-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10182,
+      "latency_ms": 10129,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -258,7 +258,7 @@
       "adapter": "usno-solar-eclipses-v1",
       "ok": false,
       "http_status": null,
-      "latency_ms": 10182,
+      "latency_ms": 10127,
       "content_type": null,
       "payload_sha256": null,
       "transport": {
@@ -282,7 +282,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "9cd09ec675c35a597fb57eb8bce5591a082034cb8471580462a7e4970398e799",
+      "payload_sha256": "98f85550810419c336657c4c386f26baa943424da34eb8418c4711bcac7ad5cc",
       "transport": {
         "status": "ok"
       },
@@ -293,14 +293,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 92,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -308,50 +308,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.779843
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.775161
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.780789
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.775138
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.783241
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.768643
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.773923
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.772263
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.798888
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.797723
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.81458
-          },
           {
             "measured_at": "2026-11-27T12:45:00Z",
             "value": 0.829062
@@ -671,13 +627,61 @@
           {
             "measured_at": "2026-11-28T08:30:00Z",
             "value": 0.598751
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.595861
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.616139
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.605683
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.613385
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.613313
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.631179
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.622478
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.629855
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.628768
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.654111
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.648079
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.655167
           }
         ],
         "provider": "amazon",
         "metric": "REQUESTS"
       },
-      "latency_ms": 620,
-      "observed_at": "2026-11-28T10:05:51.332699+00:00"
+      "latency_ms": 599,
+      "observed_at": "2026-11-28T12:54:51.318812+00:00"
     },
     {
       "schema_version": 1,
@@ -688,7 +692,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "8e1cee08840923b1567c27c7db9cee10964418e9608700c603117537efe5e7c6",
+      "payload_sha256": "df9f924a2a0b9f013aacba89bd106b96ffe9fd0fd9b46a1315a6b6018ca29756",
       "transport": {
         "status": "ok"
       },
@@ -699,14 +703,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 92,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -715,375 +719,379 @@
         "license": "CC BY-NC 4.0",
         "points": [
           {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.482412
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.523869
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.525126
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.53392
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.513819
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.59799
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.493719
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.55402
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.516332
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.506281
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.518844
-          },
-          {
             "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.718593
+            "value": 0.118894
           },
           {
             "measured_at": "2026-11-27T13:00:00Z",
-            "value": 0.528894
+            "value": 0.087508
           },
           {
             "measured_at": "2026-11-27T13:15:00Z",
-            "value": 0.467337
+            "value": 0.077323
           },
           {
             "measured_at": "2026-11-27T13:30:00Z",
-            "value": 0.449749
+            "value": 0.074413
           },
           {
             "measured_at": "2026-11-27T13:45:00Z",
-            "value": 0.513819
+            "value": 0.085014
           },
           {
             "measured_at": "2026-11-27T14:00:00Z",
-            "value": 0.46608
+            "value": 0.077115
           },
           {
             "measured_at": "2026-11-27T14:15:00Z",
-            "value": 0.528894
+            "value": 0.087508
           },
           {
             "measured_at": "2026-11-27T14:30:00Z",
-            "value": 0.545226
+            "value": 0.09021
           },
           {
             "measured_at": "2026-11-27T14:45:00Z",
-            "value": 0.517588
+            "value": 0.085637
           },
           {
             "measured_at": "2026-11-27T15:00:00Z",
-            "value": 0.569095
+            "value": 0.094159
           },
           {
             "measured_at": "2026-11-27T15:15:00Z",
-            "value": 0.448492
+            "value": 0.074205
           },
           {
             "measured_at": "2026-11-27T15:30:00Z",
-            "value": 0.459799
+            "value": 0.076076
           },
           {
             "measured_at": "2026-11-27T15:45:00Z",
-            "value": 0.444724
+            "value": 0.073581
           },
           {
             "measured_at": "2026-11-27T16:00:00Z",
-            "value": 0.464824
+            "value": 0.076907
           },
           {
             "measured_at": "2026-11-27T16:15:00Z",
-            "value": 0.561558
+            "value": 0.092912
           },
           {
             "measured_at": "2026-11-27T16:30:00Z",
-            "value": 0.708543
+            "value": 0.117231
           },
           {
             "measured_at": "2026-11-27T16:45:00Z",
-            "value": 0.536432
+            "value": 0.088755
           },
           {
             "measured_at": "2026-11-27T17:00:00Z",
-            "value": 0.474874
+            "value": 0.07857
           },
           {
             "measured_at": "2026-11-27T17:15:00Z",
-            "value": 0.487437
+            "value": 0.080649
           },
           {
             "measured_at": "2026-11-27T17:30:00Z",
-            "value": 0.492462
+            "value": 0.08148
           },
           {
             "measured_at": "2026-11-27T17:45:00Z",
-            "value": 0.497487
+            "value": 0.082311
           },
           {
             "measured_at": "2026-11-27T18:00:00Z",
-            "value": 0.550251
+            "value": 0.091041
           },
           {
             "measured_at": "2026-11-27T18:15:00Z",
-            "value": 0.5
+            "value": 0.082727
           },
           {
             "measured_at": "2026-11-27T18:30:00Z",
-            "value": 0.550251
+            "value": 0.091041
           },
           {
             "measured_at": "2026-11-27T18:45:00Z",
-            "value": 0.66206
+            "value": 0.109541
           },
           {
             "measured_at": "2026-11-27T19:00:00Z",
-            "value": 0.648241
+            "value": 0.107254
           },
           {
             "measured_at": "2026-11-27T19:15:00Z",
-            "value": 0.596734
+            "value": 0.098732
           },
           {
             "measured_at": "2026-11-27T19:30:00Z",
-            "value": 0.508794
+            "value": 0.084182
           },
           {
             "measured_at": "2026-11-27T19:45:00Z",
-            "value": 0.556533
+            "value": 0.092081
           },
           {
             "measured_at": "2026-11-27T20:00:00Z",
-            "value": 0.472362
+            "value": 0.078154
           },
           {
             "measured_at": "2026-11-27T20:15:00Z",
-            "value": 0.516332
+            "value": 0.085429
           },
           {
             "measured_at": "2026-11-27T20:30:00Z",
-            "value": 0.518844
+            "value": 0.085845
           },
           {
             "measured_at": "2026-11-27T20:45:00Z",
-            "value": 0.443467
+            "value": 0.073374
           },
           {
             "measured_at": "2026-11-27T21:00:00Z",
-            "value": 0.473618
+            "value": 0.078362
           },
           {
             "measured_at": "2026-11-27T21:15:00Z",
-            "value": 0.513819
+            "value": 0.085014
           },
           {
             "measured_at": "2026-11-27T21:30:00Z",
-            "value": 0.535176
+            "value": 0.088547
           },
           {
             "measured_at": "2026-11-27T21:45:00Z",
-            "value": 0.473618
+            "value": 0.078362
           },
           {
             "measured_at": "2026-11-27T22:00:00Z",
-            "value": 0.55402
+            "value": 0.091665
           },
           {
             "measured_at": "2026-11-27T22:15:00Z",
-            "value": 0.523869
+            "value": 0.086676
           },
           {
             "measured_at": "2026-11-27T22:30:00Z",
-            "value": 0.579146
+            "value": 0.095822
           },
           {
             "measured_at": "2026-11-27T22:45:00Z",
-            "value": 0.611809
+            "value": 0.101226
           },
           {
             "measured_at": "2026-11-27T23:00:00Z",
-            "value": 1
+            "value": 0.165454
           },
           {
             "measured_at": "2026-11-27T23:15:00Z",
-            "value": 0.531407
+            "value": 0.087924
           },
           {
             "measured_at": "2026-11-27T23:30:00Z",
-            "value": 0.439698
+            "value": 0.07275
           },
           {
             "measured_at": "2026-11-27T23:45:00Z",
-            "value": 0.389447
+            "value": 0.064436
           },
           {
             "measured_at": "2026-11-28T00:00:00Z",
-            "value": 0.492462
+            "value": 0.08148
           },
           {
             "measured_at": "2026-11-28T00:15:00Z",
-            "value": 0.379397
+            "value": 0.062773
           },
           {
             "measured_at": "2026-11-28T00:30:00Z",
-            "value": 0.959799
+            "value": 0.158803
           },
           {
             "measured_at": "2026-11-28T00:45:00Z",
-            "value": 0.396985
+            "value": 0.065683
           },
           {
             "measured_at": "2026-11-28T01:00:00Z",
-            "value": 0.476131
+            "value": 0.078778
           },
           {
             "measured_at": "2026-11-28T01:15:00Z",
-            "value": 0.482412
+            "value": 0.079817
           },
           {
             "measured_at": "2026-11-28T01:30:00Z",
-            "value": 0.440955
+            "value": 0.072958
           },
           {
             "measured_at": "2026-11-28T01:45:00Z",
-            "value": 0.523869
+            "value": 0.086676
           },
           {
             "measured_at": "2026-11-28T02:00:00Z",
-            "value": 0.5
+            "value": 0.082727
           },
           {
             "measured_at": "2026-11-28T02:15:00Z",
-            "value": 0.478643
+            "value": 0.079194
           },
           {
             "measured_at": "2026-11-28T02:30:00Z",
-            "value": 0.486181
+            "value": 0.080441
           },
           {
             "measured_at": "2026-11-28T02:45:00Z",
-            "value": 0.574121
+            "value": 0.094991
           },
           {
             "measured_at": "2026-11-28T03:00:00Z",
-            "value": 0.492462
+            "value": 0.08148
           },
           {
             "measured_at": "2026-11-28T03:15:00Z",
-            "value": 0.51005
+            "value": 0.08439
           },
           {
             "measured_at": "2026-11-28T03:30:00Z",
-            "value": 0.483668
+            "value": 0.080025
           },
           {
             "measured_at": "2026-11-28T03:45:00Z",
-            "value": 0.528894
+            "value": 0.087508
           },
           {
             "measured_at": "2026-11-28T04:00:00Z",
-            "value": 0.579146
+            "value": 0.095822
           },
           {
             "measured_at": "2026-11-28T04:15:00Z",
-            "value": 0.565327
+            "value": 0.093536
           },
           {
             "measured_at": "2026-11-28T04:30:00Z",
-            "value": 0.557789
+            "value": 0.092289
           },
           {
             "measured_at": "2026-11-28T04:45:00Z",
-            "value": 0.663317
+            "value": 0.109748
           },
           {
             "measured_at": "2026-11-28T05:00:00Z",
-            "value": 0.667085
+            "value": 0.110372
           },
           {
             "measured_at": "2026-11-28T05:15:00Z",
-            "value": 0.527638
+            "value": 0.0873
           },
           {
             "measured_at": "2026-11-28T05:30:00Z",
-            "value": 0.515075
+            "value": 0.085221
           },
           {
             "measured_at": "2026-11-28T05:45:00Z",
-            "value": 0.530151
+            "value": 0.087716
           },
           {
             "measured_at": "2026-11-28T06:00:00Z",
-            "value": 0.861809
+            "value": 0.14259
           },
           {
             "measured_at": "2026-11-28T06:15:00Z",
-            "value": 0.438442
+            "value": 0.072542
           },
           {
             "measured_at": "2026-11-28T06:30:00Z",
-            "value": 0.472362
+            "value": 0.078154
           },
           {
             "measured_at": "2026-11-28T06:45:00Z",
-            "value": 0.548995
+            "value": 0.090834
           },
           {
             "measured_at": "2026-11-28T07:00:00Z",
-            "value": 0.487437
+            "value": 0.080649
           },
           {
             "measured_at": "2026-11-28T07:15:00Z",
-            "value": 0.459799
+            "value": 0.076076
           },
           {
             "measured_at": "2026-11-28T07:30:00Z",
-            "value": 0.461055
+            "value": 0.076284
           },
           {
             "measured_at": "2026-11-28T07:45:00Z",
-            "value": 0.454774
+            "value": 0.075244
           },
           {
             "measured_at": "2026-11-28T08:00:00Z",
-            "value": 0.440955
+            "value": 0.072958
           },
           {
             "measured_at": "2026-11-28T08:15:00Z",
-            "value": 0.418342
+            "value": 0.069216
           },
           {
             "measured_at": "2026-11-28T08:30:00Z",
-            "value": 0.447236
+            "value": 0.073997
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.080856
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.075036
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.083559
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.470588
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 1
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.470796
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.099356
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.084182
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.090002
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.089794
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.083351
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.081688
           }
         ],
         "provider": "amazon",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 761,
-      "observed_at": "2026-11-28T10:05:51.474553+00:00"
+      "latency_ms": 10087,
+      "observed_at": "2026-11-28T12:55:00.808281+00:00"
     },
     {
       "schema_version": 1,
@@ -1094,7 +1102,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "95e2ced7dcdb0d9263dc0275ec9e08b0fede6442eabc5404d8c9abec1620058d",
+      "payload_sha256": "6fd2b6ddef64fd6a7d71e59cbc001fcda64a0f6be3b04c86b4b2d5cb6b3b4e86",
       "transport": {
         "status": "ok"
       },
@@ -1105,14 +1113,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 88,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T10:30:00Z",
+        "last_updated": "2026-11-28T10:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -1120,50 +1128,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.770101
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.761424
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.765462
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.765934
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.783737
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.784213
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.800665
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.807417
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.834598
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.83858
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.855031
-          },
           {
             "measured_at": "2026-11-27T12:45:00Z",
             "value": 0.866823
@@ -1483,13 +1447,45 @@
           {
             "measured_at": "2026-11-28T08:30:00Z",
             "value": 0.658108
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.660285
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.673077
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.66543
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.673997
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.671024
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.684071
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.680409
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.68572
           }
         ],
         "provider": "google",
         "metric": "REQUESTS"
       },
-      "latency_ms": 529,
-      "observed_at": "2026-11-28T10:05:51.242963+00:00"
+      "latency_ms": 582,
+      "observed_at": "2026-11-28T12:54:51.303736+00:00"
     },
     {
       "schema_version": 1,
@@ -1500,7 +1496,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "ab152c1869f86e4c20d337b9d8d0f146df186e64ff19e379f71a84a96eaa30ab",
+      "payload_sha256": "a6d4d839e39465e5e6d7e7d2e39873c71ad5f95d6f14a5a8245bee15f050d9ab",
       "transport": {
         "status": "ok"
       },
@@ -1511,14 +1507,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 92,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -1526,50 +1522,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.5
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.550948
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.592417
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.708531
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.543839
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.547393
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.5391
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.543839
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.526066
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.517773
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.478673
-          },
           {
             "measured_at": "2026-11-27T12:45:00Z",
             "value": 0.535545
@@ -1889,13 +1841,61 @@
           {
             "measured_at": "2026-11-28T08:30:00Z",
             "value": 0.472749
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.446682
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.4609
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.486967
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.486967
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.522512
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.49763
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.523697
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.527251
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.524882
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.574645
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.531991
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.510664
           }
         ],
         "provider": "google",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 489,
-      "observed_at": "2026-11-28T10:05:51.202783+00:00"
+      "latency_ms": 589,
+      "observed_at": "2026-11-28T12:54:51.310571+00:00"
     },
     {
       "schema_version": 1,
@@ -1906,7 +1906,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "5da750298b88c7bfa0f266ff1ad07c727f761a004f3bd52068e1bac067e57777",
+      "payload_sha256": "20a2e0d8158b5f55795e8b9e4297c5f0a3e6e6c7f918f69d0e646d3575a0308f",
       "transport": {
         "status": "ok"
       },
@@ -1917,14 +1917,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 88,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T10:30:00Z",
+        "last_updated": "2026-11-28T10:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -1932,50 +1932,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.891276
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.886966
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.890388
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.894747
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.889724
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.886491
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.894942
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.898192
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.911143
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.912807
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.928999
-          },
           {
             "measured_at": "2026-11-27T12:45:00Z",
             "value": 0.943309
@@ -2295,13 +2251,45 @@
           {
             "measured_at": "2026-11-28T08:30:00Z",
             "value": 0.692136
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.695529
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.707167
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.709127
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.714522
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.71639
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.72385
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.726462
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.729603
           }
         ],
         "provider": "microsoft",
         "metric": "REQUESTS"
       },
-      "latency_ms": 443,
-      "observed_at": "2026-11-28T10:05:51.645610+00:00"
+      "latency_ms": 828,
+      "observed_at": "2026-11-28T12:54:52.131480+00:00"
     },
     {
       "schema_version": 1,
@@ -2312,7 +2300,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "1a3316557b0524388d59f7d35b354e645c3e156624fc4e1b503ba52f11057bee",
+      "payload_sha256": "3c84c8104dced47a39d5a1bd78fe8a2d4019fb4966f90b2f4d0f5b749f29c12f",
       "transport": {
         "status": "ok"
       },
@@ -2323,14 +2311,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 92,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -2338,50 +2326,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.732187
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.72973
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.953317
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.891892
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.77887
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.660934
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.648649
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.746929
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.749386
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.690418
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.695332
-          },
           {
             "measured_at": "2026-11-27T12:45:00Z",
             "value": 0.68059
@@ -2701,13 +2645,61 @@
           {
             "measured_at": "2026-11-28T08:30:00Z",
             "value": 0.579853
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.665848
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.643735
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.722359
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.788698
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.702703
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.766585
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.727273
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.739558
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.771499
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.722359
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.727273
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.651106
           }
         ],
         "provider": "microsoft",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 413,
-      "observed_at": "2026-11-28T10:05:51.655567+00:00"
+      "latency_ms": 594,
+      "observed_at": "2026-11-28T12:54:51.904506+00:00"
     },
     {
       "schema_version": 1,
@@ -2718,7 +2710,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "3a7954ceabe6e91d41f7f84138f5b22ceb000d82ead6700b11161561bffbe512",
+      "payload_sha256": "add6edfd8df03af9efa4d3936467762a857fe4a595692d14bb135e307e253496",
       "transport": {
         "status": "ok"
       },
@@ -2729,14 +2721,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 92,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -2744,50 +2736,6 @@
         "attribution": "Cloudflare Radar",
         "license": "CC BY-NC 4.0",
         "points": [
-          {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.854651
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.857265
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.858259
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.849
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.87302
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.884568
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 0.892316
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.906587
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.926876
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.932023
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.952735
-          },
           {
             "measured_at": "2026-11-27T12:45:00Z",
             "value": 0.961395
@@ -3107,13 +3055,61 @@
           {
             "measured_at": "2026-11-28T08:30:00Z",
             "value": 0.829595
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.830726
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.834675
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.835682
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.835587
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.830794
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.844438
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.840979
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.837412
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.84343
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.86357
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.869888
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.872544
           }
         ],
         "provider": "oracle",
         "metric": "REQUESTS"
       },
-      "latency_ms": 476,
-      "observed_at": "2026-11-28T10:05:51.809188+00:00"
+      "latency_ms": 517,
+      "observed_at": "2026-11-28T12:54:51.835838+00:00"
     },
     {
       "schema_version": 1,
@@ -3124,7 +3120,7 @@
       "ok": true,
       "http_status": 200,
       "content_type": "application/json;charset=UTF-8",
-      "payload_sha256": "d8eb6c6962adf4e19526bfc745ec59503047c2b46c99bb59ed790d121734af71",
+      "payload_sha256": "9ffe77784840edabf14485b876ef815cd320cc60dacf821a7f30b1f4c4bfc24e",
       "transport": {
         "status": "ok"
       },
@@ -3135,14 +3131,14 @@
         "status": "available"
       },
       "summary": {
-        "samples": 91,
+        "samples": 92,
         "normalization": "MIN0_MAX",
         "agg_interval": "FIFTEEN_MINUTES",
-        "first": "2026-11-27T10:00:00Z",
-        "last": "2026-11-28T08:30:00Z",
-        "last_updated": "2026-11-28T08:30:00Z",
-        "window_start": "2026-11-27T10:00:00Z",
-        "window_end": "2026-11-28T10:00:00Z",
+        "first": "2026-11-27T12:45:00Z",
+        "last": "2026-11-28T11:30:00Z",
+        "last_updated": "2026-11-28T11:30:00Z",
+        "window_start": "2026-11-27T12:45:00Z",
+        "window_end": "2026-11-28T12:45:00Z",
         "expected_samples": 97,
         "coverage": "partial",
         "source_unit": "requests",
@@ -3151,375 +3147,379 @@
         "license": "CC BY-NC 4.0",
         "points": [
           {
-            "measured_at": "2026-11-27T10:00:00Z",
-            "value": 0.714286
-          },
-          {
-            "measured_at": "2026-11-27T10:15:00Z",
-            "value": 0.714286
-          },
-          {
-            "measured_at": "2026-11-27T10:30:00Z",
-            "value": 0.428571
-          },
-          {
-            "measured_at": "2026-11-27T10:45:00Z",
-            "value": 0.666667
-          },
-          {
-            "measured_at": "2026-11-27T11:00:00Z",
-            "value": 0.285714
-          },
-          {
-            "measured_at": "2026-11-27T11:15:00Z",
-            "value": 0.47619
-          },
-          {
-            "measured_at": "2026-11-27T11:30:00Z",
-            "value": 1
-          },
-          {
-            "measured_at": "2026-11-27T11:45:00Z",
-            "value": 0.952381
-          },
-          {
-            "measured_at": "2026-11-27T12:00:00Z",
-            "value": 0.571429
-          },
-          {
-            "measured_at": "2026-11-27T12:15:00Z",
-            "value": 0.428571
-          },
-          {
-            "measured_at": "2026-11-27T12:30:00Z",
-            "value": 0.714286
-          },
-          {
             "measured_at": "2026-11-27T12:45:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T13:00:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-27T13:15:00Z",
-            "value": 0.428571
+            "value": 0.45
           },
           {
             "measured_at": "2026-11-27T13:30:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-27T13:45:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-27T14:00:00Z",
-            "value": 0.52381
+            "value": 0.55
           },
           {
             "measured_at": "2026-11-27T14:15:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-27T14:30:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T14:45:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T15:00:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-27T15:15:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-27T15:30:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T15:45:00Z",
-            "value": 0.761905
+            "value": 0.8
           },
           {
             "measured_at": "2026-11-27T16:00:00Z",
-            "value": 0.142857
+            "value": 0.15
           },
           {
             "measured_at": "2026-11-27T16:15:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-27T16:30:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-27T16:45:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T17:00:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-27T17:15:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-27T17:30:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-27T17:45:00Z",
-            "value": 0.428571
+            "value": 0.45
           },
           {
             "measured_at": "2026-11-27T18:00:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-27T18:15:00Z",
-            "value": 0.238095
+            "value": 0.25
           },
           {
             "measured_at": "2026-11-27T18:30:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-27T18:45:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T19:00:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-27T19:15:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-27T19:30:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-27T19:45:00Z",
-            "value": 0.238095
+            "value": 0.25
           },
           {
             "measured_at": "2026-11-27T20:00:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-27T20:15:00Z",
-            "value": 0.952381
+            "value": 1
           },
           {
             "measured_at": "2026-11-27T20:30:00Z",
-            "value": 0.761905
+            "value": 0.8
           },
           {
             "measured_at": "2026-11-27T20:45:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-27T21:00:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-27T21:15:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-27T21:30:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-27T21:45:00Z",
-            "value": 0.190476
+            "value": 0.2
           },
           {
             "measured_at": "2026-11-27T22:00:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-27T22:15:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-27T22:30:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-27T22:45:00Z",
-            "value": 0.52381
+            "value": 0.55
           },
           {
             "measured_at": "2026-11-27T23:00:00Z",
-            "value": 0.809524
+            "value": 0.85
           },
           {
             "measured_at": "2026-11-27T23:15:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-27T23:30:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-27T23:45:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-28T00:00:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-28T00:15:00Z",
-            "value": 0.52381
+            "value": 0.55
           },
           {
             "measured_at": "2026-11-28T00:30:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-28T00:45:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-28T01:00:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-28T01:15:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-28T01:30:00Z",
-            "value": 0.428571
+            "value": 0.45
           },
           {
             "measured_at": "2026-11-28T01:45:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-28T02:00:00Z",
-            "value": 0.428571
+            "value": 0.45
           },
           {
             "measured_at": "2026-11-28T02:15:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-28T02:30:00Z",
-            "value": 0.428571
+            "value": 0.45
           },
           {
             "measured_at": "2026-11-28T02:45:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-28T03:00:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-28T03:15:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-28T03:30:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-28T03:45:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-28T04:00:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-28T04:15:00Z",
-            "value": 0.714286
+            "value": 0.75
           },
           {
             "measured_at": "2026-11-28T04:30:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-28T04:45:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-28T05:00:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-28T05:15:00Z",
-            "value": 0.666667
+            "value": 0.7
           },
           {
             "measured_at": "2026-11-28T05:30:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-28T05:45:00Z",
-            "value": 0.714286
+            "value": 0.75
           },
           {
             "measured_at": "2026-11-28T06:00:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-28T06:15:00Z",
-            "value": 0.52381
+            "value": 0.55
           },
           {
             "measured_at": "2026-11-28T06:30:00Z",
-            "value": 0.52381
+            "value": 0.55
           },
           {
             "measured_at": "2026-11-28T06:45:00Z",
-            "value": 0.285714
+            "value": 0.3
           },
           {
             "measured_at": "2026-11-28T07:00:00Z",
-            "value": 0.333333
+            "value": 0.35
           },
           {
             "measured_at": "2026-11-28T07:15:00Z",
-            "value": 0.571429
+            "value": 0.6
           },
           {
             "measured_at": "2026-11-28T07:30:00Z",
-            "value": 0.47619
+            "value": 0.5
           },
           {
             "measured_at": "2026-11-28T07:45:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-28T08:00:00Z",
-            "value": 0.619048
+            "value": 0.65
           },
           {
             "measured_at": "2026-11-28T08:15:00Z",
-            "value": 0.380952
+            "value": 0.4
           },
           {
             "measured_at": "2026-11-28T08:30:00Z",
-            "value": 0.619048
+            "value": 0.65
+          },
+          {
+            "measured_at": "2026-11-28T08:45:00Z",
+            "value": 0.75
+          },
+          {
+            "measured_at": "2026-11-28T09:00:00Z",
+            "value": 0.6
+          },
+          {
+            "measured_at": "2026-11-28T09:15:00Z",
+            "value": 0.6
+          },
+          {
+            "measured_at": "2026-11-28T09:30:00Z",
+            "value": 0.75
+          },
+          {
+            "measured_at": "2026-11-28T09:45:00Z",
+            "value": 0.75
+          },
+          {
+            "measured_at": "2026-11-28T10:00:00Z",
+            "value": 0.85
+          },
+          {
+            "measured_at": "2026-11-28T10:15:00Z",
+            "value": 0.7
+          },
+          {
+            "measured_at": "2026-11-28T10:30:00Z",
+            "value": 0.8
+          },
+          {
+            "measured_at": "2026-11-28T10:45:00Z",
+            "value": 0.8
+          },
+          {
+            "measured_at": "2026-11-28T11:00:00Z",
+            "value": 0.4
+          },
+          {
+            "measured_at": "2026-11-28T11:15:00Z",
+            "value": 0.55
+          },
+          {
+            "measured_at": "2026-11-28T11:30:00Z",
+            "value": 0.85
           }
         ],
         "provider": "oracle",
         "metric": "CONNECTION_FAILURES"
       },
-      "latency_ms": 484,
-      "observed_at": "2026-11-28T10:05:51.958447+00:00"
+      "latency_ms": 652,
+      "observed_at": "2026-11-28T12:54:52.488361+00:00"
     }
   ]
 }
