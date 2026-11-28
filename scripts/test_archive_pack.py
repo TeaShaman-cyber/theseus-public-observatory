@@ -145,6 +145,72 @@ class ArchivePackIntegrity(unittest.TestCase):
         self.assertFalse(result["period_complete"])
         self.assertEqual(result["kp_measurements"], 1)
 
+    def test_existing_output_is_never_overwritten(self):
+        sentinel = self.pack / "unrelated.txt"
+        sentinel.write_text("keep me")
+        before = {p.name: p.read_bytes() for p in self.pack.iterdir()}
+        with self.assertRaisesRegex(SystemExit, "output already exists"):
+            archive.build(self.root, "2026-09", self.pack)
+        self.assertEqual({p.name: p.read_bytes() for p in self.pack.iterdir()}, before)
+
+    def test_existing_empty_directory_is_not_claimed(self):
+        out = self.pack.with_name("empty")
+        out.mkdir()
+        with self.assertRaisesRegex(SystemExit, "output already exists"):
+            archive.build(self.root, "2026-09", out)
+        self.assertEqual(list(out.iterdir()), [])
+
+    def test_output_symlink_does_not_create_target(self):
+        out = self.pack.with_name("link")
+        target = self.pack.with_name("absent")
+        out.symlink_to(target, target_is_directory=True)
+        with self.assertRaisesRegex(SystemExit, "output already exists"):
+            archive.build(self.root, "2026-09", out)
+        self.assertFalse(target.exists())
+
+    def test_uncommitted_source_bytes_rejected(self):
+        out = self.pack.with_name("new")
+        self.raw.write_bytes(self.raw.read_bytes().replace(b'"Kp": 3', b'"Kp": 4'))
+        with self.assertRaisesRegex(SystemExit, "input differs from Git"):
+            archive.build(self.root, "2026-09", out)
+        self.assertFalse(out.exists())
+
+    def test_untracked_day_rejected(self):
+        out = self.pack.with_name("new")
+        extra = self.raw.parent.with_name("2026-09-02") / self.raw.name
+        extra.parent.mkdir()
+        extra.write_bytes(self.raw.read_bytes())
+        with self.assertRaisesRegex(SystemExit, "input set differs from Git"):
+            archive.build(self.root, "2026-09", out)
+        self.assertFalse(out.exists())
+
+    def test_missing_committed_day_rejected(self):
+        out = self.pack.with_name("new")
+        self.raw.unlink()
+        with self.assertRaisesRegex(SystemExit, "input set differs from Git"):
+            archive.build(self.root, "2026-09", out)
+        self.assertFalse(out.exists())
+
+    def test_source_is_captured_once_for_all_assets(self):
+        from unittest.mock import patch
+
+        out = self.pack.with_name("new")
+        before = self.raw.read_bytes()
+        original = archive.project_rows
+
+        def mutate_after_projection(inputs):
+            result = original(inputs)
+            self.raw.write_bytes(before.replace(b'"Kp": 3', b'"Kp": 4'))
+            return result
+
+        with patch.object(archive, "project_rows", side_effect=mutate_after_projection):
+            archive.build(self.root, "2026-09", out)
+        self.assertEqual(archive.verify(out)["kp_measurements"], 1)
+        import json
+
+        manifest = json.loads((out / "manifest.json").read_text())
+        self.assertEqual(manifest["inputs"][0]["sha256"], archive.sha_bytes(before))
+
     def test_corrupted_asset_without_rehash(self):
         with (self.pack / "schema.json").open("a") as f:
             f.write("damage")
@@ -286,8 +352,9 @@ class ArchivePackIntegrity(unittest.TestCase):
             ],
             check=True,
         )
-        archive.build(self.root, "2026-09", self.pack)
-        self.assertEqual(archive.verify(self.pack)["kp_measurements"], 0)
+        out = self.pack.with_name("unavailable")
+        archive.build(self.root, "2026-09", out)
+        self.assertEqual(archive.verify(out)["kp_measurements"], 0)
 
 
 if __name__ == "__main__":

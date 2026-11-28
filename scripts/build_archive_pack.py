@@ -12,7 +12,6 @@ import re
 import subprocess
 import tarfile
 from collections import Counter
-from datetime import datetime
 from pathlib import Path
 
 import duckdb
@@ -42,12 +41,57 @@ def git_value(root: Path, expr: str) -> str:
     ).stdout.strip()
 
 
-def period_files(root: Path, period: str) -> list[Path]:
-    datetime.strptime(period, "%Y-%m")
-    files = sorted((root / "data").glob(f"{period}-??/public-status.jsonl"))
-    if not files:
+def capture_inputs(root: Path, period: str, head: str) -> dict[str, bytes]:
+    if not re.fullmatch(r"[0-9]{4}-[0-9]{2}", period):
+        raise SystemExit("invalid period")
+    year, month = map(int, period.split("-"))
+    if not 1 <= month <= 12 or year == 0:
+        raise SystemExit("invalid period")
+    expected_days = calendar.monthrange(year, month)[1]
+    pattern = re.compile(r"data/" + period + r"-([0-9]{2})/public-status[.]jsonl")
+    tree = subprocess.check_output(
+        ["git", "-C", str(root), "ls-tree", "-r", "-z", head, "--", "data"]
+    )
+    blobs = {}
+    for entry in tree.split(b"\0"):
+        if not entry:
+            continue
+        meta, name = entry.split(b"\t", 1)
+        rel = name.decode("utf-8", errors="surrogateescape")
+        match = pattern.fullmatch(rel)
+        if not match:
+            continue
+        mode, kind, oid = meta.split()
+        if not 1 <= int(match[1]) <= expected_days:
+            raise SystemExit(f"invalid raw member path: {rel}")
+        if kind != b"blob" or mode not in (b"100644", b"100755"):
+            raise SystemExit(f"nonregular Git input: {rel}")
+        blobs[rel] = oid.decode("ascii")
+    files = {
+        f.relative_to(root).as_posix(): f
+        for f in (root / "data").glob(f"{period}-??/public-status.jsonl")
+    }
+    if files.keys() != blobs.keys():
+        raise SystemExit("input set differs from Git")
+    if not blobs:
         raise SystemExit(f"no canonical data for {period}")
-    return files
+    captured = {}
+    for rel, oid in sorted(blobs.items()):
+        path = files[rel]
+        if (
+            path.is_symlink()
+            or path.parent.is_symlink()
+            or (root / "data").is_symlink()
+            or not path.is_file()
+        ):
+            raise SystemExit(f"nonregular working-tree input: {rel}")
+        data = subprocess.check_output(
+            ["git", "-C", str(root), "cat-file", "blob", oid]
+        )
+        if path.read_bytes() != data:
+            raise SystemExit(f"input differs from Git: {rel}")
+        captured[rel] = data
+    return captured
 
 
 def health(snapshot: dict, item: dict) -> tuple:
@@ -148,13 +192,6 @@ def signals(
                     signal_scale="0-5",
                 )
     return out
-
-
-def load_rows(root: Path, files: list[Path]) -> tuple[list[tuple], list[tuple], dict]:
-    return project_rows(
-        (file.relative_to(root).as_posix(), file.read_text(encoding="utf-8"))
-        for file in files
-    )
 
 
 def project_rows(inputs) -> tuple[list[tuple], list[tuple], dict]:
@@ -267,13 +304,12 @@ def write_parquet(
         )
 
 
-def write_raw(root: Path, files: list[Path], target: Path) -> None:
+def write_raw(inputs: dict[str, bytes], target: Path) -> None:
     with target.open("wb") as raw_out:
         with gzip.GzipFile(filename="", mode="wb", fileobj=raw_out, mtime=0) as gz:
             with tarfile.open(fileobj=gz, mode="w") as tf:
-                for file in files:
-                    data = file.read_bytes()
-                    info = tarfile.TarInfo(file.relative_to(root).as_posix())
+                for rel, data in inputs.items():
+                    info = tarfile.TarInfo(rel)
                     info.size, info.mtime, info.uid, info.gid, info.mode = (
                         len(data),
                         0,
@@ -286,16 +322,23 @@ def write_raw(root: Path, files: list[Path], target: Path) -> None:
 
 
 def build(root: Path, period: str, out: Path) -> Path:
-    root, out = root.resolve(), out.resolve()
-    files = period_files(root, period)
-    out.mkdir(parents=True, exist_ok=True)
-    for p in out.iterdir():
-        if p.is_file():
-            p.unlink()
-        else:
-            raise SystemExit(f"unexpected directory in output: {p}")
+    root = root.resolve()
+    # Resolve the parent, not a potentially existing output symlink.
+    out = out.parent.resolve() / out.name
+    if out.exists() or out.is_symlink():
+        raise SystemExit(f"output already exists: {out}")
+    head = git_value(root, "HEAD")
+    tree = git_value(root, f"{head}^{{tree}}")
+    captured = capture_inputs(root, period, head)
+    obs, sig, stats = project_rows(
+        (rel, data.decode("utf-8")) for rel, data in captured.items()
+    )
+    # Exclusive creation also catches another builder winning the race.
+    try:
+        out.mkdir(parents=True, exist_ok=False)
+    except FileExistsError as exc:
+        raise SystemExit(f"output already exists: {out}") from exc
 
-    obs, sig, stats = load_rows(root, files)
     raw_path, obs_path, sig_path = (
         out / "raw-jsonl.tar.gz",
         out / "observations.parquet",
@@ -307,7 +350,7 @@ def build(root: Path, period: str, out: Path) -> Path:
         out / "SHA256SUMS",
     )
 
-    write_raw(root, files, raw_path)
+    write_raw(captured, raw_path)
     write_parquet(obs_path, sig_path, obs, sig)
     schema_path.write_text(
         json.dumps(
@@ -326,12 +369,11 @@ def build(root: Path, period: str, out: Path) -> Path:
     )
 
     inputs, dates = [], []
-    for file in files:
-        data = file.read_bytes()
-        dates.append(file.parent.name)
+    for rel, data in captured.items():
+        dates.append(rel.split("/")[1])
         inputs.append(
             {
-                "path": file.relative_to(root).as_posix(),
+                "path": rel,
                 "bytes": len(data),
                 "lines": sum(1 for line in data.splitlines() if line.strip()),
                 "sha256": sha_bytes(data),
@@ -341,7 +383,6 @@ def build(root: Path, period: str, out: Path) -> Path:
     year, month = map(int, period.split("-"))
     expected_days = calendar.monthrange(year, month)[1]
     observed = sorted({int(d[-2:]) for d in dates})
-    head = git_value(root, "HEAD")
     assets = {
         p.name: {"bytes": p.stat().st_size, "sha256": sha_file(p)}
         for p in (raw_path, obs_path, sig_path, schema_path)
@@ -353,7 +394,7 @@ def build(root: Path, period: str, out: Path) -> Path:
         "period_complete": observed == list(range(1, expected_days + 1)),
         "repository": "TeaShaman-cyber/theseus-public-observatory",
         "git_head": head,
-        "git_tree": git_value(root, "HEAD^{tree}"),
+        "git_tree": tree,
         "canonical_authority": "data/YYYY-MM-DD/public-status.jsonl",
         "coverage": {
             **stats,
