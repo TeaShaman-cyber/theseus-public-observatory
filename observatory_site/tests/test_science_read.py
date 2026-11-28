@@ -97,3 +97,25 @@ class ScienceReadTests(unittest.TestCase):
         )
         self.assertEqual(validate_gfz([r, r2], w)["coverage"], "complete")
         self.assertEqual(validate_gfz([r, dict(r2, kp=None)], w)["missing"]["kp"], 1)
+
+    def test_missing_entire_hour_is_counted_for_every_omni_field(self):
+        got = parse_omni(
+            response(["2024-05-10T00:30:00Z,0,9999,12"]), self.w, ["bz", "speed", "dst"]
+        )
+        self.assertEqual(got["missing"], {"bz": 1, "speed": 2, "dst": 1})
+        self.assertEqual(got["coverage"], "partial")
+        self.assertEqual(len(got["rows"]), 1)
+
+    def test_missing_entire_gfz_interval_counts_for_both_fields(self):
+        from scripts.science_read import validate_gfz
+
+        w = Window("2024-05-10T00:00:00Z", "2024-05-10T06:00:00Z")
+        row = {
+            "interval_start": w.start,
+            "interval_end": "2024-05-10T03:00:00Z",
+            "kp": None,
+            "ap": 0,
+        }
+        got = validate_gfz([row], w)
+        self.assertEqual(got["missing"], {"kp": 2, "ap": 1})
+        self.assertEqual(got["coverage"], "partial")

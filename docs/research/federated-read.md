@@ -259,3 +259,13 @@ License discrepancy remains (Zenodo CC BY 4.0 vs file README CC BY-SA
 only until resolved. Cite both methodology papers:
 https://doi.org/10.5194/essd-13-3219-2021 and
 https://doi.org/10.5194/essd-14-5665-2022.
+
+### Missingness contract
+
+For OMNI and GFZ, per-field missing counts include both explicit fill/null
+values and absent expected intervals. A missing interval contributes once
+to each selected field. No synthetic measurement row or zero is inserted.
+Coverage is partial when an expected interval is absent. GFZ counts only
+fully contained definitive three-hour slots. CLI regression tests cover
+all six source routes with synthetic boundary responses, invalid options,
+window validation, canonical selection digest and failure without fallback.
