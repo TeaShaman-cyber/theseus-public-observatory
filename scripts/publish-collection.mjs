@@ -5,7 +5,6 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { isDeepStrictEqual } from "node:util";
-import { renderReport } from "./collect-public-status.mjs";
 import { checkRepositoryProjections } from "./projection-consistency.mjs";
 import { validateSnapshot } from "./validate-public-data.mjs";
 
@@ -35,6 +34,20 @@ function identicalRun(a, b) {
   return id != null && attempt != null && id === b.run?.github_run_id && attempt === b.run?.github_run_attempt;
 }
 
+function validationEnv() {
+  const env = { ...process.env };
+  delete env.GH_TOKEN;
+  delete env.GITHUB_TOKEN;
+  return env;
+}
+
+function renderAtTip(root, snapshot) {
+  return execFileSync(process.execPath, [
+    "--input-type=module", "-e",
+    'import {readFileSync} from "node:fs"; import {renderReport} from "./scripts/collect-public-status.mjs"; process.stdout.write(renderReport(JSON.parse(readFileSync(0,"utf8"))));',
+  ], { ...options, stdio: ["pipe", "pipe", "pipe"], cwd: root, env: validationEnv(), input: JSON.stringify(snapshot) });
+}
+
 function replay(root, snapshot, day) {
   const current = checkRepositoryProjections(root);
   const path = join("data", day, "public-status.jsonl");
@@ -51,12 +64,10 @@ function replay(root, snapshot, day) {
   mkdirSync(join(root, "data", day), { recursive: true });
   appendFileSync(journal, (text && !text.endsWith("\n") ? "\n" : "") + JSON.stringify(snapshot) + "\n", "utf8");
   writeFileSync(join(root, latest), JSON.stringify(snapshot, null, 2) + "\n");
-  writeFileSync(join(root, report), renderReport(snapshot));
+  writeFileSync(join(root, report), renderAtTip(root, snapshot));
   checkRepositoryProjections(root);
   // Recheck the rebased data with the target revision's own validation commands.
-  const env = { ...process.env };
-  delete env.GH_TOKEN;
-  delete env.GITHUB_TOKEN;
+  const env = validationEnv();
   for (const command of ["validate", "projection-check"]) {
     execFileSync("npm", ["run", command], { ...options, cwd: root, env });
   }

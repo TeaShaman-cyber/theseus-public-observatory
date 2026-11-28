@@ -139,3 +139,19 @@ test("same collection identity with different bytes cannot be republished", asyn
   await assert.rejects(publishSnapshot(root, "main", {...snapshot("08"),run:original.run}), /conflicting/);
   assert.deepEqual(remoteRows(remote), [snapshot("06"), original]);
 });
+
+test("replay renders the report with the newly fetched revision", async (t) => {
+  const { root, remote } = fixture(t);
+  const rival = join(root, "..", "rival");
+  git(root, "clone", remote, rival);
+  git(rival, "config", "user.name", "Fixture");
+  git(rival, "config", "user.email", "fixture@example.invalid");
+  const formatter = join(rival, "scripts/collect-public-status.mjs");
+  writeFileSync(formatter, readFileSync(formatter, "utf8").replace("## Source Health", "## Updated Source Health"));
+  git(rival, "add", ".");
+  git(rival, "commit", "-m", "update renderer");
+  installRace(root, remote, rival);
+  const result = await publishSnapshot(root, "main", snapshot("07"));
+  assert.equal(result.attempt, 2);
+  assert.match(git(remote, "show", "main:reports/2026-09-09.md"), /## Updated Source Health/);
+});
